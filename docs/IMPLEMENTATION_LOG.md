@@ -31,3 +31,15 @@ Desk `get_desktop_page` with the correct JSON page descriptor returned the Asset
 Migration emitted an existing ERPNext sidebar-fixture-format warning (22 fixtures); no migration failure. No unrelated navigation conversion performed.
 
 Task 1: server installation, migration and integration-test acceptance passed. Browser visual inspection remains pending.
+
+## Task 2 — Core masters
+
+Pre-flight: Sample consumes ERPNext Project.customer; Method links optional Standard/Asset/Workstation without exclusivity.
+Ruling: Require positive received quantity — a received specimen count must be positive — cost if wrong: adjust validation for zero-quantity registrations.
+Ruling: Use Frappe-generated standard DocTypes and explicit transactional Company test data — recursive ERPNext fixtures hit absent Payment Gateway; no framework patches — cost if wrong: test setup needs adjustment on future ERPNext versions.
+Naming: SMP/STD/MTH sequential document names, standards retain distinct version fields; User reused for received_by.
+RED: six tests failed because masters absent; after schema creation and fixture corrections, four business-rule tests failed for missing derivation/validation/display behavior.
+GREEN: full server suite 8/8 passed after implementation, and again after migration. Offline suite 2/2 passed. Wheel built and contains all schemas/controllers. Desk returned all four shortcuts. Migration exit 0 (also removed pre-existing orphan China Enterprise Data Gaps report).
+Final review: fresh code-reviewer found no Important/Critical findings.
+Final: minor (deferred): role-based permission integration tests, including ERPNext Project/Asset access, remain for end-to-end acceptance.
+Task 2: complete.

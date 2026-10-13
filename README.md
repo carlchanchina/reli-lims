@@ -90,3 +90,14 @@ commands from the bench's `sites` directory using the bench environment's
 Python module `frappe.utils.bench_helper frappe`. Do not install a second
 bench manager just to run these commands. The local feature branch has not
 been pushed; the validation server received commit `a3a9a36` directly.
+
+### Core masters
+
+Sample, Test Standard and Test Method are now available in Testing Center.
+Lab Manager maintains standards and methods; Lab Engineer can register/edit
+samples; Lab Reviewer can read all three. Existing ERPNext roles must separately
+grant access to Projects, Customers and Assets as appropriate.
+Sample derives customer from Project on every save and requires positive
+quantity. Standards have distinct document numbers and code/version/title;
+method defaults are optional and reusable across standards. Files use Frappe's
+standard attachments and Attach fields.

@@ -24,6 +24,24 @@
   "links": [],
   "shortcuts": [
     {
+      "label": "Samples",
+      "type": "DocType",
+      "link_to": "Sample",
+      "color": "Grey"
+    },
+    {
+      "label": "Standards",
+      "type": "DocType",
+      "link_to": "Test Standard",
+      "color": "Grey"
+    },
+    {
+      "label": "Methods",
+      "type": "DocType",
+      "link_to": "Test Method",
+      "color": "Grey"
+    },
+    {
       "label": "Assets",
       "type": "DocType",
       "link_to": "Asset",
@@ -34,5 +52,5 @@
   "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"assets-shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}]"
+  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 3}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 3}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 3}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}]"
 }

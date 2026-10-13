@@ -1,0 +1,113 @@
+{
+  "actions": [],
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "autoname": "format:MTH-{#####}",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "method_name",
+    "category",
+    "default_standard",
+    "default_workstation",
+    "default_asset",
+    "default_condition",
+    "active",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "method_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Method Name",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "category",
+      "fieldtype": "Data",
+      "label": "Category"
+    },
+    {
+      "fieldname": "default_standard",
+      "fieldtype": "Link",
+      "label": "Default Standard",
+      "options": "Test Standard"
+    },
+    {
+      "fieldname": "default_workstation",
+      "fieldtype": "Link",
+      "label": "Default Workstation",
+      "options": "Workstation"
+    },
+    {
+      "fieldname": "default_asset",
+      "fieldtype": "Link",
+      "label": "Default Asset",
+      "options": "Asset"
+    },
+    {
+      "fieldname": "default_condition",
+      "fieldtype": "Small Text",
+      "label": "Default Condition"
+    },
+    {
+      "default": "1",
+      "fieldname": "active",
+      "fieldtype": "Check",
+      "label": "Active"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Method",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Engineer",
+      "share": 1
+    },
+    {
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Reviewer",
+      "share": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "rows_threshold_for_grid_search": 20,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "method_name",
+  "track_changes": 1
+}

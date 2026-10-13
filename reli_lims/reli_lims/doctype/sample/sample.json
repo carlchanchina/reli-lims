@@ -1,0 +1,147 @@
+{
+  "actions": [],
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "autoname": "format:SMP-{#####}",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "project",
+    "customer",
+    "product_name",
+    "model",
+    "serial_no",
+    "quantity",
+    "received_date",
+    "received_by",
+    "condition",
+    "status",
+    "storage_location",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Project",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer",
+      "read_only": 1
+    },
+    {
+      "fieldname": "product_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Product Name"
+    },
+    {
+      "fieldname": "model",
+      "fieldtype": "Data",
+      "label": "Model"
+    },
+    {
+      "fieldname": "serial_no",
+      "fieldtype": "Data",
+      "label": "Serial No"
+    },
+    {
+      "default": "1",
+      "fieldname": "quantity",
+      "fieldtype": "Float",
+      "label": "Quantity",
+      "reqd": 1
+    },
+    {
+      "default": "Today",
+      "fieldname": "received_date",
+      "fieldtype": "Date",
+      "label": "Received Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "received_by",
+      "fieldtype": "Link",
+      "label": "Received By",
+      "options": "User"
+    },
+    {
+      "fieldname": "condition",
+      "fieldtype": "Small Text",
+      "label": "Condition"
+    },
+    {
+      "default": "Received",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Status",
+      "options": "Received\nTesting\nCompleted\nRetained\nReturned\nDisposed",
+      "reqd": 1
+    },
+    {
+      "fieldname": "storage_location",
+      "fieldtype": "Data",
+      "label": "Storage Location"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Sample",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Engineer",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Reviewer",
+      "share": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "rows_threshold_for_grid_search": 20,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "product_name",
+  "track_changes": 1
+}
