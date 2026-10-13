@@ -49,3 +49,31 @@ It focuses on the laboratory execution flow after a commercial order has been wo
 - MariaDB / Redis as required by Frappe
 
 See `docs/` for architecture, data model, ERPNext integration and development plan.
+
+## Install and verify
+
+In an existing ERPNext 16 bench, replace `lab-test.localhost` with a dedicated
+test site that already has ERPNext installed:
+
+```sh
+bench get-app https://github.com/carlchanchina/reli-lims.git --branch codex/installable-app
+bench --site lab-test.localhost install-app reli_lims
+bench --site lab-test.localhost migrate
+bench --site lab-test.localhost run-tests --app reli_lims
+```
+
+The branch must be available on the remote before using `get-app`; for local
+verification, pass this checkout's absolute path instead of the URL.
+
+Assign Lab Manager, Lab Engineer or Lab Reviewer to a test user, then open
+Testing Center in Desk. The initial workspace exposes ERPNext Assets; lab
+shortcuts and permissions will be added with the corresponding DocTypes.
+Roles do not grant additional ERPNext Asset access; existing ERPNext permissions
+still apply. No business DocTypes or naming series are introduced in Phase 1.
+
+Offline distribution checks (do not verify Frappe installation):
+
+```sh
+python3 -m unittest discover -s tests -v
+python3 -m pip wheel --no-deps --wheel-dir /tmp/reli-lims-dist .
+```

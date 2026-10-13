@@ -1,0 +1,26 @@
+[
+  {
+    "doctype": "Role",
+    "name": "Lab Manager",
+    "role_name": "Lab Manager",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "Lab Engineer",
+    "role_name": "Lab Engineer",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "Lab Reviewer",
+    "role_name": "Lab Reviewer",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  }
+]

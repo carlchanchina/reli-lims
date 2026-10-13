@@ -1,0 +1,38 @@
+{
+  "doctype": "Workspace",
+  "name": "Testing Center",
+  "label": "Testing Center",
+  "title": "Testing Center",
+  "module": "Reli LIMS",
+  "icon": "lab",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 1,
+  "for_user": "",
+  "parent_page": "",
+  "roles": [
+    {
+      "role": "Lab Manager"
+    },
+    {
+      "role": "Lab Engineer"
+    },
+    {
+      "role": "Lab Reviewer"
+    }
+  ],
+  "links": [],
+  "shortcuts": [
+    {
+      "label": "Assets",
+      "type": "DocType",
+      "link_to": "Asset",
+      "color": "Grey"
+    }
+  ],
+  "charts": [],
+  "number_cards": [],
+  "quick_lists": [],
+  "custom_blocks": [],
+  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"assets-shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}]"
+}

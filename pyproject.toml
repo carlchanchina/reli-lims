@@ -2,6 +2,8 @@
 name = "reli_lims"
 version = "0.1.0"
 description = "Lean laboratory execution module for ERPNext/Frappe"
+readme = "README.md"
+license = { file = "LICENSE" }
 authors = [{ name = "ReliLab" }]
 requires-python = ">=3.11"
 dependencies = []

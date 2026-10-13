@@ -6,3 +6,7 @@ app_email = ""
 app_license = "MIT"
 
 required_apps = ["erpnext"]
+
+fixtures = [
+    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer"]]]}
+]
