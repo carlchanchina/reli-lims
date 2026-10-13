@@ -1,0 +1,162 @@
+{
+  "actions": [],
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "autoname": "format:RPT-{#####}",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "project",
+    "test_program",
+    "customer",
+    "engineer",
+    "reviewer",
+    "approver",
+    "test_start",
+    "test_end",
+    "overall_conclusion",
+    "version",
+    "status",
+    "issued_date",
+    "pdf_file",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Project",
+      "options": "Project",
+      "reqd": 1
+    },
+    {
+      "fieldname": "test_program",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Test Program",
+      "options": "Test Program",
+      "reqd": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer",
+      "read_only": 1
+    },
+    {
+      "fieldname": "engineer",
+      "fieldtype": "Link",
+      "label": "Engineer",
+      "options": "User"
+    },
+    {
+      "fieldname": "reviewer",
+      "fieldtype": "Link",
+      "label": "Reviewer",
+      "options": "User"
+    },
+    {
+      "fieldname": "approver",
+      "fieldtype": "Link",
+      "label": "Approver",
+      "options": "User"
+    },
+    {
+      "fieldname": "test_start",
+      "fieldtype": "Date",
+      "label": "Test Start"
+    },
+    {
+      "fieldname": "test_end",
+      "fieldtype": "Date",
+      "label": "Test End"
+    },
+    {
+      "fieldname": "overall_conclusion",
+      "fieldtype": "Data",
+      "label": "Overall Conclusion"
+    },
+    {
+      "default": "V1.0",
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "Version"
+    },
+    {
+      "default": "Draft",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Status",
+      "options": "Draft\nEngineering Complete\nReview\nApproved\nIssued\nRevised",
+      "reqd": 1
+    },
+    {
+      "fieldname": "issued_date",
+      "fieldtype": "Date",
+      "label": "Issued Date",
+      "read_only": 1
+    },
+    {
+      "fieldname": "pdf_file",
+      "fieldtype": "Attach",
+      "label": "Pdf File"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Report",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Engineer",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Reviewer",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "rows_threshold_for_grid_search": 20,
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}

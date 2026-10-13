@@ -30,6 +30,12 @@
       "color": "Grey"
     },
     {
+      "label": "Test Programs",
+      "type": "DocType",
+      "link_to": "Test Program",
+      "color": "Grey"
+    },
+    {
       "label": "Standards",
       "type": "DocType",
       "link_to": "Test Standard",
@@ -39,6 +45,12 @@
       "label": "Methods",
       "type": "DocType",
       "link_to": "Test Method",
+      "color": "Grey"
+    },
+    {
+      "label": "Test Reports",
+      "type": "DocType",
+      "link_to": "Test Report",
       "color": "Grey"
     },
     {
@@ -52,5 +64,5 @@
   "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 3}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 3}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 3}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}]"
+  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 4}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Programs\", \"col\": 4}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 4}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 4}}, {\"id\": \"shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Reports\", \"col\": 4}}, {\"id\": \"shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 4}}]"
 }

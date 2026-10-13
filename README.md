@@ -66,10 +66,10 @@ The branch must be available on the remote before using `get-app`; for local
 verification, pass this checkout's absolute path instead of the URL.
 
 Assign Lab Manager, Lab Engineer or Lab Reviewer to a test user, then open
-Testing Center in Desk. The initial workspace exposes ERPNext Assets; lab
-shortcuts and permissions will be added with the corresponding DocTypes.
+Testing Center in Desk. Testing Center exposes Samples, Test Programs, Test Standards, Test Methods,
+Test Reports and ERPNext Assets.
 Roles do not grant additional ERPNext Asset access; existing ERPNext permissions
-still apply. No business DocTypes or naming series are introduced in Phase 1.
+still apply. Core masters, programs and reports use their own sequential document numbers.
 
 Offline distribution checks (do not verify Frappe installation):
 
@@ -82,8 +82,9 @@ python3 -m pip wheel --no-deps --wheel-dir /tmp/reli-lims-dist .
 
 The Phase 1 skeleton has been installed and migrated on `wekona-test.localhost`
 at `192.168.10.204`, in Pilot's `/home/frappe/pilot/benches/dev-bench`.
-Its two Frappe integration tests pass. The Desk workspace endpoint loads Assets;
-browser rendering has not yet been visually inspected.
+Installation and laboratory workflow integration tests run on this site.
+Desk workspace configuration loads successfully; browser rendering has not yet
+been visually inspected.
 
 Pilot deployments without a `bench` executable can invoke the same site
 commands from the bench's `sites` directory using the bench environment's
@@ -101,3 +102,21 @@ Sample derives customer from Project on every save and requires positive
 quantity. Standards have distinct document numbers and code/version/title;
 method defaults are optional and reusable across standards. Files use Frappe's
 standard attachments and Attach fields.
+
+### Laboratory execution
+
+Test Program supports many samples and many items. Each item selects one method
+and one actual standard. Sample Assignments is a flat child relation keyed by
+an immutable item code, avoiding nested child tables. Execution follows
+Pending → Ready → Running → Completed → Reviewed; results and conclusions are
+required for completion, and review requires Lab Reviewer or Lab Manager.
+
+Reports follow Draft → Engineering Complete → Review → Approved → Issued →
+Revised. Lab Manager approves/issues, and issue requires all items Reviewed plus
+an attached private PDF. Approved business fields and issued report/program
+content are locked; issued/revised reports cannot be deleted. Create a new report
+version rather than changing issued content.
+
+See [Desk demo](docs/DESK_DEMO.md) for the complete two-sample/three-item path.
+PDF layout generation, analytical reports, dashboard metrics and portal APIs
+remain outside this acceptance-path increment.
