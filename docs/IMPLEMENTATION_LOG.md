@@ -14,3 +14,20 @@ Offline verification: distribution checks observed RED (2 failures: missing fixt
 Final review: fresh code-reviewer found no actionable defects; runtime acceptance remains pending.
 Environment update: ERPNext is hosted at 192.168.10.204 (user provided). SSH responds, but carl authentication failed. Awaiting SSH username/alias before install and migrate verification.
 Task 1: implementation ready, NOT acceptance-complete. Integration tests have not run.
+
+## Server acceptance — 2026-10-13
+
+User authorized verification on existing `wekona-test.localhost` at `192.168.10.204`, SSH account `frappe`.
+Bench: `/home/frappe/pilot/benches/dev-bench`, managed by Pilot.
+Backup completed before installation: `20261013_072448-wekona-test_localhost-database.sql.gz` with matching site-config backup in the site's private/backups directory.
+
+Ruling: Use Pilot's underlying Frappe CLI dispatcher because this deployment has no bench executable — preserves the same Frappe install/migrate/test commands without adding another manager — cost if wrong: adapt invocation for future Pilot changes.
+
+Uploaded commit a3a9a36 and installed editable package in the existing bench environment. Git metadata and Pilot app inventory preserved; branch has not been pushed.
+`install-app reli_lims`: exit 0.
+`migrate`: exit 0. Existing test-site Frappe/ERPNext schema was behind bench code; migration also applied their pending patches. Final installed versions: Frappe 16.51.1, ERPNext 16.50.0, Reli LIMS 0.1.0.
+`run-tests --app reli_lims`: 2 integration tests passed, exit 0.
+Desk `get_desktop_page` with the correct JSON page descriptor returned the Assets shortcut successfully as Administrator. The first attempt used an invalid plain-string page descriptor and failed; corrected request passed. Browser rendering has not been inspected.
+Migration emitted an existing ERPNext sidebar-fixture-format warning (22 fixtures); no migration failure. No unrelated navigation conversion performed.
+
+Task 1: server installation, migration and integration-test acceptance passed. Browser visual inspection remains pending.

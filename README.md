@@ -77,3 +77,16 @@ Offline distribution checks (do not verify Frappe installation):
 python3 -m unittest discover -s tests -v
 python3 -m pip wheel --no-deps --wheel-dir /tmp/reli-lims-dist .
 ```
+
+### Current validation environment
+
+The Phase 1 skeleton has been installed and migrated on `wekona-test.localhost`
+at `192.168.10.204`, in Pilot's `/home/frappe/pilot/benches/dev-bench`.
+Its two Frappe integration tests pass. The Desk workspace endpoint loads Assets;
+browser rendering has not yet been visually inspected.
+
+Pilot deployments without a `bench` executable can invoke the same site
+commands from the bench's `sites` directory using the bench environment's
+Python module `frappe.utils.bench_helper frappe`. Do not install a second
+bench manager just to run these commands. The local feature branch has not
+been pushed; the validation server received commit `a3a9a36` directly.
