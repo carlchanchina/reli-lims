@@ -1,0 +1,15 @@
+[project]
+name = "reli_lims"
+version = "0.1.0"
+description = "Lean laboratory execution module for ERPNext/Frappe"
+authors = [{ name = "ReliLab" }]
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["flit_core>=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0,<17.0.0"
+erpnext = ">=16.0.0,<17.0.0"
