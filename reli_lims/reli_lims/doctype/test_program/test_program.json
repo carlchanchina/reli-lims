@@ -75,7 +75,7 @@
     {
       "fieldname": "items",
       "fieldtype": "Table",
-      "label": "Items",
+      "label": "Test Items",
       "options": "Test Program Item",
       "reqd": 1
     },

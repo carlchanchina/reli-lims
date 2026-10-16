@@ -1,3 +1,4 @@
+import csv
 import json
 from pathlib import Path
 import runpy
@@ -18,6 +19,22 @@ class TestDistribution(unittest.TestCase):
         prefix = "/assets/reli_lims/"
         self.assertTrue(entry["logo"].startswith(prefix))
         self.assertTrue((ROOT / "reli_lims/public" / entry["logo"][len(prefix):]).is_file())
+
+    def test_laboratory_labels_and_scoped_report_translation(self):
+        base = ROOT / "reli_lims/reli_lims/doctype"
+        for doctype, field, label in (
+            ("test_program", "items", "Test Items"),
+            ("test_program_item", "item_code", "Test Item Code"),
+            ("test_program_item_sample", "item_code", "Test Item Code"),
+        ):
+            meta = json.loads((base / doctype / f"{doctype}.json").read_text())
+            self.assertEqual(next(f["label"] for f in meta["fields"]
+                                  if f["fieldname"] == field), label)
+        with (ROOT / "reli_lims/translations/zh.csv").open() as stream:
+            rows = list(csv.reader(stream))
+        self.assertIn(["Issued", "已签发", "Test Report"], rows)
+        self.assertNotIn(["Issued", "已签发"], rows,
+                         "Do not change ERPNext's global Issued translation")
 
     def test_role_fixtures_are_packaged_and_selected(self):
         hooks = runpy.run_path(str(ROOT / "reli_lims/hooks.py"))

@@ -30,7 +30,7 @@
       "fieldname": "item_code",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Item Code",
+      "label": "Test Item Code",
       "reqd": 1
     },
     {
