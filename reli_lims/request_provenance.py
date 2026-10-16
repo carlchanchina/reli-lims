@@ -26,6 +26,8 @@ def validate_sample_source(sample, previous):
     if not previous and any(str(sample.get(key) or '') != str(source.get(key) or '')
                             for key in ('product_name', 'model', 'dimensions')):
         frappe.throw(_('New received samples must retain the declared product, model and dimensions.'))
+    if not previous and float(sample.get('weight_kg') or 0) != float(source.get('weight_kg') or 0):
+        frappe.throw(_('New received samples must retain the declared weight.'))
 
 
 def validate_program_source(program, previous):

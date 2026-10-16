@@ -39,3 +39,21 @@ test('receipt dialog loads outstanding samples rather than resetting received on
   assert.equal(opened.length,1);
   assert.equal(opened[0].sample_code,'S2');
 });
+test('selecting samples updates only the chosen test and deduplicates selections',()=>{
+  const ctx={frappe:{ui:{form:{on(){}}}},__:s=>s};
+  vm.runInNewContext(fs.readFileSync('reli_lims/reli_lims/doctype/test_request/test_request.js','utf8'),ctx);
+  const result=ctx.request_assignments_for_item(
+    [{}, {item_code:'LT',sample_code:'S1'},{item_code:'HT',sample_code:'S1'}], 'LT',['S2','S2']);
+  assert.equal(JSON.stringify(result),JSON.stringify([
+    {item_code:'HT',sample_code:'S1'},{item_code:'LT',sample_code:'S2'}]));
+});
+test('renaming a sample or test preserves its hidden relationships',()=>{
+ const ctx={frappe:{ui:{form:{on(){}}}},__:s=>s};
+ vm.runInNewContext(fs.readFileSync('reli_lims/reli_lims/doctype/test_request/test_request.js','utf8'),ctx);
+ const doc={sample_assignments:[{item_code:'LT',sample_code:'S1'}],photos:[{sample_code:'S1',photo:'private.png'}]};
+ ctx.request_rekey(doc,'sample_code','S1','SPECIMEN');
+ ctx.request_rekey(doc,'item_code','LT','COLD');
+ assert.equal(doc.sample_assignments[0].sample_code,'SPECIMEN');
+ assert.equal(doc.sample_assignments[0].item_code,'COLD');
+ assert.equal(doc.photos[0].sample_code,'SPECIMEN');
+});

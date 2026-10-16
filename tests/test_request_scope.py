@@ -78,3 +78,24 @@ class TestReceiptRetry(unittest.TestCase):
         stored = dict(values, quantity=1.0, status='Completed')
         self.assertTrue(same_receipt(stored, values))
         self.assertFalse(same_receipt(dict(stored, quantity=2), values))
+
+class TestTemplateRequirements(unittest.TestCase):
+    def test_selected_requirements_need_their_details(self):
+        for change in (dict(fixture_required='Yes'), dict(result_judgment='Required'),
+                       dict(payer_same_as_customer=0),dict(report_same_as_customer=0),
+                       dict(subcontract_consent='Accepted by default')):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                data = scope()
+                data.update(change)
+                validate_scope(data)
+
+    def test_weight_and_unspecified_consent(self):
+        data = scope()
+        data['samples'][0]['weight_kg'] = -1
+        with self.assertRaises(ValueError):
+            validate_scope(data)
+        data['samples'][0]['weight_kg'] = 1.25
+        validate_scope(data)
+        from reli_lims.request_scope import receipt_data
+        result = receipt_data(data['samples'][0],dict(quantity=2,received_date='2026-10-17',received_by='user'))
+        self.assertEqual(result['weight_kg'],1.25)

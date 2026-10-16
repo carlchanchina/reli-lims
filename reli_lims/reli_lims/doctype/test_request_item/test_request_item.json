@@ -5,7 +5,9 @@
     "item_code",
     "test_method",
     "standard",
-    "test_condition"
+    "test_condition",
+    "applicable_sample_codes",
+    "select_samples"
   ],
   "fields": [
     {
@@ -35,6 +37,18 @@
       "fieldname": "test_condition",
       "fieldtype": "Small Text",
       "label": "Test Condition"
+    },
+    {
+      "fieldname": "applicable_sample_codes",
+      "label": "Applicable Samples",
+      "fieldtype": "Small Text",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "select_samples",
+      "label": "Select Applicable Samples",
+      "fieldtype": "Button"
     }
   ],
   "istable": 1,

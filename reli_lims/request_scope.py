@@ -34,6 +34,8 @@ def validate_scope(data):
         if not str(row.get('product_name') or '').strip():
             raise ValueError('Every sample needs a product name.')
         positive_number(row.get('quantity'), 'Sample quantity')
+        if row.get('weight_kg') not in (None, '', 0):
+            positive_number(row['weight_kg'], 'Sample weight')
     for row in items:
         if not row.get('test_method') or not row.get('standard'):
             raise ValueError('Every test item needs a method and one standard.')
@@ -52,6 +54,20 @@ def validate_scope(data):
     for photo in data.get('photos') or []:
         if photo.get('sample_code') not in sample_codes or not photo.get('photo'):
             raise ValueError('Every photo needs a sample from this request and an image.')
+    for key in ('fixture_required', 'method_choice_consent', 'subcontract_consent'):
+        if data.get(key) not in (None, '', 'Yes', 'No'):
+            raise ValueError('Choose Yes or No explicitly for customer requirements.')
+    if data.get('fixture_required') == 'Yes' and data.get('fixture_provider') not in ('Customer', 'Laboratory'):
+        raise ValueError('Select who provides the fixture.')
+    if data.get('result_judgment') not in (None, '', 'Required', 'Not Required'):
+        raise ValueError('Select whether result judgment is required.')
+    if data.get('result_judgment') == 'Required' and not str(data.get('judgment_basis') or '').strip():
+        raise ValueError('Specify the judgment basis.')
+    if data.get('payer_same_as_customer') in (0, '0', False) and not data.get('payer_customer'):
+        raise ValueError('Select the invoice customer when different from the applicant.')
+    if data.get('report_same_as_customer') in (0, '0', False) and not all(
+            str(data.get(key) or '').strip() for key in ('report_company', 'report_address')):
+        raise ValueError('Enter the different report company and address.')
     copies = positive_number(data.get('report_copies'), 'Report copies')
     if not copies.is_integer():
         raise ValueError('Report copies must be a positive integer.')
@@ -76,7 +92,7 @@ def receipt_data(row, receipt):
     if quantity != float(row['quantity']) and not reason:
         raise ValueError('Explain the difference between requested and received quantities.')
     return dict(product_name=row['product_name'], model=row.get('model'),
-                dimensions=row.get('dimensions'), quantity=quantity,
+                dimensions=row.get('dimensions'), weight_kg=row.get('weight_kg') or 0, quantity=quantity,
                 received_date=received.isoformat(), received_by=receipt['received_by'],
                 condition=receipt.get('condition') or '', status='Received',
                 notes='\n'.join(x for x in (row.get('notes'), reason) if x))
@@ -101,4 +117,5 @@ def same_receipt(stored, values):
     """Workflow progress is not part of the original receiving facts."""
     return float(stored.get('quantity') or 0) == values['quantity'] and all(
         str(stored.get(key) or '') == str(value or '')
-        for key, value in values.items() if key not in ('quantity', 'status'))
+        for key, value in values.items() if key not in ('quantity', 'status', 'weight_kg')) and (
+        float(stored.get('weight_kg') or 0) == float(values.get('weight_kg') or 0))

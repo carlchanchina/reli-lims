@@ -30,3 +30,62 @@ Projects,项目,
 Tasks,任务,
 All requested samples have been received.,所有委托样品均已完成收样。,
 Confirmed testing request content is frozen.,已确认的检测委托内容不可修改。,
+Client Information,客户信息,
+Sample Information,样品信息,
+Test Information,试验项目,
+Request Details,委托基本信息,
+Applicant Details,委托方信息,
+Applicant,委托单位,Test Request
+Applicant Address,委托方地址,Test Request
+Contact Person,联系人,Test Request
+Contact Phone,联系电话,Test Request
+Contact Email,联系邮箱,Test Request
+Invoice and Report Headings,发票与报告抬头,
+Invoice Heading Same as Applicant,发票抬头同委托单位,
+Invoice Customer,发票抬头客户,
+Report Heading Same as Applicant,报告抬头同委托单位,
+Report Company,报告抬头单位,
+Report Address,报告抬头地址,
+Report Delivery Requirements,报告与交付要求,
+Report Format,报告形式,Test Request
+Electronic,电子档,Test Request
+Paper,纸质档,Test Request
+Electronic and Paper,电子档及纸质档,Test Request
+Test Purpose,检测目的,
+Customer Requirement,客户要求,Test Request
+Internal Use,内部使用,Test Request
+Declared Samples,委托样品资料,
+Product Name,产品名称,Test Request Sample
+Product Name,产品名称,Sample
+Weight (kg),重量（kg）,
+Sample Handling,样品处理,
+Sample Handling Preference,检后样品处理方式,
+Sample Handling Notes,样品处理补充说明,
+Return by Courier,检毕寄回,
+Self Pickup,自行取回,
+Retain 30 Days then Dispose,留样30天后销毁,
+Requested Tests,试验项目清单,
+Applicable Samples,适用样品,
+Select Applicable Samples,选择适用样品,
+Fixture and Test Requirements,夹具与试验要求,
+Fixture Required,是否需要夹具,
+Fixture Provider,夹具提供方,
+Laboratory,实验室,Test Request
+Test Sequence Notes,检测顺序说明,
+Attachments and Special Notes,附件及特殊说明,
+Explicit Customer Requirements,客户授权与判定要求,
+Accept Laboratory Method Selection,是否接受实验室选择检测方法,
+Accept Subcontract Testing,是否接受分包检测,
+Result Judgment,是否需要结果判定,
+Required,需要,Test Request
+Not Required,不需要,Test Request
+Judgment Basis,判定依据,
+Confirmation Records,确认记录,
+Customer Confirmation Record,客户确认记录,
+Engineering Review Record,工程确认记录,
+Enter the test item code first.,请先填写试验项目编号。,
+Add the requested samples first.,请先填写委托样品。,
+"Enter the product, model, dimensions and weight. Laboratory sample numbers are created on receipt.",填写产品名称、型号、尺寸和重量；实验室样品编号在实际收样后生成。,
+"Save the draft first, then attach private photos and select their sample code.",先保存草稿，再上传私有照片并选择所属样品编号。,
+Rows define the test sequence. Open a row and choose its applicable samples.,按行顺序安排检测，打开试验项目行即可选择适用样品。,
+Customer,委托方,Test Request

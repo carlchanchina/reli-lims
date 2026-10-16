@@ -21,7 +21,8 @@
     "notes",
     "test_request",
     "request_sample_row",
-    "dimensions"
+    "dimensions",
+    "weight_kg"
   ],
   "fields": [
     {
@@ -118,6 +119,12 @@
       "fieldname": "dimensions",
       "label": "Volume / Dimensions",
       "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "weight_kg",
+      "label": "Weight (kg)",
+      "fieldtype": "Float",
+      "precision": "3"
     }
   ],
   "grid_page_length": 50,

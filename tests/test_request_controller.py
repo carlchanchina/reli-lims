@@ -34,3 +34,23 @@ class TestConfirmedFreeze(unittest.TestCase):
         cls = load_controller()
         with self.assertRaises(Rejected):
             cls().before_update_after_submit()
+
+
+class TestInvoiceHeading(unittest.TestCase):
+    def test_same_applicant_ignores_stale_invoice_customer(self):
+        cls = load_controller()
+        namespace = cls.validate.__globals__
+        calls = []
+        namespace['frappe'].get_doc = lambda dt, name: SimpleNamespace(check_permission=lambda action: calls.append(name))
+        namespace['frappe'].db = SimpleNamespace(get_value=lambda *args: 'Current Customer')
+        namespace['validate_scope'] = lambda data: None
+        doc = cls()
+        values = dict(customer='CURRENT', company='LAB',payer_same_as_customer=1,
+                      payer_customer='REVOKED', report_same_as_customer=0, items=[])
+        doc.get = lambda key: values.get(key)
+        doc.as_dict = lambda: values
+        doc.get_doc_before_save = lambda: None
+        for key, value in values.items(): setattr(doc,key,value)
+        doc.validate()
+        self.assertNotIn('REVOKED',calls)
+        self.assertEqual(doc.payer_customer,'CURRENT')

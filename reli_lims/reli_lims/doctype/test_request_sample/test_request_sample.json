@@ -8,6 +8,7 @@
     "model",
     "quantity",
     "dimensions",
+    "weight_kg",
     "notes"
   ],
   "fields": [
@@ -53,6 +54,12 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "Notes"
+    },
+    {
+      "fieldname": "weight_kg",
+      "label": "Weight (kg)",
+      "fieldtype": "Float",
+      "precision": "3"
     }
   ],
   "istable": 1,

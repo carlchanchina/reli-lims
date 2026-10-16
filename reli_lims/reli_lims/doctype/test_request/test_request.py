@@ -20,6 +20,17 @@ class TestRequest(Document):
                 frappe.throw(_('Confirmation fields cannot be edited directly.'))
         for dt, name in (('Customer', self.customer), ('Company', self.company)):
             frappe.get_doc(dt, name).check_permission('read')
+        if self.get('payer_same_as_customer'):
+            self.payer_customer = self.customer
+        if self.get('payer_customer'):
+            frappe.get_doc('Customer', self.payer_customer).check_permission('read')
+        if self.get('report_same_as_customer'):
+            self.report_company = frappe.db.get_value('Customer', self.customer, 'customer_name')
+            self.report_address = self.get('applicant_address')
+        assignments = self.get('sample_assignments') or []
+        for row in self.items:
+            row.applicable_sample_codes = ', '.join(pair.sample_code for pair in assignments
+                                                    if pair.item_code == row.item_code)
         validate_photos(self)
 
     def before_submit(self):
