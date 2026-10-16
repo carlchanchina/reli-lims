@@ -14,3 +14,11 @@ Final local review: one confirmed empty-row guard defect reproduced, fixed with 
 Task 1 remains incomplete: test-site database authentication fails (1045) using existing configuration. No persistent browser demo records created.
 Task 2 remains incomplete: new role integration tests are prepared but unrun. They cover DocType-level permissions, not full document deletion/private-file access; those cases remain planned.
 Task 3 local corrections ready for review, not deployed or visually accepted. No main merge or deployment is implied by pushing this branch.
+
+## Launcher and current-account access correction
+
+Live diagnosis corrected the earlier site assumption: carl now also has reli_lims installed and Testing Center present. Missing add_to_apps_screen registration prevented an Apps tile, and the interactive account had System Manager but no laboratory role (Sample read false).
+User explicitly selected Lab Manager for the interactive account. Added only Lab Manager on carl; ERPNext role assignments unchanged. No database password or operational data changes.
+Added a packaged static SVG, app_home and add_to_apps_screen with visibility delegated to existing Sample read permission. Distribution regression observed missing entry RED, then 3/3 GREEN. Node suite 6/6 GREEN. Fresh code-reviewer found no actionable issues.
+Deployed launcher files and asset symlink to the already installed app. Runtime get_app_data returned on_apps_screen true and Sample read true for the approved account. Browser Apps tile clicked successfully into /desk/reli-lims/testing-center; all six shortcuts and module sidebar visible. Screenshot: /tmp/reli-lims-testing-center.png.
+This completes the navigation/access correction, not the full retained-demo or role-matrix acceptance. wekona-test database authentication issue remains unresolved; no tests run on carl's operational database.
