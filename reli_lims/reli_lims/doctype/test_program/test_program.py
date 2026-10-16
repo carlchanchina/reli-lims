@@ -5,6 +5,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import now_datetime
 
+from reli_lims.request_provenance import validate_program_source
 from reli_lims.validation import field_values, require_role, validate_transition
 
 
@@ -17,6 +18,7 @@ BASIS_FIELDS = ('item_code', 'test_method', 'standard', 'engineer', 'asset', 'wo
 class TestProgram(Document):
     def validate(self):
         previous = self.get_doc_before_save()
+        validate_program_source(self, previous)
         self.customer = frappe.db.get_value('Project', self.project, 'customer')
         if previous and frappe.db.exists('Test Report', {'test_program': self.name, 'status': ('in', ['Issued', 'Revised'])}):
             if field_values(self) != field_values(previous):

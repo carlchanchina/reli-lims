@@ -1,0 +1,164 @@
+{
+  "actions": [],
+  "autoname": "format:REQ-{#####}",
+  "doctype": "DocType",
+  "field_order": [
+    "title",
+    "customer",
+    "company",
+    "request_date",
+    "delivery_date",
+    "report_language",
+    "report_copies",
+    "report_requirements",
+    "samples",
+    "photos",
+    "items",
+    "sample_assignments",
+    "project",
+    "confirmed_by",
+    "confirmed_on",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Request Title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Customer",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company",
+      "reqd": 1
+    },
+    {
+      "default": "Today",
+      "fieldname": "request_date",
+      "fieldtype": "Date",
+      "label": "Request Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "delivery_date",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "Delivery Date",
+      "reqd": 1
+    },
+    {
+      "default": "Chinese",
+      "fieldname": "report_language",
+      "fieldtype": "Data",
+      "label": "Report Language"
+    },
+    {
+      "default": "1",
+      "fieldname": "report_copies",
+      "fieldtype": "Int",
+      "label": "Report Copies",
+      "reqd": 1
+    },
+    {
+      "fieldname": "report_requirements",
+      "fieldtype": "Small Text",
+      "label": "Report Requirements"
+    },
+    {
+      "fieldname": "samples",
+      "fieldtype": "Table",
+      "label": "Requested Samples",
+      "options": "Test Request Sample",
+      "reqd": 1
+    },
+    {
+      "fieldname": "photos",
+      "fieldtype": "Table",
+      "label": "Sample Photos",
+      "options": "Test Request Photo"
+    },
+    {
+      "fieldname": "items",
+      "fieldtype": "Table",
+      "label": "Test Items",
+      "options": "Test Request Item",
+      "reqd": 1
+    },
+    {
+      "fieldname": "sample_assignments",
+      "fieldtype": "Table",
+      "label": "Requested Sample Assignments",
+      "options": "Test Request Item Sample",
+      "reqd": 1
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project",
+      "read_only": 1
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "confirmed_by",
+      "fieldtype": "Link",
+      "label": "Confirmed By",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "confirmed_on",
+      "fieldtype": "Datetime",
+      "label": "Confirmed On",
+      "read_only": 1
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "is_submittable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Request",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "read": 1,
+      "role": "Lab Manager",
+      "submit": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "print": 1,
+      "read": 1,
+      "role": "Lab Engineer",
+      "write": 1
+    },
+    {
+      "print": 1,
+      "read": 1,
+      "role": "Lab Reviewer"
+    }
+  ],
+  "states": [],
+  "title_field": "title",
+  "track_changes": 1
+}

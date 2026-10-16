@@ -18,7 +18,10 @@
     "condition",
     "status",
     "storage_location",
-    "notes"
+    "notes",
+    "test_request",
+    "request_sample_row",
+    "dimensions"
   ],
   "fields": [
     {
@@ -95,6 +98,26 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "Notes"
+    },
+    {
+      "fieldname": "test_request",
+      "label": "Test Request",
+      "fieldtype": "Link",
+      "options": "Test Request",
+      "read_only": 1
+    },
+    {
+      "fieldname": "request_sample_row",
+      "label": "Request Sample Row",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "unique": 1,
+      "no_copy": 1
+    },
+    {
+      "fieldname": "dimensions",
+      "label": "Volume / Dimensions",
+      "fieldtype": "Small Text"
     }
   ],
   "grid_page_length": 50,

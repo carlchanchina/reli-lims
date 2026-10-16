@@ -20,7 +20,8 @@
     "status",
     "issued_date",
     "pdf_file",
-    "notes"
+    "notes",
+    "test_request"
   ],
   "fields": [
     {
@@ -109,6 +110,13 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "Notes"
+    },
+    {
+      "fieldname": "test_request",
+      "label": "Test Request",
+      "fieldtype": "Link",
+      "options": "Test Request",
+      "read_only": 1
     }
   ],
   "grid_page_length": 50,
