@@ -89,3 +89,6 @@ Add the requested samples first.,请先填写委托样品。,
 "Save the draft first, then attach private photos and select their sample code.",先保存草稿，再上传私有照片并选择所属样品编号。,
 Rows define the test sequence. Open a row and choose its applicable samples.,按行顺序安排检测，打开试验项目行即可选择适用样品。,
 Customer,委托方,Test Request
+Test Method,检测方法,Test Request Item
+Test Condition,测试条件及附加要求,Test Request Item
+Test Item Code,试验项目编号,Test Request Item
