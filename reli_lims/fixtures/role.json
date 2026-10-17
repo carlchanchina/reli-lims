@@ -30,5 +30,13 @@
     "desk_access": 0,
     "disabled": 0,
     "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "Laboratory Directory Reader",
+    "role_name": "Laboratory Directory Reader",
+    "desk_access": 0,
+    "disabled": 0,
+    "is_custom": 1
   }
 ]

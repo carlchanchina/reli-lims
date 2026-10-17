@@ -8,5 +8,5 @@ app_license = "MIT"
 required_apps = ["erpnext"]
 
 fixtures = [
-    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration"]]]}
+    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]}
 ]

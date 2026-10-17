@@ -22,6 +22,11 @@ def _require_reviewer():
         frappe.throw("Laboratory reviewer role required", frappe.PermissionError)
 
 
+def _require_directory_reader():
+    if frappe.session.user == "Guest" or "Laboratory Directory Reader" not in frappe.get_roles():
+        frappe.throw("Laboratory directory reader role required", frappe.PermissionError)
+
+
 def _seller_id(value):
     if not isinstance(value, str) or not re.fullmatch(r"sel_[A-Za-z0-9_]{1,96}", value):
         frappe.throw("Invalid Mercur seller ID")
@@ -151,7 +156,7 @@ def review_profile(seller_id, revision, approve, note=""):
 
 @frappe.whitelist(methods=["GET"])
 def list_published_profiles():
-    _require_integration()
+    _require_directory_reader()
     rows = frappe.get_all(
         DOCTYPE,
         filters={"published_revision": [">", 0]},
