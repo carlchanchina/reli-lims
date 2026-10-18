@@ -7,6 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class TestDistribution(unittest.TestCase):
+    def test_frappe_asset_discovery_markers_are_packaged(self):
+        # Frappe esbuild requires all three before registering public paths.
+        for name in ('hooks.py', 'modules.txt', 'patches.txt'):
+            self.assertTrue((ROOT / 'reli_lims' / name).is_file(),
+                            f'Frappe asset discovery requires {name}')
+
     def test_role_fixtures_are_packaged_and_selected(self):
         hooks = runpy.run_path(str(ROOT / "reli_lims/hooks.py"))
         self.assertIn("fixtures", hooks, "Roles are not installed with the app")
