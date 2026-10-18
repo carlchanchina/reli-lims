@@ -1,0 +1,60 @@
+{
+  "actions": [],
+  "doctype": "DocType",
+  "field_order": [
+    "item_code",
+    "test_method",
+    "standard",
+    "test_condition",
+    "applicable_sample_codes",
+    "select_samples"
+  ],
+  "fields": [
+    {
+      "fieldname": "item_code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Test Item Code",
+      "reqd": 1
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Test Method",
+      "options": "Test Method",
+      "reqd": 1
+    },
+    {
+      "fieldname": "standard",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Execution Standard",
+      "options": "Test Standard",
+      "reqd": 1
+    },
+    {
+      "fieldname": "test_condition",
+      "fieldtype": "Small Text",
+      "label": "Test Condition"
+    },
+    {
+      "fieldname": "applicable_sample_codes",
+      "label": "Applicable Samples",
+      "fieldtype": "Small Text",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "select_samples",
+      "label": "Select Applicable Samples",
+      "fieldtype": "Button"
+    }
+  ],
+  "istable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Request Item",
+  "permissions": [],
+  "states": []
+}

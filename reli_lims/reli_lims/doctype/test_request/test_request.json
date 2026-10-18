@@ -1,0 +1,449 @@
+{
+  "actions": [],
+  "autoname": "format:REQ-{#####}",
+  "doctype": "DocType",
+  "field_order": [
+    "client_tab",
+    "request_header",
+    "title",
+    "request_date",
+    "request_header_col",
+    "company",
+    "delivery_date",
+    "client_details",
+    "customer",
+    "applicant_address",
+    "client_contacts_col",
+    "contact_person",
+    "contact_phone",
+    "contact_email",
+    "report_header_section",
+    "payer_same_as_customer",
+    "payer_customer",
+    "report_header_col",
+    "report_same_as_customer",
+    "report_company",
+    "report_address",
+    "report_section",
+    "report_language",
+    "report_copies",
+    "report_format",
+    "report_requirements_col",
+    "test_purpose",
+    "report_requirements",
+    "sample_tab",
+    "sample_details_section",
+    "samples",
+    "sample_photos_section",
+    "photos",
+    "sample_return_section",
+    "sample_return",
+    "sample_handling_notes",
+    "test_tab",
+    "test_items_section",
+    "items",
+    "sample_assignments",
+    "test_requirements_section",
+    "fixture_required",
+    "fixture_provider",
+    "test_requirements_col",
+    "test_flow_notes",
+    "notes",
+    "decisions_section",
+    "method_choice_consent",
+    "subcontract_consent",
+    "decisions_col",
+    "result_judgment",
+    "judgment_basis",
+    "confirmation_section",
+    "customer_confirmation_notes",
+    "engineering_review_notes",
+    "confirmation_col",
+    "project",
+    "confirmed_by",
+    "confirmed_on"
+  ],
+  "fields": [
+    {
+      "fieldname": "client_tab",
+      "fieldtype": "Tab Break",
+      "label": "Client Information"
+    },
+    {
+      "fieldname": "request_header",
+      "fieldtype": "Section Break",
+      "label": "Request Details"
+    },
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Request Title",
+      "reqd": 1
+    },
+    {
+      "default": "Today",
+      "fieldname": "request_date",
+      "fieldtype": "Date",
+      "label": "Request Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "request_header_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company",
+      "reqd": 1
+    },
+    {
+      "fieldname": "delivery_date",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "Delivery Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "client_details",
+      "fieldtype": "Section Break",
+      "label": "Applicant Details"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Applicant",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "applicant_address",
+      "fieldtype": "Small Text",
+      "label": "Applicant Address"
+    },
+    {
+      "fieldname": "client_contacts_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "contact_person",
+      "fieldtype": "Data",
+      "label": "Contact Person"
+    },
+    {
+      "fieldname": "contact_phone",
+      "fieldtype": "Data",
+      "label": "Contact Phone",
+      "options": "Phone"
+    },
+    {
+      "fieldname": "contact_email",
+      "fieldtype": "Data",
+      "label": "Contact Email",
+      "options": "Email"
+    },
+    {
+      "fieldname": "report_header_section",
+      "fieldtype": "Section Break",
+      "label": "Invoice and Report Headings"
+    },
+    {
+      "fieldname": "payer_same_as_customer",
+      "fieldtype": "Check",
+      "label": "Invoice Heading Same as Applicant",
+      "default": "1"
+    },
+    {
+      "fieldname": "payer_customer",
+      "fieldtype": "Link",
+      "label": "Invoice Customer",
+      "options": "Customer",
+      "depends_on": "eval:!doc.payer_same_as_customer",
+      "mandatory_depends_on": "eval:!doc.payer_same_as_customer"
+    },
+    {
+      "fieldname": "report_header_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "report_same_as_customer",
+      "fieldtype": "Check",
+      "label": "Report Heading Same as Applicant",
+      "default": "1"
+    },
+    {
+      "fieldname": "report_company",
+      "fieldtype": "Data",
+      "label": "Report Company",
+      "depends_on": "eval:!doc.report_same_as_customer",
+      "mandatory_depends_on": "eval:!doc.report_same_as_customer"
+    },
+    {
+      "fieldname": "report_address",
+      "fieldtype": "Small Text",
+      "label": "Report Address",
+      "depends_on": "eval:!doc.report_same_as_customer",
+      "mandatory_depends_on": "eval:!doc.report_same_as_customer"
+    },
+    {
+      "fieldname": "report_section",
+      "fieldtype": "Section Break",
+      "label": "Report Delivery Requirements"
+    },
+    {
+      "default": "Chinese",
+      "fieldname": "report_language",
+      "fieldtype": "Data",
+      "label": "Report Language"
+    },
+    {
+      "default": "1",
+      "fieldname": "report_copies",
+      "fieldtype": "Int",
+      "label": "Report Copies",
+      "reqd": 1
+    },
+    {
+      "fieldname": "report_format",
+      "fieldtype": "Select",
+      "label": "Report Format",
+      "options": "\nElectronic\nPaper\nElectronic and Paper"
+    },
+    {
+      "fieldname": "report_requirements_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "test_purpose",
+      "fieldtype": "Select",
+      "label": "Test Purpose",
+      "options": "\nCustomer Requirement\nInternal Use\nOther"
+    },
+    {
+      "fieldname": "report_requirements",
+      "fieldtype": "Small Text",
+      "label": "Report Requirements"
+    },
+    {
+      "fieldname": "sample_tab",
+      "fieldtype": "Tab Break",
+      "label": "Sample Information"
+    },
+    {
+      "fieldname": "sample_details_section",
+      "fieldtype": "Section Break",
+      "label": "Declared Samples"
+    },
+    {
+      "fieldname": "samples",
+      "fieldtype": "Table",
+      "label": "Requested Samples",
+      "options": "Test Request Sample",
+      "reqd": 1,
+      "description": "Enter the product, model, dimensions and weight. Laboratory sample numbers are created on receipt."
+    },
+    {
+      "fieldname": "sample_photos_section",
+      "fieldtype": "Section Break",
+      "label": "Sample Photos"
+    },
+    {
+      "fieldname": "photos",
+      "fieldtype": "Table",
+      "label": "Sample Photos",
+      "options": "Test Request Photo",
+      "description": "Save the draft first, then attach private photos and select their sample code."
+    },
+    {
+      "fieldname": "sample_return_section",
+      "fieldtype": "Section Break",
+      "label": "Sample Handling"
+    },
+    {
+      "fieldname": "sample_return",
+      "fieldtype": "Select",
+      "label": "Sample Handling Preference",
+      "options": "\nReturn by Courier\nSelf Pickup\nRetain 30 Days then Dispose"
+    },
+    {
+      "fieldname": "sample_handling_notes",
+      "fieldtype": "Small Text",
+      "label": "Sample Handling Notes"
+    },
+    {
+      "fieldname": "test_tab",
+      "fieldtype": "Tab Break",
+      "label": "Test Information"
+    },
+    {
+      "fieldname": "test_items_section",
+      "fieldtype": "Section Break",
+      "label": "Requested Tests"
+    },
+    {
+      "fieldname": "items",
+      "fieldtype": "Table",
+      "label": "Requested Tests",
+      "options": "Test Request Item",
+      "reqd": 1,
+      "description": "Rows define the test sequence. Open a row and choose its applicable samples."
+    },
+    {
+      "fieldname": "sample_assignments",
+      "fieldtype": "Table",
+      "label": "Requested Sample Assignments",
+      "options": "Test Request Item Sample",
+      "reqd": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "test_requirements_section",
+      "fieldtype": "Section Break",
+      "label": "Fixture and Test Requirements"
+    },
+    {
+      "fieldname": "fixture_required",
+      "fieldtype": "Select",
+      "label": "Fixture Required",
+      "options": "\nYes\nNo"
+    },
+    {
+      "fieldname": "fixture_provider",
+      "fieldtype": "Select",
+      "label": "Fixture Provider",
+      "options": "\nCustomer\nLaboratory",
+      "depends_on": "eval:doc.fixture_required==\"Yes\"",
+      "mandatory_depends_on": "eval:doc.fixture_required==\"Yes\""
+    },
+    {
+      "fieldname": "test_requirements_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "test_flow_notes",
+      "fieldtype": "Small Text",
+      "label": "Test Sequence Notes"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Attachments and Special Notes"
+    },
+    {
+      "fieldname": "decisions_section",
+      "fieldtype": "Section Break",
+      "label": "Explicit Customer Requirements"
+    },
+    {
+      "fieldname": "method_choice_consent",
+      "fieldtype": "Select",
+      "label": "Accept Laboratory Method Selection",
+      "options": "\nYes\nNo"
+    },
+    {
+      "fieldname": "subcontract_consent",
+      "fieldtype": "Select",
+      "label": "Accept Subcontract Testing",
+      "options": "\nYes\nNo"
+    },
+    {
+      "fieldname": "decisions_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "fieldname": "result_judgment",
+      "fieldtype": "Select",
+      "label": "Result Judgment",
+      "options": "\nRequired\nNot Required"
+    },
+    {
+      "fieldname": "judgment_basis",
+      "fieldtype": "Small Text",
+      "label": "Judgment Basis",
+      "depends_on": "eval:doc.result_judgment==\"Required\"",
+      "mandatory_depends_on": "eval:doc.result_judgment==\"Required\""
+    },
+    {
+      "fieldname": "confirmation_section",
+      "fieldtype": "Section Break",
+      "label": "Confirmation Records"
+    },
+    {
+      "fieldname": "customer_confirmation_notes",
+      "fieldtype": "Small Text",
+      "label": "Customer Confirmation Record"
+    },
+    {
+      "fieldname": "engineering_review_notes",
+      "fieldtype": "Small Text",
+      "label": "Engineering Review Record"
+    },
+    {
+      "fieldname": "confirmation_col",
+      "fieldtype": "Column Break",
+      "label": null
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project",
+      "read_only": 1
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "confirmed_by",
+      "fieldtype": "Link",
+      "label": "Confirmed By",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "allow_on_submit": 1,
+      "fieldname": "confirmed_on",
+      "fieldtype": "Datetime",
+      "label": "Confirmed On",
+      "read_only": 1
+    }
+  ],
+  "is_submittable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Request",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "read": 1,
+      "role": "Lab Manager",
+      "submit": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "print": 1,
+      "read": 1,
+      "role": "Lab Engineer",
+      "write": 1
+    },
+    {
+      "print": 1,
+      "read": 1,
+      "role": "Lab Reviewer"
+    }
+  ],
+  "states": [],
+  "title_field": "title",
+  "track_changes": 1
+}
