@@ -11,12 +11,14 @@ class TestDistribution(unittest.TestCase):
         hooks = runpy.run_path(str(ROOT / "reli_lims/hooks.py"))
         self.assertIn("fixtures", hooks, "Roles are not installed with the app")
         roles = json.loads((ROOT / "reli_lims/fixtures/role.json").read_text())
-        self.assertEqual({r["role_name"] for r in roles},
-                         {"Lab Manager", "Lab Engineer", "Lab Reviewer"})
-        self.assertTrue(all(r["doctype"] == "Role" and r["desk_access"] == 1 for r in roles))
+        desk_roles = {"Lab Manager", "Lab Engineer", "Lab Reviewer"}
+        integration_roles = {"Mercur Integration", "Laboratory Directory Reader"}
+        expected_roles = desk_roles | integration_roles
+        self.assertEqual({r["role_name"] for r in roles}, expected_roles)
+        self.assertTrue(all(r["doctype"] == "Role" for r in roles))
+        self.assertTrue(all(r["desk_access"] == int(r["role_name"] in desk_roles) for r in roles))
         self.assertEqual(hooks["fixtures"][0]["filters"][0][0:2], ["name", "in"])
-        self.assertEqual(set(hooks["fixtures"][0]["filters"][0][2]),
-                         {"Lab Manager", "Lab Engineer", "Lab Reviewer"})
+        self.assertEqual(set(hooks["fixtures"][0]["filters"][0][2]), expected_roles)
 
     def test_workspace_only_links_to_available_erpnext_doctypes(self):
         path = ROOT / "reli_lims/reli_lims/workspace/testing_center/testing_center.json"

@@ -1,0 +1,27 @@
+{
+  "doctype": "DocType",
+  "name": "Laboratory Profile",
+  "module": "Reli LIMS",
+  "autoname": "field:mercur_seller_id",
+  "title_field": "laboratory_name",
+  "track_changes": 1,
+  "field_order": ["mercur_seller_id", "laboratory_name", "review_status", "draft_json", "published_json", "draft_revision", "published_revision", "submitted_at", "reviewed_at", "reviewed_by", "review_note"],
+  "fields": [
+    {"fieldname": "mercur_seller_id", "label": "Mercur Seller ID", "fieldtype": "Data", "reqd": 1, "unique": 1, "read_only": 1, "in_list_view": 1},
+    {"fieldname": "laboratory_name", "label": "Laboratory Name", "fieldtype": "Data", "read_only": 1, "in_list_view": 1},
+    {"fieldname": "review_status", "label": "Review Status", "fieldtype": "Select", "options": "Draft\nPending\nApproved\nRejected", "default": "Draft", "read_only": 1, "in_list_view": 1},
+    {"fieldname": "draft_json", "label": "Submitted Profile", "fieldtype": "JSON", "read_only": 1},
+    {"fieldname": "published_json", "label": "Published Profile", "fieldtype": "JSON", "read_only": 1},
+    {"fieldname": "draft_revision", "label": "Draft Revision", "fieldtype": "Int", "read_only": 1},
+    {"fieldname": "published_revision", "label": "Published Revision", "fieldtype": "Int", "read_only": 1},
+    {"fieldname": "submitted_at", "label": "Submitted At", "fieldtype": "Datetime", "read_only": 1},
+    {"fieldname": "reviewed_at", "label": "Reviewed At", "fieldtype": "Datetime", "read_only": 1},
+    {"fieldname": "reviewed_by", "label": "Reviewed By", "fieldtype": "Link", "options": "User", "read_only": 1},
+    {"fieldname": "review_note", "label": "Review Note", "fieldtype": "Small Text", "read_only": 1}
+  ],
+  "permissions": [
+    {"role": "Lab Manager", "read": 1, "report": 1},
+    {"role": "Lab Reviewer", "read": 1, "report": 1},
+    {"role": "System Manager", "read": 1, "report": 1}
+  ]
+}
