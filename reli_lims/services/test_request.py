@@ -1,6 +1,7 @@
 """Explicit, transactional conversion of a confirmed laboratory request."""
 import frappe
 from frappe import _
+from reli_lims.i18n import scope_error_message
 
 from reli_lims.request_scope import program_data, receipt_data, same_receipt
 from reli_lims.services.request_files import copy_sample_photos
@@ -48,7 +49,7 @@ def receive_samples(request_name, receipts):
         try:
             values = receipt_data(row.as_dict(), receipt)
         except ValueError as exc:
-            frappe.throw(str(exc))
+            frappe.throw(scope_error_message(exc))
         frappe.get_doc('User', values['received_by']).check_permission('read')
         existing = frappe.db.get_value('Sample', {'request_sample_row': row.name}, 'name')
         if existing:
@@ -89,7 +90,7 @@ def make_test_program(request_name):
     try:
         values = program_data(request.as_dict(), names)
     except ValueError as exc:
-        frappe.throw(str(exc))
+        frappe.throw(scope_error_message(exc))
     return frappe.get_doc(values).insert().name
 
 

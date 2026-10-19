@@ -24,55 +24,55 @@
   "links": [],
   "shortcuts": [
     {
-      "label": "Samples",
+      "label": "样品台账",
       "type": "DocType",
       "link_to": "Sample",
       "color": "Grey"
     },
     {
-      "label": "Test Programs",
+      "label": "检测方案",
       "type": "DocType",
       "link_to": "Test Program",
       "color": "Grey"
     },
     {
-      "label": "Standards",
+      "label": "标准版本库",
       "type": "DocType",
       "link_to": "Test Standard",
       "color": "Grey"
     },
     {
-      "label": "Methods",
+      "label": "检测方法库",
       "type": "DocType",
       "link_to": "Test Method",
       "color": "Grey"
     },
     {
-      "label": "Test Reports",
+      "label": "检测报告",
       "type": "DocType",
       "link_to": "Test Report",
       "color": "Grey"
     },
     {
-      "label": "Assets",
+      "label": "设备台账",
       "type": "DocType",
       "link_to": "Asset",
       "color": "Grey"
     },
     {
-      "label": "Test Requests",
+      "label": "委托受理",
       "type": "DocType",
       "link_to": "Test Request",
       "color": "Grey"
     },
     {
-      "label": "Projects",
+      "label": "项目跟进",
       "type": "DocType",
       "link_to": "Project",
       "color": "Grey"
     },
     {
-      "label": "Tasks",
+      "label": "协作任务",
       "type": "DocType",
       "link_to": "Task",
       "color": "Grey"
@@ -82,5 +82,5 @@
   "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 4}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Programs\", \"col\": 4}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 4}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 4}}, {\"id\": \"shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Reports\", \"col\": 4}}, {\"id\": \"shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 4}}, {\"id\": \"shortcut-test-request\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Requests\", \"col\": 4}}, {\"id\": \"shortcut-project\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Projects\", \"col\": 4}}, {\"id\": \"shortcut-task\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tasks\", \"col\": 4}}]"
+  "content": "[{\"id\": \"testing-group-0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">业务受理</span>\", \"col\": 12}}, {\"id\": \"testing-test-requests\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"委托受理\", \"col\": 4}}, {\"id\": \"testing-projects\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"项目跟进\", \"col\": 4}}, {\"id\": \"testing-group-1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测执行</span>\", \"col\": 12}}, {\"id\": \"testing-samples\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"样品台账\", \"col\": 4}}, {\"id\": \"testing-test-programs\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测方案\", \"col\": 4}}, {\"id\": \"testing-test-reports\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"testing-tasks\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"协作任务\", \"col\": 4}}, {\"id\": \"testing-group-2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">基础资料</span>\", \"col\": 12}}, {\"id\": \"testing-standards\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"标准版本库\", \"col\": 4}}, {\"id\": \"testing-methods\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测方法库\", \"col\": 4}}, {\"id\": \"testing-assets\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"设备台账\", \"col\": 4}}]"
 }
