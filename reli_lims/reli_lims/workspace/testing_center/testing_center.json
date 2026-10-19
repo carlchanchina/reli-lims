@@ -58,11 +58,29 @@
       "type": "DocType",
       "link_to": "Asset",
       "color": "Grey"
+    },
+    {
+      "label": "Test Requests",
+      "type": "DocType",
+      "link_to": "Test Request",
+      "color": "Grey"
+    },
+    {
+      "label": "Projects",
+      "type": "DocType",
+      "link_to": "Project",
+      "color": "Grey"
+    },
+    {
+      "label": "Tasks",
+      "type": "DocType",
+      "link_to": "Task",
+      "color": "Grey"
     }
   ],
   "charts": [],
   "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 4}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Programs\", \"col\": 4}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 4}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 4}}, {\"id\": \"shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Reports\", \"col\": 4}}, {\"id\": \"shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 4}}]"
+  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 4}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Programs\", \"col\": 4}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 4}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 4}}, {\"id\": \"shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Reports\", \"col\": 4}}, {\"id\": \"shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 4}}, {\"id\": \"shortcut-test-request\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Requests\", \"col\": 4}}, {\"id\": \"shortcut-project\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Projects\", \"col\": 4}}, {\"id\": \"shortcut-task\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tasks\", \"col\": 4}}]"
 }

@@ -15,6 +15,10 @@ class TestReport(Document):
         previous = self.get_doc_before_save()
         validate_transition(previous.status if previous else 'Draft', self.status, TRANSITIONS)
         program = frappe.get_doc('Test Program', self.test_program)
+        source = program.get('test_request')
+        if self.test_request and self.test_request != source:
+            frappe.throw(_('The report request must match its Test Program.'))
+        self.test_request = source
         if self.project != program.project:
             frappe.throw(_('Report and program must belong to the same Project.'))
         self.customer = frappe.db.get_value('Project', self.project, 'customer')

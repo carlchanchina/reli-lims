@@ -8,5 +8,18 @@ app_license = "MIT"
 required_apps = ["erpnext"]
 
 fixtures = [
-    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer"]]]}
+    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]}
+]
+
+app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
+app_home = "/desk/reli-lims/testing-center"
+
+add_to_apps_screen = [
+    {
+        "name": app_name,
+        "title": app_title,
+        "logo": app_logo_url,
+        "route": app_home,
+        "has_permission": "reli_lims.permissions.has_app_permission",
+    }
 ]

@@ -1,0 +1,36 @@
+{
+  "actions": [],
+  "doctype": "DocType",
+  "field_order": [
+    "sample_code",
+    "photo",
+    "caption"
+  ],
+  "fields": [
+    {
+      "fieldname": "sample_code",
+      "fieldtype": "Autocomplete",
+      "in_list_view": 1,
+      "label": "Request Sample Code",
+      "reqd": 1
+    },
+    {
+      "fieldname": "photo",
+      "fieldtype": "Attach Image",
+      "in_list_view": 1,
+      "label": "Sample Photo",
+      "reqd": 1
+    },
+    {
+      "fieldname": "caption",
+      "fieldtype": "Data",
+      "label": "Photo Caption"
+    }
+  ],
+  "istable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Request Photo",
+  "permissions": [],
+  "states": []
+}

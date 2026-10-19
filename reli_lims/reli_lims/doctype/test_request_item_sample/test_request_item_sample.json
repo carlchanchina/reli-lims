@@ -1,0 +1,30 @@
+{
+  "actions": [],
+  "doctype": "DocType",
+  "field_order": [
+    "item_code",
+    "sample_code"
+  ],
+  "fields": [
+    {
+      "fieldname": "item_code",
+      "fieldtype": "Autocomplete",
+      "in_list_view": 1,
+      "label": "Test Item Code",
+      "reqd": 1
+    },
+    {
+      "fieldname": "sample_code",
+      "fieldtype": "Autocomplete",
+      "in_list_view": 1,
+      "label": "Request Sample Code",
+      "reqd": 1
+    }
+  ],
+  "istable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Request Item Sample",
+  "permissions": [],
+  "states": []
+}
