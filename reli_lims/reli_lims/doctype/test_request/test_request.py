@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from reli_lims.i18n import scope_error_message
 from frappe.model.document import Document
 from frappe.utils import now_datetime
 
@@ -13,7 +14,7 @@ class TestRequest(Document):
         try:
             validate_scope(self.as_dict())
         except ValueError as exc:
-            frappe.throw(str(exc))
+            frappe.throw(scope_error_message(exc))
         previous = self.get_doc_before_save()
         for key in ('project', 'confirmed_by', 'confirmed_on'):
             if str(self.get(key) or '') != str((previous.get(key) if previous else None) or ''):
