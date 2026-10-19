@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1] / 'reli_lims'
 
 def translations():
     with (ROOT / 'translations/zh.csv').open() as stream:
-        return {row[0]: row[1] for row in csv.reader(stream) if row and len(row) >= 2 and row[1]}
+        return {row[0]: row[1] for row in csv.reader(stream) if row and len(row) >= 2 and row[1] and (len(row) < 3 or not row[2])}
 
 
 def test_all_owned_doctype_labels_and_select_options_have_chinese():
