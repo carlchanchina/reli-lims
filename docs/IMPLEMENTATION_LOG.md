@@ -103,3 +103,11 @@ Production deployment — 2026-10-23 (Asia/Shanghai):
 - Overdue Number Card uses live current-date filters. The persisted Kanban overdue marker refreshes on business events and through the configured Frappe daily hook; no independent scheduler/automation was introduced. Existing production Frappe scheduler daemon was not active during inspection, so unattended daily marker refresh depends on restoring the site's normal scheduler operations; the live overdue count remains accurate.
 - Authenticated visual inspection remains pending the user's normal browser login. No bypass of rejected temporary administrator-session creation.
 
+
+## 2026-10-23 登录后视觉验收与卡片显示修复
+
+User confirmed normal login. Existing IAB production session used; no session token created. Native eight-stage Kanban rendered and showed the existing draft walkthrough request with customer, sample, test, due date and overdue marker. New request form showed the four intended Chinese sections; no production document saved or submitted during UI checks.
+
+Visual inspection found Number Cards absent despite successful server query smoke. Root cause confirmed in deployed Frappe `views/workspace/blocks/block.js`: `make()` resolves each content block by the Workspace row display `label`, whereas content `number_card_name` incorrectly contained the underlying Number Card document ID. Corrected only six block references to display labels; underlying card names/queries unchanged. Distribution regression observed RED for all six mismatches, then GREEN. Independent reviewer approved the minimal fix. Local unittest 6/6 and Node 3/3 passed; development pytest 10/10 passed. This extends smoke coverage to the actual frontend label contract, beyond the prior server-only checks.
+
+Final production visual confirmation of six rendered cards: pending rollout below.

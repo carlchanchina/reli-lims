@@ -34,6 +34,9 @@ class TestDistribution(unittest.TestCase):
         self.assertTrue({'Sample', 'Project', 'Task', 'Asset', 'Customer', 'Test Report'} <=
                         {link.get('link_to') for link in workspace['links']})
         blocks = json.loads(workspace["content"])
+        card_labels = {row['label'] for row in workspace['number_cards']}
+        self.assertEqual({b['data']['number_card_name'] for b in blocks if b['type'] == 'number_card'}, card_labels,
+                         'Frappe workspace blocks resolve Number Cards by the row display label')
         names = {s["label"] for s in workspace["shortcuts"]}
         self.assertTrue(all(b["data"]["shortcut_name"] in names
                             for b in blocks if b["type"] == "shortcut"))
