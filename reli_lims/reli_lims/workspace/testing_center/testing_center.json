@@ -1,8 +1,8 @@
 {
   "doctype": "Workspace",
   "name": "Testing Center",
-  "label": "Testing Center",
-  "title": "Testing Center",
+  "label": "检测工作台",
+  "title": "检测工作台",
   "module": "Reli LIMS",
   "icon": "lab",
   "public": 1,
@@ -21,66 +21,121 @@
       "role": "Lab Reviewer"
     }
   ],
-  "links": [],
+  "links": [
+    {
+      "type": "Card Break",
+      "label": "项目与基础资料"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Sample",
+      "label": "样品列表"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Project",
+      "label": "项目"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Task",
+      "label": "任务"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Asset",
+      "label": "设备"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Customer",
+      "label": "客户"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Report",
+      "label": "历史报告"
+    }
+  ],
   "shortcuts": [
     {
-      "label": "Samples",
-      "type": "DocType",
-      "link_to": "Sample",
-      "color": "Grey"
-    },
-    {
-      "label": "Test Programs",
-      "type": "DocType",
-      "link_to": "Test Program",
-      "color": "Grey"
-    },
-    {
-      "label": "Standards",
-      "type": "DocType",
-      "link_to": "Test Standard",
-      "color": "Grey"
-    },
-    {
-      "label": "Methods",
-      "type": "DocType",
-      "link_to": "Test Method",
-      "color": "Grey"
-    },
-    {
-      "label": "Test Reports",
-      "type": "DocType",
-      "link_to": "Test Report",
-      "color": "Grey"
-    },
-    {
-      "label": "Assets",
-      "type": "DocType",
-      "link_to": "Asset",
-      "color": "Grey"
-    },
-    {
-      "label": "Test Requests",
+      "label": "新建检测委托",
       "type": "DocType",
       "link_to": "Test Request",
+      "doc_view": "New",
       "color": "Grey"
     },
     {
-      "label": "Projects",
+      "label": "收样",
       "type": "DocType",
-      "link_to": "Project",
+      "link_to": "Test Request",
+      "doc_view": "List",
+      "color": "Grey",
+      "stats_filter": "{\"docstatus\": 1, \"business_stage\": \"待收样\"}"
+    },
+    {
+      "label": "试验方案",
+      "type": "DocType",
+      "link_to": "Test Program",
+      "doc_view": "List",
       "color": "Grey"
     },
     {
-      "label": "Tasks",
+      "label": "检测报告",
       "type": "DocType",
-      "link_to": "Task",
+      "link_to": "Test Report",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "检测项目",
+      "type": "DocType",
+      "link_to": "Test Method",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "检测标准",
+      "type": "DocType",
+      "link_to": "Test Standard",
+      "doc_view": "List",
       "color": "Grey"
     }
   ],
   "charts": [],
-  "number_cards": [],
+  "number_cards": [
+    {
+      "number_card_name": "Reli LIMS 待确认委托",
+      "label": "待确认委托"
+    },
+    {
+      "number_card_name": "Reli LIMS 待收样",
+      "label": "待收样"
+    },
+    {
+      "number_card_name": "Reli LIMS 试验中",
+      "label": "试验中"
+    },
+    {
+      "number_card_name": "Reli LIMS 待报告",
+      "label": "待报告"
+    },
+    {
+      "number_card_name": "Reli LIMS 报告待审核",
+      "label": "报告待审核"
+    },
+    {
+      "number_card_name": "Reli LIMS 超期",
+      "label": "超期"
+    }
+  ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"testing-header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Testing Center</span>\", \"col\": 12}}, {\"id\": \"shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Samples\", \"col\": 4}}, {\"id\": \"shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Programs\", \"col\": 4}}, {\"id\": \"shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Standards\", \"col\": 4}}, {\"id\": \"shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Methods\", \"col\": 4}}, {\"id\": \"shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Reports\", \"col\": 4}}, {\"id\": \"shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 4}}, {\"id\": \"shortcut-test-request\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Test Requests\", \"col\": 4}}, {\"id\": \"shortcut-project\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Projects\", \"col\": 4}}, {\"id\": \"shortcut-task\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tasks\", \"col\": 4}}]"
+  "content": "[{\"id\": \"v1-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测工作台</span>\", \"col\": 12}}, {\"id\": \"v1-card-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 待确认委托\", \"col\": 4}}, {\"id\": \"v1-card-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 待收样\", \"col\": 4}}, {\"id\": \"v1-card-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 试验中\", \"col\": 4}}, {\"id\": \"v1-card-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 待报告\", \"col\": 4}}, {\"id\": \"v1-card-4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 报告待审核\", \"col\": 4}}, {\"id\": \"v1-card-5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Reli LIMS 超期\", \"col\": 4}}, {\"id\": \"v1-flow\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">主流程看板</span>\", \"col\": 12}}, {\"id\": \"v1-kanban\", \"type\": \"paragraph\", \"data\": {\"text\": \"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a><br>待确认 → 待收样 → 已收样 → 待试验 → 试验中 → 待报告 → 报告审核 → 已完成\", \"col\": 12}}, {\"id\": \"v1-shortcut-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"v1-shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"新建检测委托\", \"col\": 4}}, {\"id\": \"v1-shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"收样\", \"col\": 4}}, {\"id\": \"v1-shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验方案\", \"col\": 4}}, {\"id\": \"v1-shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"v1-shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测项目\", \"col\": 4}}, {\"id\": \"v1-shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测标准\", \"col\": 4}}, {\"id\": \"v1-reference\", \"type\": \"card\", \"data\": {\"card_name\": \"项目与基础资料\", \"col\": 12}}]"
 }

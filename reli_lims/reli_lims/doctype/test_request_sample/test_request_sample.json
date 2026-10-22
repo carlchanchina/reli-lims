@@ -6,6 +6,7 @@
     "customer_sample_code",
     "product_name",
     "model",
+    "serial_no",
     "quantity",
     "dimensions",
     "weight_kg",
@@ -16,50 +17,56 @@
       "fieldname": "sample_code",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Request Sample Code",
-      "reqd": 1
+      "label": "委托样品编号",
+      "reqd": 1,
+      "hidden": 1
     },
     {
       "fieldname": "customer_sample_code",
       "fieldtype": "Data",
-      "label": "Customer Sample Code"
+      "label": "客户样品编号"
     },
     {
       "fieldname": "product_name",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Product Name",
+      "label": "产品名称",
       "reqd": 1
     },
     {
       "fieldname": "model",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Model"
+      "label": "型号"
     },
     {
       "default": "1",
       "fieldname": "quantity",
       "fieldtype": "Float",
       "in_list_view": 1,
-      "label": "Requested Quantity",
+      "label": "委托数量",
       "reqd": 1
     },
     {
       "fieldname": "dimensions",
       "fieldtype": "Small Text",
-      "label": "Volume / Dimensions"
+      "label": "体积／外形尺寸"
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
     },
     {
       "fieldname": "weight_kg",
-      "label": "Weight (kg)",
+      "label": "重量（kg）",
       "fieldtype": "Float",
       "precision": "3"
+    },
+    {
+      "fieldname": "serial_no",
+      "fieldtype": "Data",
+      "label": "序列号"
     }
   ],
   "istable": 1,

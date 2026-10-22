@@ -25,77 +25,78 @@
       "fieldname": "project",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Project",
+      "label": "项目",
       "options": "Project",
       "reqd": 1
     },
     {
       "fieldname": "customer",
       "fieldtype": "Link",
-      "label": "Customer",
+      "label": "客户",
       "options": "Customer",
       "read_only": 1
     },
     {
       "fieldname": "title",
       "fieldtype": "Data",
-      "label": "Title"
+      "label": "方案名称"
     },
     {
       "fieldname": "responsible_engineer",
       "fieldtype": "Link",
-      "label": "Responsible Engineer",
+      "label": "负责工程师",
       "options": "User"
     },
     {
       "fieldname": "planned_start",
       "fieldtype": "Date",
-      "label": "Planned Start"
+      "label": "计划开始时间"
     },
     {
       "fieldname": "planned_end",
       "fieldtype": "Date",
-      "label": "Planned End"
+      "label": "计划结束时间"
     },
     {
       "default": "Draft",
       "fieldname": "status",
       "fieldtype": "Select",
       "in_list_view": 1,
-      "label": "Status",
+      "label": "状态",
       "options": "Draft\nApproved\nRunning\nCompleted\nCancelled",
       "reqd": 1
     },
     {
       "fieldname": "samples",
       "fieldtype": "Table",
-      "label": "Samples",
+      "label": "样品",
       "options": "Test Program Sample",
       "reqd": 1
     },
     {
       "fieldname": "items",
       "fieldtype": "Table",
-      "label": "Test Items",
+      "label": "检测项目",
       "options": "Test Program Item",
       "reqd": 1
     },
     {
-      "description": "One row per item/sample pair. Each item must have at least one sample.",
+      "description": "每行关联一个检测项目和一个样品；每个检测项目至少关联一个样品。",
       "fieldname": "sample_assignments",
       "fieldtype": "Table",
-      "label": "Sample Assignments",
+      "label": "项目适用样品",
       "options": "Test Program Item Sample",
-      "reqd": 1
+      "reqd": 1,
+      "hidden": 1
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
     },
     {
       "fieldname": "test_request",
-      "label": "Test Request",
+      "label": "检测委托单",
       "fieldtype": "Link",
       "options": "Test Request",
       "read_only": 1,

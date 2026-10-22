@@ -68,9 +68,10 @@ def validate_scope(data):
     if data.get('report_same_as_customer') in (0, '0', False) and not all(
             str(data.get(key) or '').strip() for key in ('report_company', 'report_address')):
         raise ValueError('Enter the different report company and address.')
-    copies = positive_number(data.get('report_copies'), 'Report copies')
-    if not copies.is_integer():
-        raise ValueError('Report copies must be a positive integer.')
+    if data.get('report_copies') not in (None, ''):
+        copies = positive_number(data['report_copies'], 'Report copies')
+        if not copies.is_integer():
+            raise ValueError('Report copies must be a positive integer.')
     try:
         start = date.fromisoformat(str(data.get('request_date')))
         end = date.fromisoformat(str(data.get('delivery_date')))
@@ -91,7 +92,7 @@ def receipt_data(row, receipt):
     reason = str(receipt.get('difference_reason') or '').strip()
     if quantity != float(row['quantity']) and not reason:
         raise ValueError('Explain the difference between requested and received quantities.')
-    return dict(product_name=row['product_name'], model=row.get('model'),
+    return dict(product_name=row['product_name'], model=row.get('model'), serial_no=row.get('serial_no'),
                 dimensions=row.get('dimensions'), weight_kg=row.get('weight_kg') or 0, quantity=quantity,
                 received_date=received.isoformat(), received_by=receipt['received_by'],
                 condition=receipt.get('condition') or '', status='Received',
@@ -104,6 +105,7 @@ def program_data(request, sample_names):
         raise ValueError('Receive these samples first: ' + ', '.join(missing))
     return dict(doctype='Test Program', project=request['project'], test_request=request['name'],
                 title=request['title'], status='Draft', planned_end=request['delivery_date'],
+                responsible_engineer=request.get('responsible_engineer'),
                 samples=[dict(sample=sample_names[r['sample_code']], sample_label=r['sample_code'])
                          for r in request['samples']],
                 items=[dict(item_code=r['item_code'], test_method=r['test_method'],

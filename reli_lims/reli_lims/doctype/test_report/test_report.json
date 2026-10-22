@@ -28,7 +28,7 @@
       "fieldname": "project",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Project",
+      "label": "项目",
       "options": "Project",
       "reqd": 1
     },
@@ -36,84 +36,87 @@
       "fieldname": "test_program",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Test Program",
+      "label": "试验方案",
       "options": "Test Program",
       "reqd": 1
     },
     {
       "fieldname": "customer",
       "fieldtype": "Link",
-      "label": "Customer",
+      "label": "客户",
       "options": "Customer",
       "read_only": 1
     },
     {
       "fieldname": "engineer",
       "fieldtype": "Link",
-      "label": "Engineer",
+      "label": "编制人",
       "options": "User"
     },
     {
       "fieldname": "reviewer",
       "fieldtype": "Link",
-      "label": "Reviewer",
+      "label": "审核人",
       "options": "User"
     },
     {
       "fieldname": "approver",
       "fieldtype": "Link",
-      "label": "Approver",
-      "options": "User"
+      "label": "批准人",
+      "options": "User",
+      "hidden": 1
     },
     {
       "fieldname": "test_start",
       "fieldtype": "Date",
-      "label": "Test Start"
+      "label": "检测开始时间",
+      "hidden": 1
     },
     {
       "fieldname": "test_end",
       "fieldtype": "Date",
-      "label": "Test End"
+      "label": "检测结束时间",
+      "hidden": 1
     },
     {
       "fieldname": "overall_conclusion",
       "fieldtype": "Data",
-      "label": "Overall Conclusion"
+      "label": "总体结论"
     },
     {
       "default": "V1.0",
       "fieldname": "version",
       "fieldtype": "Data",
-      "label": "Version"
+      "label": "报告版本"
     },
     {
       "default": "Draft",
       "fieldname": "status",
       "fieldtype": "Select",
       "in_list_view": 1,
-      "label": "Status",
-      "options": "Draft\nEngineering Complete\nReview\nApproved\nIssued\nRevised",
+      "label": "状态",
+      "options": "Draft\nReview\nApproved\nIssued",
       "reqd": 1
     },
     {
       "fieldname": "issued_date",
       "fieldtype": "Date",
-      "label": "Issued Date",
+      "label": "签发日期",
       "read_only": 1
     },
     {
       "fieldname": "pdf_file",
       "fieldtype": "Attach",
-      "label": "Pdf File"
+      "label": "最终报告文件"
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
     },
     {
       "fieldname": "test_request",
-      "label": "Test Request",
+      "label": "检测委托单",
       "fieldtype": "Link",
       "options": "Test Request",
       "read_only": 1

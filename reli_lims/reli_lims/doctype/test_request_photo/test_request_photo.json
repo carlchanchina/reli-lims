@@ -11,20 +11,20 @@
       "fieldname": "sample_code",
       "fieldtype": "Autocomplete",
       "in_list_view": 1,
-      "label": "Request Sample Code",
+      "label": "委托样品编号",
       "reqd": 1
     },
     {
       "fieldname": "photo",
       "fieldtype": "Attach Image",
       "in_list_view": 1,
-      "label": "Sample Photo",
+      "label": "样品照片",
       "reqd": 1
     },
     {
       "fieldname": "caption",
       "fieldtype": "Data",
-      "label": "Photo Caption"
+      "label": "照片说明"
     }
   ],
   "istable": 1,

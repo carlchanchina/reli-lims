@@ -68,7 +68,7 @@ class TestExecution(IntegrationTestCase):
                               content=pdf.getvalue(),
                               attached_to_doctype='Test Report', attached_to_name=report.name).insert()
         report.pdf_file = file.file_url
-        for state in ('Engineering Complete','Review','Approved','Issued'):
+        for state in ('Review','Approved','Issued'):
             report.status = state
             report.save()
         self.assertTrue(all(item.asset == equipment.name and item.engineer == 'Administrator' and item.raw_data for item in program.items))
@@ -131,7 +131,7 @@ class TestExecution(IntegrationTestCase):
         program=self.program().insert()
         report=frappe.get_doc(doctype='Test Report',project=self.project.name,test_program=program.name,
                              overall_conclusion='PASS',reviewer='Administrator',approver='Administrator',pdf_file='/private/files/test-report.pdf').insert()
-        report.status='Engineering Complete'
+        report.status='Review'
         with self.assertRaises(frappe.ValidationError):
             report.save()
         other=frappe.get_doc(doctype='Project',project_name=uuid.uuid4().hex,company=self.project.company).insert()
@@ -195,7 +195,7 @@ class TestExecution(IntegrationTestCase):
         attachment=frappe.get_doc(doctype='File',file_name=f'{uuid.uuid4().hex}.pdf',is_private=1,
                                   content=pdf.getvalue(),attached_to_doctype='Test Report',attached_to_name=report.name).insert()
         report.pdf_file=attachment.file_url
-        for state in ('Engineering Complete','Review','Approved'):
+        for state in ('Review','Approved'):
             report.status=state
             report.save()
         return program,report
@@ -238,3 +238,56 @@ class TestExecution(IntegrationTestCase):
                 program.sample_assignments.pop(0)
             with self.assertRaises(frappe.ValidationError):
                 program.save()
+
+    def test_report_uses_four_states_and_requires_real_review_actor(self):
+        program = self.program().insert()
+        for state in ('Ready', 'Running', 'Completed', 'Reviewed'):
+            for item in program.items:
+                item.status = state
+                item.result = 'TEST ONLY'
+                item.conclusion = 'Software fixture'
+            program.save()
+        report = frappe.get_doc(doctype='Test Report', project=self.project.name,
+            test_program=program.name, overall_conclusion='TEST ONLY', reviewer='Administrator').insert()
+        report.status = 'Engineering Complete'
+        with self.assertRaises(frappe.ValidationError):
+            report.save()
+        report.reload()
+        report.status = 'Review'
+        report.save()
+        user = frappe.get_doc(doctype='User', email=f'{uuid.uuid4().hex}@example.test',
+            first_name='Engineer', send_welcome_email=0, roles=[dict(role='Lab Engineer')]).insert()
+        frappe.set_user(user.name)
+        try:
+            report.status = 'Approved'
+            with self.assertRaises(frappe.PermissionError):
+                report.save(ignore_permissions=True)
+        finally:
+            frappe.set_user('Administrator')
+        report.reload()
+        report.status = 'Approved'
+        report.save()
+        self.assertEqual(report.reviewer, 'Administrator')
+        report.status = 'Issued'
+        with self.assertRaises(frappe.ValidationError):
+            report.save()
+
+    def test_legacy_report_migration_preserves_pdf_and_audit_and_is_idempotent(self):
+        from reli_lims.setup_v1 import after_migrate
+        _, report = self.approved_report()
+        original = (report.version, report.pdf_file, report.approver)
+        frappe.db.set_value('Test Report', report.name, 'status', 'Engineering Complete')
+        after_migrate()
+        report.reload()
+        self.assertEqual(report.status, 'Review')
+        frappe.db.set_value('Test Report', report.name, 'status', 'Revised')
+        before_cards = frappe.db.count('Number Card', {'module': 'Reli LIMS'})
+        after_migrate()
+        after_migrate()
+        self.assertEqual(frappe.db.count('Number Card', {'module': 'Reli LIMS'}), before_cards)
+        report.reload()
+        self.assertEqual(report.status, 'Issued')
+        self.assertEqual((report.version, report.pdf_file, report.approver), original)
+        self.assertEqual(len(frappe.get_doc('Kanban Board', '检测主流程').columns), 8)
+        self.assertTrue(all(frappe.db.exists('Number Card', 'Reli LIMS ' + label)
+            for label in ('待确认委托', '待收样', '试验中', '待报告', '报告待审核', '超期')))

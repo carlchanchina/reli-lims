@@ -36,7 +36,9 @@ class TestLabPermissions(IntegrationTestCase):
             with self.subTest(role=role):
                 self.assertFalse(frappe.has_permission('Asset', 'read', user=user))
         user = frappe.get_doc('User', self.users['Lab Engineer'])
-        user.add_roles('Asset User', 'Projects User')
+        # ERPNext 16 grants Asset read access through Quality Manager.
+        # Asset User is not a standard role in the supported installation.
+        user.add_roles('Quality Manager', 'Projects User')
         self.assertTrue(frappe.has_permission('Asset', 'read', user=user.name))
         self.assertTrue(frappe.has_permission('Project', 'read', user=user.name))
 
