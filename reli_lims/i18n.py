@@ -6,5 +6,5 @@ def scope_error_message(error):
     message = str(error)
     prefix = "Receive these samples first: "
     if message.startswith(prefix):
-        return _("Receive these samples first: {0}").format(message.removeprefix(prefix))
-    return _(message)
+        return _('请先接收以下样品：{0}').format(message.removeprefix(prefix))
+    return _(message, lang='zh')

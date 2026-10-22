@@ -89,15 +89,15 @@ Add the requested samples first.,请先填写委托样品。,
 "Save the draft first, then attach private photos and select their sample code.",先保存草稿，再上传私有照片并选择所属样品编号。,
 Rows define the test sequence. Open a row and choose its applicable samples.,按行顺序安排检测，打开试验项目行即可选择适用样品。,
 Customer,委托方,Test Request
-Test Method,检测方法,Test Request Item
+Test Method,检测项目,Test Request Item
 Test Condition,测试条件及附加要求,Test Request Item
 Test Item Code,检测项目编号,Test Request Item
 Reli LIMS,检测工作台,
 Testing Center,检测工作台,
 Sample,样品,
 Samples,样品,
-Test Program,检测方案,
-Test Programs,检测方案,
+Test Program,试验方案,
+Test Programs,试验方案,
 Test Program Item,检测项目明细,
 Test Program Sample,方案样品,
 Test Program Item Sample,项目样品分配,
@@ -111,12 +111,12 @@ Test Request Photo,委托样品照片,
 Laboratory Profile,实验室入驻资料,
 Laboratory Name,实验室名称,
 Standards,标准,
-Methods,方法,
+Methods,检测项目,
 Assets,资产,
 Asset,资产,
 Task,任务,
 Project,项目,
-Active,启用,
+Active,现行,
 Actual End,实际结束时间,
 Actual Start,实际开始时间,
 Approved,已批准,
@@ -149,7 +149,7 @@ Notes,备注,
 Other,其他,
 Overall Conclusion,总体结论,
 Pdf File,报告 PDF 文件,
-Pending,待处理,
+Pending,待开始,
 Planned End,计划结束时间,
 Planned Start,计划开始时间,
 Published Profile,已发布资料,
@@ -158,7 +158,7 @@ Quality Inspection,质量检验,
 Quantity,数量,
 Raw Data,原始记录,
 Ready,已就绪,
-Received,已接收,
+Received,已收样,
 Received By,收样人,
 Received Date,收样日期,
 Rejected,已退回,
@@ -166,7 +166,7 @@ Remarks,说明,
 Request Sample Row,来源委托样品行,
 Responsible Engineer,负责工程师,
 Result,结果,
-Retained,已保留,
+Retained,留样,
 Returned,已退回,
 Review,审核,
 Review Note,审核意见,
@@ -186,10 +186,10 @@ Status,状态,
 Storage Location,存放位置,
 Submitted At,提交时间,
 Submitted Profile,已提交资料,
-Superseded,已被替代,
+Superseded,作废/替代,
 Test End,检测结束时间,
 Test Start,检测开始时间,
-Testing,检测中,
+Testing,试验中,
 Title,名称,
 Version,版本年份,
 Workstation,工位,
@@ -304,9 +304,9 @@ equipment,设备,
 standards,执行标准,
 industries,服务行业,
 cases,案例,
-Lab Manager,实验室负责人,
-Lab Engineer,检测工程师,
-Lab Reviewer,检测复核员,
+Lab Manager,实验室主管,
+Lab Engineer,试验工程师,
+Lab Reviewer,报告审核员,
 Mercur Integration,商城集成,
 Laboratory Directory Reader,实验室目录读取,
 Sample quantity must be a finite positive number.,样品数量必须为有效正数。,
@@ -334,10 +334,46 @@ Laboratory,实验室,
 Required,必需,
 Not Required,不需要,
 Customer,客户,
-Test Method,检测方法,
+Test Method,检测项目,
 Test Condition,测试条件及附加要求,
 Sidebar Menu,侧边栏菜单,
 Clear all filters,清除全部筛选,
 Add attachment,添加附件,
 Last Edited By You,由你最后编辑,
 Begin typing for results.,输入内容以搜索。,
+Test Method,检测项目
+Test Methods,检测项目
+Methods,检测项目
+Test Program,试验方案
+Test Programs,试验方案
+Testing Center,检测工作台
+Lab Manager,实验室主管
+Lab Engineer,试验工程师
+Lab Reviewer,报告审核员
+Received,已收样
+Testing,试验中
+Retained,留样
+Returned,已退回
+Disposed,已处置
+Ready,已就绪
+Pending,待处理
+Superseded,作废/替代
+Active,现行
+Review,待审核,Test Report
+Approved,已批准,Test Report
+Issued,已签发,Test Report
+Draft,草稿,Test Report
+Engineer,编制人,Test Report
+Reviewer,审核人,Test Report
+Pdf File,最终报告文件,Test Report
+Completed,试验完成,Sample
+Condition,样品状态说明,Sample
+Running,试验中,Test Program Item
+Completed,已完成,Test Program Item
+Reviewed,已复核,Test Program Item
+Running,试验中,Test Program
+Title,方案名称,Test Program
+Pending,待开始,Test Program Item
+Add the program samples first.,请先选择方案样品。
+Set your default Company before creating a testing request.,请先设置默认公司，再创建检测委托单。
+Approved reports need a reviewer and PDF before issue.,已批准报告须有审核人和最终 PDF 才能签发。

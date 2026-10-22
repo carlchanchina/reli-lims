@@ -63,3 +63,16 @@ class TestMasters(IntegrationTestCase):
         first.save()
         second = frappe.get_doc(doctype='Test Method', method_name='High Temperature', default_standard=standard.name).insert()
         self.assertEqual(first.default_standard, second.default_standard)
+
+    def test_sample_return_is_final_and_cannot_skip_to_testing_complete(self):
+        sample = frappe.get_doc(doctype='Sample', project=self.project.name, quantity=1,
+            received_date=today()).insert()
+        sample.status = 'Completed'
+        with self.assertRaises(frappe.ValidationError):
+            sample.save()
+        sample.reload()
+        sample.status = 'Returned'
+        sample.save()
+        sample.status = 'Testing'
+        with self.assertRaises(frappe.ValidationError):
+            sample.save()

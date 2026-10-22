@@ -10,14 +10,14 @@
       "fieldname": "item_code",
       "fieldtype": "Autocomplete",
       "in_list_view": 1,
-      "label": "Test Item Code",
+      "label": "检测项目编号",
       "reqd": 1
     },
     {
       "fieldname": "sample_code",
       "fieldtype": "Autocomplete",
       "in_list_view": 1,
-      "label": "Request Sample Code",
+      "label": "委托样品编号",
       "reqd": 1
     }
   ],

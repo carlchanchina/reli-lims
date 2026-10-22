@@ -7,36 +7,36 @@
   "editable_grid": 1,
   "engine": "InnoDB",
   "field_order": [
+    "test_request",
     "project",
     "customer",
     "product_name",
     "model",
     "serial_no",
     "quantity",
+    "dimensions",
+    "weight_kg",
     "received_date",
     "received_by",
-    "condition",
     "status",
+    "condition",
     "storage_location",
     "notes",
-    "test_request",
-    "request_sample_row",
-    "dimensions",
-    "weight_kg"
+    "request_sample_row"
   ],
   "fields": [
     {
       "fieldname": "project",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Project",
+      "label": "项目",
       "options": "Project",
       "reqd": 1
     },
     {
       "fieldname": "customer",
       "fieldtype": "Link",
-      "label": "Customer",
+      "label": "客户",
       "options": "Customer",
       "read_only": 1
     },
@@ -44,85 +44,86 @@
       "fieldname": "product_name",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Product Name"
+      "label": "产品名称"
     },
     {
       "fieldname": "model",
       "fieldtype": "Data",
-      "label": "Model"
+      "label": "型号"
     },
     {
       "fieldname": "serial_no",
       "fieldtype": "Data",
-      "label": "Serial No"
+      "label": "序列号"
     },
     {
       "default": "1",
       "fieldname": "quantity",
       "fieldtype": "Float",
-      "label": "Quantity",
+      "label": "数量",
       "reqd": 1
     },
     {
       "default": "Today",
       "fieldname": "received_date",
       "fieldtype": "Date",
-      "label": "Received Date",
+      "label": "收样日期",
       "reqd": 1
     },
     {
       "fieldname": "received_by",
       "fieldtype": "Link",
-      "label": "Received By",
+      "label": "收样人",
       "options": "User"
     },
     {
       "fieldname": "condition",
       "fieldtype": "Small Text",
-      "label": "Condition"
+      "label": "样品状态说明"
     },
     {
       "default": "Received",
       "fieldname": "status",
       "fieldtype": "Select",
       "in_list_view": 1,
-      "label": "Status",
+      "label": "状态",
       "options": "Received\nTesting\nCompleted\nRetained\nReturned\nDisposed",
       "reqd": 1
     },
     {
       "fieldname": "storage_location",
       "fieldtype": "Data",
-      "label": "Storage Location"
+      "label": "存放位置"
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
     },
     {
       "fieldname": "test_request",
-      "label": "Test Request",
+      "label": "检测委托单",
       "fieldtype": "Link",
       "options": "Test Request",
       "read_only": 1
     },
     {
       "fieldname": "request_sample_row",
-      "label": "Request Sample Row",
+      "label": "来源委托样品行",
       "fieldtype": "Data",
       "read_only": 1,
       "unique": 1,
-      "no_copy": 1
+      "no_copy": 1,
+      "hidden": 1
     },
     {
       "fieldname": "dimensions",
-      "label": "Volume / Dimensions",
+      "label": "体积／外形尺寸",
       "fieldtype": "Small Text"
     },
     {
       "fieldname": "weight_kg",
-      "label": "Weight (kg)",
+      "label": "重量（kg）",
       "fieldtype": "Float",
       "precision": "3"
     }

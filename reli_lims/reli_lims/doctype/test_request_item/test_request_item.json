@@ -7,21 +7,23 @@
     "standard",
     "test_condition",
     "applicable_sample_codes",
-    "select_samples"
+    "select_samples",
+    "notes"
   ],
   "fields": [
     {
       "fieldname": "item_code",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Test Item Code",
-      "reqd": 1
+      "label": "检测项目编号",
+      "reqd": 1,
+      "hidden": 1
     },
     {
       "fieldname": "test_method",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Test Method",
+      "label": "检测项目",
       "options": "Test Method",
       "reqd": 1
     },
@@ -29,26 +31,31 @@
       "fieldname": "standard",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Execution Standard",
+      "label": "执行标准",
       "options": "Test Standard",
       "reqd": 1
     },
     {
       "fieldname": "test_condition",
       "fieldtype": "Small Text",
-      "label": "Test Condition"
+      "label": "测试条件及附加要求"
     },
     {
       "fieldname": "applicable_sample_codes",
-      "label": "Applicable Samples",
+      "label": "适用样品",
       "fieldtype": "Small Text",
       "read_only": 1,
       "in_list_view": 1
     },
     {
       "fieldname": "select_samples",
-      "label": "Select Applicable Samples",
+      "label": "选择适用样品",
       "fieldtype": "Button"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "备注"
     }
   ],
   "istable": 1,

@@ -11,18 +11,18 @@
   ],
   "fields": [
     {
-      "description": "Select an item code from this program.",
+      "description": "请选择本方案中的检测项目编号。",
       "fieldname": "item_code",
       "fieldtype": "Autocomplete",
       "in_list_view": 1,
-      "label": "Test Item Code",
+      "label": "检测项目编号",
       "reqd": 1
     },
     {
       "fieldname": "sample",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Sample",
+      "label": "样品",
       "options": "Sample",
       "reqd": 1
     }

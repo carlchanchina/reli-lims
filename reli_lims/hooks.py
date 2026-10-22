@@ -23,3 +23,13 @@ add_to_apps_screen = [
         "has_permission": "reli_lims.permissions.has_app_permission",
     }
 ]
+
+# Server-derived business stages keep the native Kanban in sync.
+doc_events = {
+    dt: {event: "reli_lims.progress.update_progress" for event in
+         ("on_update", "on_submit", "on_cancel", "after_delete")}
+    for dt in ("Test Request", "Sample", "Test Program", "Test Report")
+}
+after_migrate = ["reli_lims.setup_v1.after_migrate"]
+
+scheduler_events = {"daily": ["reli_lims.progress.refresh_all"]}

@@ -15,7 +15,7 @@
       "fieldname": "sample",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Sample",
+      "label": "样品",
       "options": "Sample",
       "reqd": 1
     },
@@ -23,12 +23,12 @@
       "fieldname": "sample_label",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Sample Label"
+      "label": "样品名称"
     },
     {
       "fieldname": "remarks",
       "fieldtype": "Data",
-      "label": "Remarks"
+      "label": "说明"
     }
   ],
   "grid_page_length": 50,

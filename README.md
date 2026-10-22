@@ -56,7 +56,7 @@ In an existing ERPNext 16 bench, replace `lab-test.localhost` with a dedicated
 test site that already has ERPNext installed:
 
 ```sh
-bench get-app https://github.com/carlchanchina/reli-lims.git --branch codex/installable-app
+bench get-app https://github.com/carlchanchina/reli-lims.git --branch main
 bench --site lab-test.localhost install-app reli_lims
 bench --site lab-test.localhost migrate
 bench --site lab-test.localhost run-tests --app reli_lims
@@ -111,8 +111,7 @@ an immutable item code, avoiding nested child tables. Execution follows
 Pending → Ready → Running → Completed → Reviewed; results and conclusions are
 required for completion, and review requires Lab Reviewer or Lab Manager.
 
-Reports follow Draft → Engineering Complete → Review → Approved → Issued →
-Revised. Lab Manager approves/issues, and issue requires all items Reviewed plus
+Reports follow Draft → Review → Approved → Issued. Lab Reviewer or Lab Manager approves; Lab Manager issues, and issue requires all items Reviewed plus
 an attached private PDF. Approved business fields and issued report/program
 content are locked; issued/revised reports cannot be deleted. Create a new report
 version rather than changing issued content.
@@ -120,3 +119,16 @@ version rather than changing issued content.
 See [Desk demo](docs/DESK_DEMO.md) for the complete two-sample/three-item path.
 PDF layout generation, analytical reports, dashboard metrics and portal APIs
 remain outside this acceptance-path increment.
+
+
+## V1 检测工作台
+
+主线：检测委托单确认并关联 ERPNext Project → 实物收样 → 试验方案 → 检测项目执行与复核 → 检测报告审核及私有 PDF 签发。
+
+工作台展示待确认委托、待收样、试验中、待报告、报告待审核、超期六张数字卡片。通过“打开检测主流程看板”进入 Frappe 原生八阶段 Kanban；阶段由真实业务记录自动计算，请进入单据执行收样、试验或审核操作。
+
+日常入口仅保留新建检测委托、收样、试验方案、检测报告、检测项目、检测标准。项目、任务、设备和客户从二级分类访问，继续复用 ERPNext 权限。
+
+升级前备份数据库和附件，更新应用并执行指定站点的 migrate、资源 build、clear-cache 和标准服务重载。迁移保留旧字段和内部英文标识，合并旧报告状态并记录审计评论；重复 migrate 不应重复创建本应用的卡片或看板。数据库回退需要同时恢复升级前代码与数据库备份。
+
+测试必须运行在独立验收站点，不能在正式业务站点写入模拟结果。详情见 [V1 收口开发计划](docs/V1_CONVERGENCE_PLAN.md) 和 [实施日志](docs/IMPLEMENTATION_LOG.md)。

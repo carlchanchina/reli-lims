@@ -21,48 +21,49 @@
       "fieldname": "method_name",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Method Name",
+      "label": "检测项目名称",
       "reqd": 1,
       "unique": 1
     },
     {
       "fieldname": "category",
       "fieldtype": "Data",
-      "label": "Category"
+      "label": "类别"
     },
     {
       "fieldname": "default_standard",
       "fieldtype": "Link",
-      "label": "Default Standard",
+      "label": "默认标准",
       "options": "Test Standard"
     },
     {
       "fieldname": "default_workstation",
       "fieldtype": "Link",
-      "label": "Default Workstation",
-      "options": "Workstation"
+      "label": "默认工位",
+      "options": "Workstation",
+      "hidden": 1
     },
     {
       "fieldname": "default_asset",
       "fieldtype": "Link",
-      "label": "Default Asset",
+      "label": "默认设备",
       "options": "Asset"
     },
     {
       "fieldname": "default_condition",
       "fieldtype": "Small Text",
-      "label": "Default Condition"
+      "label": "默认试验条件"
     },
     {
       "default": "1",
       "fieldname": "active",
       "fieldtype": "Check",
-      "label": "Active"
+      "label": "启用"
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
     }
   ],
   "grid_page_length": 50,

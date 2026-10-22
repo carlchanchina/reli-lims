@@ -9,6 +9,8 @@
     "item_code",
     "test_method",
     "standard",
+    "applicable_sample_names",
+    "select_samples",
     "engineer",
     "asset",
     "workstation",
@@ -26,18 +28,19 @@
   ],
   "fields": [
     {
-      "description": "Stable item code used by Sample Assignments, e.g. LT, HT or VIB.",
+      "description": "用于样品分配的固定项目编号，例如 LT、HT 或 VIB。",
       "fieldname": "item_code",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Test Item Code",
-      "reqd": 1
+      "label": "检测项目编号",
+      "reqd": 1,
+      "hidden": 1
     },
     {
       "fieldname": "test_method",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Test Method",
+      "label": "检测项目",
       "options": "Test Method",
       "reqd": 1
     },
@@ -45,7 +48,7 @@
       "fieldname": "standard",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Standard",
+      "label": "执行标准",
       "options": "Test Standard",
       "reqd": 1
     },
@@ -53,46 +56,46 @@
       "fieldname": "engineer",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "Engineer",
+      "label": "工程师",
       "options": "User"
     },
     {
       "fieldname": "asset",
       "fieldtype": "Link",
-      "label": "Asset",
+      "label": "设备",
       "options": "Asset"
     },
     {
       "fieldname": "workstation",
       "fieldtype": "Link",
-      "label": "Workstation",
+      "label": "工位",
       "options": "Workstation"
     },
     {
       "fieldname": "test_condition",
       "fieldtype": "Small Text",
-      "label": "Test Condition"
+      "label": "测试条件及附加要求"
     },
     {
       "fieldname": "planned_start",
       "fieldtype": "Datetime",
-      "label": "Planned Start"
+      "label": "计划开始时间"
     },
     {
       "fieldname": "planned_end",
       "fieldtype": "Datetime",
-      "label": "Planned End"
+      "label": "计划结束时间"
     },
     {
       "fieldname": "actual_start",
       "fieldtype": "Datetime",
-      "label": "Actual Start",
+      "label": "实际开始时间",
       "read_only": 1
     },
     {
       "fieldname": "actual_end",
       "fieldtype": "Datetime",
-      "label": "Actual End",
+      "label": "实际结束时间",
       "read_only": 1
     },
     {
@@ -100,35 +103,47 @@
       "fieldname": "status",
       "fieldtype": "Select",
       "in_list_view": 1,
-      "label": "Status",
+      "label": "状态",
       "options": "Pending\nReady\nRunning\nCompleted\nReviewed",
       "reqd": 1
     },
     {
       "fieldname": "result",
       "fieldtype": "Data",
-      "label": "Result"
+      "label": "结果"
     },
     {
       "fieldname": "conclusion",
       "fieldtype": "Small Text",
-      "label": "Conclusion"
+      "label": "结论"
     },
     {
       "fieldname": "quality_inspection",
       "fieldtype": "Link",
-      "label": "Quality Inspection",
+      "label": "质量检验",
       "options": "Quality Inspection"
     },
     {
       "fieldname": "raw_data",
       "fieldtype": "Attach",
-      "label": "Raw Data"
+      "label": "原始记录"
     },
     {
       "fieldname": "notes",
       "fieldtype": "Small Text",
-      "label": "Notes"
+      "label": "备注"
+    },
+    {
+      "fieldname": "applicable_sample_names",
+      "fieldtype": "Small Text",
+      "label": "适用样品",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "select_samples",
+      "fieldtype": "Button",
+      "label": "选择适用样品"
     }
   ],
   "grid_page_length": 50,
