@@ -1,12 +1,16 @@
 frappe.ui.form.on("Test Program", {
     setup(frm) {
+        frappe.meta.get_docfield('Test Program Item', 'status').formatter = value => {
+            const labels = {Pending: '待开始', Ready: '已就绪', Running: '试验中', Completed: '已完成', Reviewed: '已复核'};
+            return labels[value] || frappe.utils.escape_html(value || '');
+        };
         frm.set_query("sample", "samples", () => ({ filters: { project: frm.doc.project } }));
         frm.set_query("sample", "sample_assignments", () => ({
             filters: { name: ["in", (frm.doc.samples || []).map(row => row.sample).filter(Boolean)] }
         }));
     },
     refresh(frm) {
-        frm.set_intro(__("请逐步保存状态：待安排 → 待执行 → 执行中 → 已完成 → 已复核。完成时须填写结果和结论；复核须由检测复核员或实验室负责人执行。"), "blue");
+        frm.set_intro(__("请逐步保存状态：待开始 → 已就绪 → 试验中 → 已完成 → 已复核。完成时须填写结果和结论；复核须由报告审核员或实验室主管执行。"), "blue");
         frm.events.update_item_choices(frm);
         if (!frm.is_new() && (frm.doc.items || []).length && frm.doc.items.every(row => row.status === 'Reviewed') &&
             frappe.model.can_create('Test Report')) {
