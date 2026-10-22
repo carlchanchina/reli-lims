@@ -90,4 +90,16 @@ RED→GREEN: minimal request without report copies; receipt serial retention; sa
 
 Independent code/Python/JavaScript reviews found no remaining Important/Critical issue after the stale-query fix was reproduced and verified. No new test framework or bench manager installed. A programmatic temporary Administrator browser session was rejected by automatic approval review; no token was created. Browser login uses the normal user flow; authenticated visual acceptance awaits that login. Production CLI smoke does not mint sessions or write simulated business records.
 
-Production deployment: pending final release snapshot, backup and migration; recorded below when executed.
+Production deployment — 2026-10-23 (Asia/Shanghai):
+- PR #7 merged as 8cbedbe227c4612869403504b7ffdaac03cb5801.
+- Production host carl-1.taila47902.ts.net (known host identity matches 192.168.10.107), `/home/frappe/pilot/benches/prod-bench`, site `carl-1.taila47902.ts.net`.
+- Backup database/config/public/private files: `20261023_000458-carl-1_taila47902_ts_net-*` in the site's private/backups directory.
+- Original production main had local test-only commit f50197d; retained intact. Deployed on `codex/v1-production-20261023` tracking origin/main, without reset or overwrite.
+- Production migrate PASS. Initial build shell could not find existing Yarn; reran with `/home/frappe/.local/bin` in build process PATH, build PASS (2.29s). No new runtime installed.
+- Cleared cache and restarted existing user services prod-bench-web and prod-bench-worker_pool; both active.
+- Production native Desk smoke PASS: 检测工作台, six shortcuts, six successful Number Card queries, eight Kanban columns.
+- Before/after counts for Test Request, Sample, Test Program, Test Report, Test Method, Test Standard, Project, Customer, Asset and File match exactly. No simulated business execution written to production.
+- HTTPS login endpoint returns HTTP 200; production source clean at 8cbedbe.
+- Overdue Number Card uses live current-date filters. The persisted Kanban overdue marker refreshes on business events and through the configured Frappe daily hook; no independent scheduler/automation was introduced. Existing production Frappe scheduler daemon was not active during inspection, so unattended daily marker refresh depends on restoring the site's normal scheduler operations; the live overdue count remains accurate.
+- Authenticated visual inspection remains pending the user's normal browser login. No bypass of rejected temporary administrator-session creation.
+
