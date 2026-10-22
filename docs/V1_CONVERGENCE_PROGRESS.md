@@ -12,7 +12,7 @@ Sprint B: complete — four sections, legacy fields hidden, serial retention, de
 Sprint C: complete — hidden relations, execution UI, sample final states.
 Sprint D: complete — four report states, private PDF, legacy migration.
 Sprint E: complete — native cards/Kanban and server-derived stages.
-Sprint F: complete — 40 integration, 10 offline and 3 Node tests passed; dev/production migrations, builds and native Desk smoke passed; business counts unchanged. Visual review awaits user login. Release tag v1.0.0.
+Sprint F: complete — 40 integration, 10 offline and 3 Node tests passed; dev/production migrations, builds and native Desk smoke passed; business counts unchanged. Normal-login visual review passed on 2026-10-23. Follow-up V1.0.1 fixes native Number Card label references and owned program status formatting; Node 4/4 passed. Release tags v1.0.0 and v1.0.1 retained.
 
 Final review: independent code, Python and JS reviews completed. Stale asynchronous program lookup reproduced RED and fixed GREEN; full evidence in IMPLEMENTATION_LOG.md.
 Ruling: retain production main's test-only local commit and deploy a separate release branch tracking origin/main — cost if wrong: future deployment must use the release branch or explicitly align main.
