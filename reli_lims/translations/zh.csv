@@ -377,3 +377,5 @@ Pending,待开始,Test Program Item
 Add the program samples first.,请先选择方案样品。
 Set your default Company before creating a testing request.,请先设置默认公司，再创建检测委托单。
 Approved reports need a reviewer and PDF before issue.,已批准报告须有审核人和最终 PDF 才能签发。
+No {0} created,尚未创建{0}
+Create your first {0} to get started.,创建第一条{0}以开始使用。
