@@ -23,13 +23,17 @@ def _load_items(source):
     return items
 
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def import_capability_source(source_name):
     _require_role("Lab Manager", "System Manager")
     source = frappe.get_doc("Capability Source", source_name)
     if source.documents_review_status != "Approved":
         frappe.throw(_("只有 Documents 已审核通过的来源可以导入。"))
 
+    source.check_permission("read")
+    source.check_permission("write")
+    source.validate()
+    frappe.db.sql("SELECT name FROM `tabCapability Source` WHERE name=%s FOR UPDATE", source.name)
     items = _load_items(source)
     created = []
     skipped = []
@@ -85,11 +89,11 @@ def import_capability_source(source_name):
 
     source.import_status = "部分导入" if skipped and created else ("失败" if skipped and not created else "已导入")
     source.imported_at = now_datetime() if created else None
-    source.save(ignore_permissions=True)
+    source.save()
     return {"created": created, "skipped": skipped, "status": source.import_status}
 
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def confirm_capability(name):
     _require_role("Lab Manager", "Lab Reviewer", "System Manager")
     doc = frappe.get_doc("Laboratory Capability", name)
@@ -100,7 +104,7 @@ def confirm_capability(name):
     return doc.name
 
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def publish_capability(name):
     _require_role("Lab Manager", "System Manager")
     doc = frappe.get_doc("Laboratory Capability", name)
@@ -111,7 +115,7 @@ def publish_capability(name):
     return get_public_capability(doc.name)
 
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def unpublish_capability(name):
     _require_role("Lab Manager", "System Manager")
     doc = frappe.get_doc("Laboratory Capability", name)
@@ -138,3 +142,14 @@ def get_public_capability(name):
         "accreditation_type": doc.accreditation_type,
         "certificate_no": doc.certificate_no,
     }
+
+
+@frappe.whitelist(allow_guest=True)
+def list_public_capabilities(laboratory=None):
+    """Bounded, explicit public projection; never expose source JSON or files."""
+    filters = {"status": "已发布", "published": 1}
+    if laboratory:
+        filters["laboratory"] = laboratory
+    names = frappe.get_all("Laboratory Capability", filters=filters,
+                           pluck="name", order_by="name", limit_page_length=100)
+    return [get_public_capability(name) for name in names]

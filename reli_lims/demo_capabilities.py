@@ -1,3 +1,5 @@
+import json
+
 import frappe
 
 
@@ -62,29 +64,30 @@ def seed_demo_capabilities():
         {"documents_source_id": "demo-doc-cnas-001"},
         {
             "laboratory": lab,
-            "source_type": "CNAS",
-            "certificate_no": "CNAS-DEMO-001",
+            "source_type": "其他",
+            "certificate_no": "",
             "documents_source_id": "demo-doc-cnas-001",
             "documents_version": "1",
             "documents_review_status": "Approved",
             "source_file_url": "wekona_documents://demo-doc-cnas-001/v1",
-            "structured_json": [
+            "structured_json": json.dumps({"items": [
                 {
                     "test_method": "低温试验",
                     "standard_code": "GB/T 2423.1-2008",
                     "capability_scope": "-40 ℃ ～ 常温",
-                    "accreditation_type": "CNAS",
+                    "accreditation_type": "未认证",
                     "source_row": "1",
                 },
                 {
                     "test_method": "随机振动试验",
                     "standard_code": "GB/T 2423.56-2023",
                     "capability_scope": "5 Hz ～ 2000 Hz",
-                    "accreditation_type": "CNAS",
+                    "accreditation_type": "未认证",
                     "source_row": "2",
                 },
-            ],
-            "import_status": "已导入",
+            ]}, ensure_ascii=False),
+            "remarks": "仅测试数据，不代表真实资质或认可。",
+            "import_status": "待导入",
         },
     )
 
@@ -96,11 +99,11 @@ def seed_demo_capabilities():
             "test_method": low_temp,
             "test_standard": low_temp_std,
             "capability_scope": "-40 ℃ ～ 常温",
-            "accreditation_type": "CNAS",
-            "certificate_no": "CNAS-DEMO-001",
+            "accreditation_type": "未认证",
+            "certificate_no": "",
             "source": source,
             "source_row": "1",
-            "status": "已发布",
+            "status": "待确认",
         },
     )
     _get_or_create(
@@ -111,13 +114,12 @@ def seed_demo_capabilities():
             "test_method": vibration,
             "test_standard": vibration_std,
             "capability_scope": "5 Hz ～ 2000 Hz",
-            "accreditation_type": "CNAS",
-            "certificate_no": "CNAS-DEMO-001",
+            "accreditation_type": "未认证",
+            "certificate_no": "",
             "source": source,
             "source_row": "2",
-            "status": "已发布",
+            "status": "待确认",
         },
     )
 
-    frappe.db.commit()
     return {"laboratory": lab, "source": source}

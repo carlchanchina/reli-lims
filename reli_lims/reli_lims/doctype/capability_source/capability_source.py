@@ -7,6 +7,14 @@ from frappe.model.document import Document
 
 class CapabilitySource(Document):
     def validate(self):
+        old = self.get_doc_before_save()
+        if old:
+            fields = ("laboratory", "documents_source_id", "documents_version",
+                      "documents_review_status", "structured_json", "source_type",
+                      "certificate_no", "source_file_url", "issue_date", "expiry_date")
+            if any(self.get(key) != old.get(key) for key in fields):
+                frappe.throw(_("来源审核快照不可修改，请使用新的版本化来源 ID。"))
+
         if self.issue_date and self.expiry_date and self.expiry_date < self.issue_date:
             frappe.throw(_("有效期不能早于签发日期。"))
 
@@ -25,10 +33,16 @@ class CapabilitySource(Document):
         if not isinstance(items, list) or not items:
             frappe.throw(_("审核后结构化结果必须包含非空 items 能力数组。"))
 
+        rows = set()
         for index, item in enumerate(items, start=1):
             if not isinstance(item, dict):
-                frappe.throw(_("第 {0} 条能力必须是对象。", [index]))
+                frappe.throw(_("第 {0} 条能力必须是对象。").format(index))
             if not (item.get("test_method") or item.get("test_method_name")):
-                frappe.throw(_("第 {0} 条能力缺少检测项目。", [index]))
+                frappe.throw(_("第 {0} 条能力缺少检测项目。").format(index))
             if not (item.get("standard_code") or item.get("test_standard")):
-                frappe.throw(_("第 {0} 条能力缺少检测标准。", [index]))
+                frappe.throw(_("第 {0} 条能力缺少检测标准。").format(index))
+
+            row = str(item.get("source_row") or index)
+            if row in rows:
+                frappe.throw(_("来源行标识不能重复。"))
+            rows.add(row)
