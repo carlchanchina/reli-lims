@@ -10,14 +10,25 @@ class CapabilitySource(Document):
         if self.issue_date and self.expiry_date and self.expiry_date < self.issue_date:
             frappe.throw(_("有效期不能早于签发日期。"))
 
-        if self.parsed_json:
-            try:
-                payload = json.loads(self.parsed_json) if isinstance(self.parsed_json, str) else self.parsed_json
-            except (TypeError, ValueError):
-                frappe.throw(_("结构化解析结果必须是有效 JSON。"))
+        if self.documents_review_status != "Approved":
+            frappe.throw(_("仅允许导入 wekona_documents 中已审核通过的结构化文档。"))
 
-            if not isinstance(payload, list):
-                frappe.throw(_("结构化解析结果必须是能力候选数组。"))
+        try:
+            payload = json.loads(self.structured_json) if isinstance(self.structured_json, str) else self.structured_json
+        except (TypeError, ValueError):
+            frappe.throw(_("审核后结构化结果必须是有效 JSON。"))
 
-            if self.parser_status == "待解析":
-                self.parser_status = "已解析"
+        if not isinstance(payload, dict):
+            frappe.throw(_("审核后结构化结果必须是对象，并包含 items 能力数组。"))
+
+        items = payload.get("items")
+        if not isinstance(items, list) or not items:
+            frappe.throw(_("审核后结构化结果必须包含非空 items 能力数组。"))
+
+        for index, item in enumerate(items, start=1):
+            if not isinstance(item, dict):
+                frappe.throw(_("第 {0} 条能力必须是对象。", [index]))
+            if not (item.get("test_method") or item.get("test_method_name")):
+                frappe.throw(_("第 {0} 条能力缺少检测项目。", [index]))
+            if not (item.get("standard_code") or item.get("test_standard")):
+                frappe.throw(_("第 {0} 条能力缺少检测标准。", [index]))
