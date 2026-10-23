@@ -1,0 +1,36 @@
+{
+  "doctype": "Workspace",
+  "name": "Laboratory Capability Center",
+  "label": "实验室能力中心",
+  "title": "实验室能力中心",
+  "module": "Reli LIMS",
+  "icon": "branch",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 2,
+  "for_user": "",
+  "parent_page": "",
+  "roles": [
+    {"role": "Lab Manager"},
+    {"role": "Lab Reviewer"},
+    {"role": "System Manager"}
+  ],
+  "links": [
+    {"type": "Card Break", "label": "能力管理"},
+    {"type": "Link", "link_type": "DocType", "link_to": "Laboratory Profile", "label": "实验室资料"},
+    {"type": "Link", "link_type": "DocType", "link_to": "Capability Source", "label": "能力来源"},
+    {"type": "Link", "link_type": "DocType", "link_to": "Laboratory Capability", "label": "实验室检测能力"},
+    {"type": "Link", "link_type": "DocType", "link_to": "Test Method", "label": "检测项目"},
+    {"type": "Link", "link_type": "DocType", "link_to": "Test Standard", "label": "检测标准"}
+  ],
+  "shortcuts": [
+    {"label": "能力来源", "type": "DocType", "link_to": "Capability Source", "doc_view": "List", "color": "Grey"},
+    {"label": "待确认能力", "type": "DocType", "link_to": "Laboratory Capability", "doc_view": "List", "color": "Grey", "stats_filter": "{\"status\":\"待确认\"}"},
+    {"label": "已发布能力", "type": "DocType", "link_to": "Laboratory Capability", "doc_view": "List", "color": "Grey", "stats_filter": "{\"status\":\"已发布\"}"}
+  ],
+  "charts": [],
+  "number_cards": [],
+  "quick_lists": [],
+  "custom_blocks": [],
+  "content": "[{\"id\":\"cap-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">实验室能力中心</span>\",\"col\":12}},{\"id\":\"cap-desc\",\"type\":\"paragraph\",\"data\":{\"text\":\"Documents 负责文档解析与审核；Reli LIMS 只接收审核通过后的结构化结果，并完成能力确认与发布。\",\"col\":12}},{\"id\":\"cap-s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"能力来源\",\"col\":4}},{\"id\":\"cap-s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"待确认能力\",\"col\":4}},{\"id\":\"cap-s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"已发布能力\",\"col\":4}},{\"id\":\"cap-card\",\"type\":\"card\",\"data\":{\"card_name\":\"能力管理\",\"col\":12}}]"
+}
