@@ -129,3 +129,8 @@ A laboratory user can:
 9. Issue a Test Report.
 
 Anything not required for this path is secondary.
+
+
+## 商家检测履约工作台（2026-10-23）
+
+[跨仓库分工与权限计划](SELLER_WORKBENCH_INTEGRATION.md)。第一切片实现订单归属校验、内部显式关联和只读委托/进度展示；不包含自动建委托、确认、报告下载。现有主线和数据不变。部署及实际启用以验收记录为准。

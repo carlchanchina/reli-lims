@@ -132,3 +132,8 @@ remain outside this acceptance-path increment.
 升级前备份数据库和附件，更新应用并执行指定站点的 migrate、资源 build、clear-cache 和标准服务重载。迁移保留旧字段和内部英文标识，合并旧报告状态并记录审计评论；重复 migrate 不应重复创建本应用的卡片或看板。数据库回退需要同时恢复升级前代码与数据库备份。
 
 测试必须运行在独立验收站点，不能在正式业务站点写入模拟结果。详情见 [V1 收口开发计划](docs/V1_CONVERGENCE_PLAN.md) 和 [实施日志](docs/IMPLEMENTATION_LOG.md)。
+
+
+## 商家检测履约工作台（2026-10-23）
+
+[跨仓库分工与权限计划](docs/SELLER_WORKBENCH_INTEGRATION.md)。第一切片实现订单归属校验、内部显式关联和只读委托/进度展示；不包含自动建委托、确认、报告下载。现有主线和数据不变。部署及实际启用以验收记录为准。
