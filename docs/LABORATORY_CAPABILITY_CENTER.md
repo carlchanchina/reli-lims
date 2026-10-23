@@ -37,4 +37,8 @@ structured_json 必须为对象且包含非空 items 数组。每行包含 test_
 
 本地：`python3 -m unittest discover -s tests`；`python3 -m compileall -q reli_lims`；`git diff --check`。
 
-Frappe 集成：先在独立 Frappe 16/ERPNext 16 测试站点安装本分支并 migrate，再执行 `bench --site <test-site> run-tests --module reli_lims.reli_lims.doctype.laboratory_capability.test_laboratory_capability`。本次开发环境无已配置 apps/sites/Procfile，Python 无 frappe 包，因此数据库集成、migrate 和 Desk 浏览器验收未执行；不能将 stub 单元测试视作集成通过。
+Frappe 集成：先在独立 Frappe 16/ERPNext 16 测试站点安装本分支并 migrate，再执行 `bench --site <test-site> run-tests --module reli_lims.tests.test_capability_center_integration`。本次开发环境无已配置 apps/sites/Procfile，Python 无 frappe 包，因此数据库集成、migrate 和 Desk 浏览器验收未执行；不能将 stub 单元测试视作集成通过。
+
+### 开发服务器验收补充（2026-10-23）
+
+已在 192.168.10.204 的 Pilot dev-bench、独立站点 reli-acceptance-20261020.localhost 完成 migrate（退出码 0）及 4 项真实 Frappe 集成测试（全部通过）。测试改放功能测试目录，避免 DocType 自动生成依赖测试记录。部署前已备份现有应用到 /home/frappe/reli-lims-before-capability-v11.tgz，仅加入能力中心文件，保留服务器原有主流程开发改动。上文无环境限制为首次本地检查记录，已由本次远程集成验证补充；Desk 浏览器验收仍单列。
