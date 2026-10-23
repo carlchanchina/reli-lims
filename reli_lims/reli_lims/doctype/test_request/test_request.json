@@ -187,8 +187,7 @@
       "label": "公司",
       "options": "Company",
       "reqd": 1,
-      "hidden": 1,
-      "default": ":Company"
+      "hidden": 1
     },
     {
       "fieldname": "applicant_address",

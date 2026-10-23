@@ -33,3 +33,6 @@
 ## 第一切片实施记录（2026-10-23）
 
 已实现只读订单履约与管理员明确关联；开发机真实验收十次重放、只读权限及跨商家拒绝通过。自动生成委托、确认及报告下载仍待后续切片。操作与配置见 Bridge 仓库 `docs/SELLER_WORKBENCH_RUNBOOK.md`。商城/ERP 正式部署和商家启用状态以发布记录为准。
+
+### 委托草稿前置修复
+真实受限账号验收发现 Test Request.company 的 `default: :Company` 会读取不存在的 Company.company 列。移除该元数据默认值，沿用控制器已有的显式 company / 用户默认 / 全局默认 / 唯一可见公司选择。此修复不改变公司权限，也不新增业务单据。部署需 reload_doc Test Request 并清理元数据缓存。
