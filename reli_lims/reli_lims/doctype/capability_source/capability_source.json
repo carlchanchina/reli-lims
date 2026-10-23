@@ -1,0 +1,45 @@
+{
+  "actions": [],
+  "autoname": "format:CAPSRC-{#####}",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "laboratory",
+    "source_type",
+    "certificate_no",
+    "file",
+    "issue_date",
+    "expiry_date",
+    "version",
+    "parser_status",
+    "parsed_json",
+    "raw_text",
+    "parsed_summary",
+    "remarks"
+  ],
+  "fields": [
+    {"fieldname": "laboratory", "fieldtype": "Link", "label": "实验室", "options": "Laboratory Profile", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "source_type", "fieldtype": "Select", "label": "来源类型", "options": "CNAS\nCMA\nExcel\nPDF\n其他", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "certificate_no", "fieldtype": "Data", "label": "证书编号"},
+    {"fieldname": "file", "fieldtype": "Attach", "label": "来源文件", "reqd": 1},
+    {"fieldname": "issue_date", "fieldtype": "Date", "label": "签发日期"},
+    {"fieldname": "expiry_date", "fieldtype": "Date", "label": "有效期至"},
+    {"fieldname": "version", "fieldtype": "Data", "label": "版本"},
+    {"fieldname": "parser_status", "fieldtype": "Select", "label": "解析状态", "options": "待解析\n已解析\n待确认\n已完成\n失败", "default": "待解析", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "parsed_json", "fieldtype": "JSON", "label": "结构化解析结果", "description": "解析器输出的候选能力数组。正式能力必须人工确认后生成。"},
+    {"fieldname": "raw_text", "fieldtype": "Long Text", "label": "原始解析文本"},
+    {"fieldname": "parsed_summary", "fieldtype": "Long Text", "label": "解析摘要"},
+    {"fieldname": "remarks", "fieldtype": "Small Text", "label": "备注"}
+  ],
+  "module": "Reli LIMS",
+  "name": "Capability Source",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {"role": "Lab Manager", "create": 1, "read": 1, "write": 1, "delete": 1, "report": 1, "export": 1, "print": 1, "email": 1, "share": 1},
+    {"role": "Lab Reviewer", "read": 1, "report": 1, "export": 1, "print": 1},
+    {"role": "System Manager", "create": 1, "read": 1, "write": 1, "delete": 1, "report": 1, "export": 1, "print": 1}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}
