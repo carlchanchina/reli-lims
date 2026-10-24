@@ -1,4 +1,13 @@
 frappe.ui.form.on('Test Request', {
+    setup(frm) {
+        frm.set_query('quotation', () => ({filters: {
+            quotation_to: 'Customer', party_name: frm.doc.customer,
+            company: frm.doc.company, docstatus: 1
+        }}));
+        frm.set_query('sales_order', () => ({filters: {
+            customer: frm.doc.customer, company: frm.doc.company, docstatus: 1
+        }}));
+    },
     refresh(frm) {
         frm.events.update_choices(frm);
         if (frm.doc.docstatus !== 1) return;
