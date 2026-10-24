@@ -12,6 +12,9 @@
     "contact_phone",
     "contact_email",
     "notes",
+    "commercial_source",
+    "quotation",
+    "sales_order",
     "sample_info",
     "samples",
     "test_info",
@@ -387,6 +390,27 @@
       "label": "超期标识",
       "read_only": 1,
       "allow_on_submit": 1,
+      "no_copy": 1
+    },
+    {
+      "fieldname": "commercial_source",
+      "fieldtype": "Section Break",
+      "label": "报价与订单（可选）",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "quotation",
+      "fieldtype": "Link",
+      "options": "Quotation",
+      "label": "关联报价单",
+      "no_copy": 1,
+      "description": "无报价单也可手工创建委托；不自动复制商品行作为样品或检测项目。"
+    },
+    {
+      "fieldname": "sales_order",
+      "fieldtype": "Link",
+      "options": "Sales Order",
+      "label": "关联销售订单",
       "no_copy": 1
     }
   ],
