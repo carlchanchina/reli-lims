@@ -1,0 +1,47 @@
+{
+  "actions": [],
+  "autoname": "format:CAPSRC-{#####}",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "laboratory",
+    "source_type",
+    "certificate_no",
+    "documents_source_id",
+    "documents_version",
+    "documents_review_status",
+    "source_file_url",
+    "issue_date",
+    "expiry_date",
+    "structured_json",
+    "import_status",
+    "imported_at",
+    "remarks"
+  ],
+  "fields": [
+    {"fieldname": "laboratory", "fieldtype": "Link", "label": "实验室", "options": "Laboratory Profile", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "source_type", "fieldtype": "Select", "label": "来源类型", "options": "CNAS\nCMA\nExcel\nPDF\n其他", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "certificate_no", "fieldtype": "Data", "label": "证书编号"},
+    {"fieldname": "documents_source_id", "fieldtype": "Data", "label": "Documents 文档 ID", "reqd": 1, "unique": 1, "description": "来自 wekona_documents 的审核后文档标识。Reli LIMS 不负责 OCR 或原文解析。"},
+    {"fieldname": "documents_version", "fieldtype": "Data", "label": "Documents 版本"},
+    {"fieldname": "documents_review_status", "fieldtype": "Select", "label": "文档审核状态", "options": "Approved\nSuperseded\nRevoked", "default": "Approved", "reqd": 1},
+    {"fieldname": "source_file_url", "fieldtype": "Data", "label": "来源文件引用", "description": "保留 wekona_documents 中原文件或版本化文件的引用，不在 Reli LIMS 重复存一份解析源文件。"},
+    {"fieldname": "issue_date", "fieldtype": "Date", "label": "签发日期"},
+    {"fieldname": "expiry_date", "fieldtype": "Date", "label": "有效期至"},
+    {"fieldname": "structured_json", "fieldtype": "JSON", "label": "审核后结构化结果", "reqd": 1, "description": "仅接收 wekona_documents 审核通过后的结构化能力结果。"},
+    {"fieldname": "import_status", "fieldtype": "Select", "label": "导入状态", "options": "待导入\n已导入\n部分导入\n已撤销\n失败", "default": "待导入", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "imported_at", "fieldtype": "Datetime", "label": "导入时间", "read_only": 1},
+    {"fieldname": "remarks", "fieldtype": "Small Text", "label": "备注"}
+  ],
+  "module": "Reli LIMS",
+  "name": "Capability Source",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {"role": "Lab Manager", "create": 1, "read": 1, "write": 1, "delete": 1, "report": 1, "export": 1, "print": 1, "email": 1, "share": 1},
+    {"role": "Lab Reviewer", "read": 1, "report": 1, "export": 1, "print": 1},
+    {"role": "System Manager", "create": 1, "read": 1, "write": 1, "delete": 1, "report": 1, "export": 1, "print": 1}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}

@@ -40,6 +40,8 @@ class TestRequest(Document):
         for row in self.items:
             row.applicable_sample_codes = ', '.join(pair.sample_code for pair in assignments
                                                     if pair.item_code == row.item_code)
+        from reli_lims.request_commercial import validate_commercial_links
+        validate_commercial_links(self)
         validate_photos(self)
 
     def before_submit(self):

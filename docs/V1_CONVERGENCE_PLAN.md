@@ -533,3 +533,9 @@ V1 只要求完成下面这一件事：
 > 一个实验室人员能从“客户委托”开始，完成收样、建立 ERPNext Project、形成试验方案、分配样品和检测项目、记录试验结果、完成审核、签发检测报告，并能在检测工作台上清楚看到每一单当前处于哪个阶段。
 
 如果一个功能不能直接支撑这条路径，V1 原则上不做。
+
+## V1.1 实验室入驻与能力发布
+
+复用 Laboratory Profile 承载实验室入驻资料；Capability Source 仅消费 wekona_documents 人工审核后的结构化结果，Laboratory Capability 复用 Test Method/Test Standard，经人工确认后发布。Wiki 为知识展示，Mercur 为交易投影。保持检测执行主流程不变。
+
+交付范围：受控来源交接、幂等导入、确认/发布/取消发布、中文 Desk 入口、公共只读白名单投影、明确标记的测试 Demo、单元和 Frappe 集成测试。远程审批验证/撤销同步和外部投影写入未实现，不作为已上线能力。部署前需在独立 Frappe 测试站点 migrate 并运行集成验收。详见 [实验室能力中心](LABORATORY_CAPABILITY_CENTER.md)。
