@@ -3,8 +3,10 @@ import json
 import frappe
 from reli_lims.progress import STAGES, refresh_all
 
-CARD_STAGES = [('待确认委托', '待确认'), ('待收样', '待收样'), ('试验中', '试验中'),
-               ('待报告', '待报告'), ('报告待审核', '报告审核'), ('超期', None)]
+CARD_STAGES = [('待确认委托', '待确认'), ('待收样', '待收样'), ('待试验', '待试验'),
+               ('试验中', '试验中'), ('待报告', '待报告'), ('报告待审核', '报告审核'),
+               ('超期', None)]
+PERSONAL_STAGES = [('我的待试验', '待试验'), ('我的进行中', '试验中'), ('我的待报告', '待报告')]
 
 
 def after_migrate():
@@ -15,19 +17,9 @@ def after_migrate():
             frappe.db.set_value('Test Report', name, 'status', new, update_modified=False)
     refresh_all()
     for label, stage in CARD_STAGES:
-        name = 'Reli LIMS ' + label
-        filters = [['Test Request', 'docstatus', '!=', 2]]
-        dynamic = []
-        if stage:
-            filters.append(['Test Request', 'business_stage', '=', stage])
-        else:
-            filters.append(['Test Request', 'business_stage', '!=', '已完成'])
-            dynamic = [['Test Request', 'delivery_date', '<', 'frappe.datetime.get_today()']]
-        values = dict(label=label, type='Document Type', document_type='Test Request',
-            function='Count', is_public=1, is_standard=0, module='Reli LIMS',
-            show_percentage_stats=0, filters_json=json.dumps(filters, ensure_ascii=False),
-            dynamic_filters_json=json.dumps(dynamic), color='#cf4444' if stage is None else '#268575')
-        _upsert('Number Card', name, values)
+        _request_card(label, stage)
+    for label, stage in PERSONAL_STAGES:
+        _request_card(label, stage, personal=True)
     board = dict(kanban_board_name='检测主流程', reference_doctype='Test Request',
         field_name='business_stage', private=0, is_standard='No', module='Reli LIMS',
         filters=json.dumps([['Test Request', 'docstatus', '!=', 2]]),
@@ -39,6 +31,26 @@ def after_migrate():
                 ('customer', '客户'), ('sample_summary', '样品'), ('test_summary', '检测项目'),
                 ('responsible_engineer', '负责人'), ('delivery_date', '要求完成日期'), ('overdue_status', '超期标识')]])
     _upsert('Kanban Board', '检测主流程', board)
+
+
+def _request_card(label, stage, personal=False):
+    """Idempotent Test Request number card; personal cards scope to the session user."""
+    name = 'Reli LIMS ' + label
+    filters = [['Test Request', 'docstatus', '!=', 2]]
+    dynamic = []
+    if personal:
+        dynamic.append(['Test Request', 'responsible_engineer', '=', 'frappe.session.user'])
+    if stage:
+        filters.append(['Test Request', 'business_stage', '=', stage])
+    else:
+        filters.append(['Test Request', 'business_stage', '!=', '已完成'])
+        dynamic.append(['Test Request', 'delivery_date', '<', 'frappe.datetime.get_today()'])
+    values = dict(label=label, type='Document Type', document_type='Test Request',
+        function='Count', is_public=1, is_standard=0, module='Reli LIMS',
+        show_percentage_stats=0, filters_json=json.dumps(filters, ensure_ascii=False),
+        dynamic_filters_json=json.dumps(dynamic),
+        color='#cf4444' if stage is None else '#268575')
+    _upsert('Number Card', name, values)
 
 
 def _upsert(doctype, name, values):

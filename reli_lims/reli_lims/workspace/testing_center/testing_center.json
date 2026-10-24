@@ -119,6 +119,10 @@
       "label": "待收样"
     },
     {
+      "number_card_name": "Reli LIMS 待试验",
+      "label": "待试验"
+    },
+    {
       "number_card_name": "Reli LIMS 试验中",
       "label": "试验中"
     },
@@ -133,9 +137,21 @@
     {
       "number_card_name": "Reli LIMS 超期",
       "label": "超期"
+    },
+    {
+      "number_card_name": "Reli LIMS 我的待试验",
+      "label": "我的待试验"
+    },
+    {
+      "number_card_name": "Reli LIMS 我的进行中",
+      "label": "我的进行中"
+    },
+    {
+      "number_card_name": "Reli LIMS 我的待报告",
+      "label": "我的待报告"
     }
   ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"v1-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测工作台</span>\", \"col\": 12}}, {\"id\": \"v1-card-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待确认委托\", \"col\": 4}}, {\"id\": \"v1-card-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待收样\", \"col\": 4}}, {\"id\": \"v1-card-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"试验中\", \"col\": 4}}, {\"id\": \"v1-card-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待报告\", \"col\": 4}}, {\"id\": \"v1-card-4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报告待审核\", \"col\": 4}}, {\"id\": \"v1-card-5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超期\", \"col\": 4}}, {\"id\": \"v1-flow\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">主流程看板</span>\", \"col\": 12}}, {\"id\": \"v1-kanban\", \"type\": \"paragraph\", \"data\": {\"text\": \"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a><br>待确认 → 待收样 → 已收样 → 待试验 → 试验中 → 待报告 → 报告审核 → 已完成\", \"col\": 12}}, {\"id\": \"v1-shortcut-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"v1-shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"新建检测委托\", \"col\": 4}}, {\"id\": \"v1-shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"收样\", \"col\": 4}}, {\"id\": \"v1-shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验方案\", \"col\": 4}}, {\"id\": \"v1-shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"v1-shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测项目\", \"col\": 4}}, {\"id\": \"v1-shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测标准\", \"col\": 4}}, {\"id\": \"v1-reference\", \"type\": \"card\", \"data\": {\"card_name\": \"项目与基础资料\", \"col\": 12}}]"
+  "content": "[{\"id\": \"v2-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测工作台</span>\", \"col\": 12}}, {\"id\": \"v2-kpi-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">关键状态</span>\", \"col\": 12}}, {\"id\": \"v2-kpi-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待确认委托\", \"col\": 3}}, {\"id\": \"v2-kpi-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待收样\", \"col\": 3}}, {\"id\": \"v2-kpi-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待试验\", \"col\": 3}}, {\"id\": \"v2-kpi-3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"试验中\", \"col\": 3}}, {\"id\": \"v2-kpi-4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待报告\", \"col\": 3}}, {\"id\": \"v2-kpi-5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报告待审核\", \"col\": 3}}, {\"id\": \"v2-kpi-6\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超期\", \"col\": 3}}, {\"id\": \"v2-flow-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">主流程看板</span>\", \"col\": 12}}, {\"id\": \"v2-kanban\", \"type\": \"paragraph\", \"data\": {\"text\": \"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a><br>待确认 → 待收样 → 已收样 → 待试验 → 试验中 → 待报告 → 报告审核 → 已完成\", \"col\": 12}}, {\"id\": \"v2-mywork-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">我的工作</span>\", \"col\": 12}}, {\"id\": \"v2-mywork-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"我的待试验\", \"col\": 4}}, {\"id\": \"v2-mywork-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"我的进行中\", \"col\": 4}}, {\"id\": \"v2-mywork-2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"我的待报告\", \"col\": 4}}, {\"id\": \"v2-shortcut-heading\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"v2-shortcut-0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"新建检测委托\", \"col\": 4}}, {\"id\": \"v2-shortcut-1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"收样\", \"col\": 4}}, {\"id\": \"v2-shortcut-2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验方案\", \"col\": 4}}, {\"id\": \"v2-shortcut-3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"v2-shortcut-4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测项目\", \"col\": 4}}, {\"id\": \"v2-shortcut-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测标准\", \"col\": 4}}, {\"id\": \"v2-reference\", \"type\": \"card\", \"data\": {\"card_name\": \"项目与基础资料\", \"col\": 12}}]"
 }
