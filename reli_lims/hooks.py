@@ -33,3 +33,8 @@ doc_events = {
 after_migrate = ["reli_lims.setup_v1.after_migrate"]
 
 scheduler_events = {"daily": ["reli_lims.progress.refresh_all"]}
+
+# Reuse ERPNext's permission-aware connections and filtered document lists.
+override_doctype_dashboards = {
+    'Project': 'reli_lims.project_dashboard.get_data',
+}
