@@ -109,3 +109,8 @@
 [data-theme="dark"] #page-Workspaces:has([data-id="v2-title"]) [data-id="v2-kpi-6"] .widget {
   background: var(--rl-paper); border-color: var(--rl-line);
 }
+[data-theme="dark"] #page-Workspaces:has([data-id="v2-title"]) .shortcut-widget-box:hover,
+[data-theme="dark"] #page-Workspaces:has([data-id="v2-title"]) .link-item:hover {
+  background: #304963;
+  color: #e0ebf7;
+}
