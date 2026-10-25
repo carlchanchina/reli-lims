@@ -33,6 +33,3 @@ doc_events = {
 after_migrate = ["reli_lims.setup_v1.after_migrate"]
 
 scheduler_events = {"daily": ["reli_lims.progress.refresh_all"]}
-
-# Presentation only; selectors are scoped to the native Testing Center blocks.
-app_include_css = ["/assets/reli_lims/css/workspace.css?v=20261025-2"]

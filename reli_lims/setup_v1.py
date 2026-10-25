@@ -31,6 +31,7 @@ def after_migrate():
                 ('customer', '客户'), ('sample_summary', '样品'), ('test_summary', '检测项目'),
                 ('responsible_engineer', '负责人'), ('delivery_date', '要求完成日期'), ('overdue_status', '超期标识')]])
     _upsert('Kanban Board', '检测主流程', board)
+    sync_optional_sidebar()
 
 
 def _request_card(label, stage, personal=False):
@@ -60,3 +61,25 @@ def _upsert(doctype, name, values):
         doc.save(ignore_permissions=True)
     else:
         frappe.get_doc(dict(doctype=doctype, name=name, **values)).insert(ignore_permissions=True, set_name=name)
+
+
+def sync_optional_sidebar():
+    """Use native sections, including capability links only when installed."""
+    if not frappe.db.exists('DocType', 'Sidebar') or not frappe.db.exists('Sidebar', 'Reli LIMS'):
+        return
+    sidebar = frappe.get_doc('Sidebar', 'Reli LIMS')
+    targets = [('Workspace', 'Laboratory Capability Center', '实验室能力中心'),
+               ('DocType', 'Capability Source', '能力来源'),
+               ('DocType', 'Laboratory Capability', '实验室检测能力')]
+    existing = {(row.link_type, row.link_to) for row in sidebar.items if row.type == 'Link'}
+    missing = [(kind, target, label) for kind, target, label in targets
+               if frappe.db.exists(kind, target) and (kind, target) not in existing]
+    if not missing:
+        return
+    if not any(row.type == 'Section Break' and row.label == '实验室能力' for row in sidebar.items):
+        sidebar.append('items', dict(type='Section Break', label='实验室能力',
+                                     collapsible=1, keep_closed=1, indent=1))
+    for kind, target, label in missing:
+        sidebar.append('items', dict(type='Link', label=label, link_type=kind,
+                                     link_to=target, child=1))
+    sidebar.save(ignore_permissions=True)

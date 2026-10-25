@@ -1,0 +1,123 @@
+{
+  "doctype": "Sidebar",
+  "name": "Reli LIMS",
+  "title": "Reli LIMS",
+  "module": "Reli LIMS",
+  "app": "reli_lims",
+  "standard": 1,
+  "header_icon": "lab",
+  "items": [
+    {
+      "type": "Section Break",
+      "label": "工作台入口",
+      "collapsible": 1,
+      "keep_closed": 0,
+      "indent": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测工作台",
+      "link_type": "Workspace",
+      "link_to": "Testing Center",
+      "child": 1
+    },
+    {
+      "type": "Section Break",
+      "label": "检测履约",
+      "collapsible": 1,
+      "keep_closed": 0,
+      "indent": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测委托",
+      "link_type": "DocType",
+      "link_to": "Test Request",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "样品收样",
+      "link_type": "DocType",
+      "link_to": "Sample",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "试验方案",
+      "link_type": "DocType",
+      "link_to": "Test Program",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测报告",
+      "link_type": "DocType",
+      "link_to": "Test Report",
+      "child": 1
+    },
+    {
+      "type": "Section Break",
+      "label": "任务与基础资料",
+      "collapsible": 1,
+      "keep_closed": 1,
+      "indent": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测任务队列",
+      "link_type": "Report",
+      "link_to": "Laboratory Work Queue",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "项目",
+      "link_type": "DocType",
+      "link_to": "Project",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "任务",
+      "link_type": "DocType",
+      "link_to": "Task",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "设备",
+      "link_type": "DocType",
+      "link_to": "Asset",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "客户",
+      "link_type": "DocType",
+      "link_to": "Customer",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测标准",
+      "link_type": "DocType",
+      "link_to": "Test Standard",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测方法",
+      "link_type": "DocType",
+      "link_to": "Test Method",
+      "child": 1
+    },
+    {
+      "type": "Link",
+      "label": "实验室资料",
+      "link_type": "DocType",
+      "link_to": "Laboratory Profile",
+      "child": 1
+    }
+  ]
+}
