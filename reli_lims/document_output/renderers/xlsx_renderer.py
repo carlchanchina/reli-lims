@@ -10,6 +10,9 @@ from openpyxl.utils.cell import range_boundaries, get_column_letter
 
 
 def write(cell, value):
+    # Split before assigning: openpyxl silently truncates at Excel's cell limit.
+    if isinstance(value, str) and len(value) > 32767:
+        value = continued_value(cell, value)
     cell.value = value if value is not None else ''
     # Customer text must never be interpreted as Excel formulas.
     if isinstance(value, str):
@@ -93,8 +96,15 @@ def continuation(workbook, source, original, number):
     appendix.print_area = f'A1:F{appendix.max_row}'
 
 
+def continued_value(cell, original, prefix_length=50):
+    workbook = cell.parent.parent
+    number = getattr(workbook, '_reli_continuation_count', 0) + 1
+    workbook._reli_continuation_count = number
+    continuation(workbook, f'{cell.parent.title}!{cell.coordinate}', original, number)
+    return original[:prefix_length] + f'…\n（全文见续页第 {number} 节）'
+
+
 def layout(workbook, sheet):
-    count = 0
     for row in sheet:
         height = sheet.row_dimensions[row[0].row].height or 16
         for cell in row:
@@ -108,11 +118,8 @@ def layout(workbook, sheet):
                     break
             lines = line_count(cell.value, width)
             if lines > 20:
-                count += 1
-                original = str(cell.value)
-                continuation(workbook, f'{sheet.title}!{cell.coordinate}', original, count)
                 prefix_length = max(20, min(150, int(width / 2) * 5))
-                write(cell, original[:prefix_length] + f'…\n（全文见续页第 {count} 节）')
+                write(cell, continued_value(cell, str(cell.value), prefix_length))
                 lines = line_count(cell.value, width)
             if lines > 1:
                 cell.alignment = Alignment(horizontal=cell.alignment.horizontal, vertical='top', wrap_text=True)

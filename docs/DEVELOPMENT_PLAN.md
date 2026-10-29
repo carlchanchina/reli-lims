@@ -139,4 +139,4 @@ Anything not required for this path is secondary.
 
 开发及自动回归完成，进入 PR 交付。复用 ERPNext 客户／联系人／地址／报价／销售订单及财务入口，Test Request 保留直接送检及可选商业关联；三类单据共用“生成文档”，默认 PDF，支持 DOCX／XLSX，报价 Excel 基于指定真实模板。现有检测、报告审核及签发主线保留，无 Core／Bridge／生产修改。
 
-本地 36 项 Python、5 项 JS 和隔离站点 43 项 Frappe 回归通过；提供九份虚构示例。ONLYOFFICE 10.0.0.169 原生引擎载入／打印六份 Office 示例及长文本续页已补验通过，兼容证据与分页差异已记录；LibreOffice Calc 打开／打印亦通过。详见 [收口验收记录](DOCUMENT_OUTPUT_WORKSPACE_FINALIZE_ACCEPTANCE.md)。PR 合并后本阶段结束，本分支不再追加需求。
+本地 37 项 Python、5 项 JS 和隔离站点 43 项 Frappe 回归通过；提供九份虚构示例。ONLYOFFICE 10.0.0.169 原生引擎载入／打印六份 Office 示例及长文本续页已补验通过，兼容证据与分页差异已记录；LibreOffice Calc 打开／打印亦通过。详见 [收口验收记录](DOCUMENT_OUTPUT_WORKSPACE_FINALIZE_ACCEPTANCE.md)。PR 合并后本阶段结束，本分支不再追加需求。

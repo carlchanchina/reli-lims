@@ -35,7 +35,7 @@ Quotation、Test Request、Test Report 使用同一 `doctype_js` 脚本和一个
 
 | 检查 | 结果 |
 |---|---|
-| 本地完整 `pytest tests -q` | 36 通过 |
+| 本地完整 `pytest tests -q` | 37 通过 |
 | `node --test tests/*.js` | 5 通过 |
 | 全量 Frappe `run-tests --app reli_lims` | 43 通过，249.600 秒 |
 | 最终文档模块 Frappe 重测 | 3 通过；覆盖真实九格式、私有附件、不自动签发、Guest／无权限用户全部格式拒绝、Workspace／看板结构 |
@@ -140,3 +140,7 @@ Frappe 回归有既有 `limit_page_length` 弃用提示，以及既有测试 PDF
 - `docs/acceptance/document_output/onlyoffice/检测报价单-示例-xlsx.pdf`
 - `docs/acceptance/document_output/onlyoffice/检测报告-示例-docx.pdf`
 - `docs/acceptance/document_output/onlyoffice/检测报告-示例-xlsx.pdf`
+
+## 合并前复核补充
+
+独立审阅发现超过 Excel 单元格 32,767 字符上限时，openpyxl 在续页处理前会静默截断。已先以 33,000 个中文字符及末尾标记复现，再改为赋值前分流到原有续页；报价条款和报告结论的完整文本、公式前缀安全均有回归覆盖。复跑完整本地回归为 37 项 Python、5 项 JS 全部通过；不新增功能或更改示例。

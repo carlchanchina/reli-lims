@@ -116,6 +116,20 @@ class OutputTests(unittest.TestCase):
         signature = next(c for row in sheet for c in row if c.value and '编制：' in str(c.value))
         self.assertIn(f'A{signature.row}:F{signature.row}', {str(r) for r in sheet.merged_cells.ranges})
 
+    def test_xlsx_preserves_text_beyond_excel_single_cell_limit(self):
+        from reli_lims.document_output.registry import get_template
+        from reli_lims.document_output.renderers.xlsx_renderer import render
+        from reli_lims.document_output.mapping.quotation import build_context as quote
+        from reli_lims.document_output.mapping.test_report import build_context as report
+        long_text = '=untrusted' + '甲' * 33000 + 'END_SENTINEL'
+        for dt, ctx in [('Quotation', quote(dict(name='Q', terms=long_text))),
+                        ('Test Report', report(dict(name='R', overall_conclusion=long_text), dict(items=[])))]:
+            book = load_workbook(BytesIO(render(get_template(dt), ctx)))
+            content = ''.join(str(c.value or '') for row in book['续页'] for c in row)
+            self.assertTrue(long_text in content, 'Complete long text and sentinel must survive')
+            self.assertFalse(any(c.data_type == 'f' for row in book['续页'] for c in row))
+            self.assertTrue(all(len(str(c.value or '')) <= 32767 for sheet in book for row in sheet for c in row))
+
     def test_pdf_escapes_markup_and_calls_native_pdf(self):
         from reli_lims.document_output.registry import get_template
         from reli_lims.document_output.renderers.pdf_renderer import render
