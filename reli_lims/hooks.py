@@ -33,3 +33,7 @@ doc_events = {
 after_migrate = ["reli_lims.setup_v1.after_migrate"]
 
 scheduler_events = {"daily": ["reli_lims.progress.refresh_all"]}
+
+# One shared output dialog, including ERPNext's native Quotation form.
+doctype_js = {dt: 'public/js/document_output.js'
+              for dt in ('Quotation', 'Test Request', 'Test Report')}

@@ -6,7 +6,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "ReliLab" }]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["openpyxl>=3.1.5,<4", "python-docx>=1.1.2,<2"]
 
 [build-system]
 requires = ["flit_core>=3.4,<4"]

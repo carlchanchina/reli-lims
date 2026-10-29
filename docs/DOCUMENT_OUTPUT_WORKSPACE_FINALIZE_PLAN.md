@@ -261,3 +261,20 @@ Quotation XLSX 使用真实报价模板并验证 Excel / ONLYOFFICE 可正常打
 4. 开 PR 到 `main`。
 5. PR 只描述本轮 Workspace + Document Output 收尾，不混入其他项目。
 6. 测试通过后合并，至此 Reli LIMS 当前这一阶段结束，不继续在同一分支追加新需求。
+
+## 10. 本轮实施状态（2026-10-29）
+
+用户已明确授权：前一轮 Document Output 未落地时，允许在本分支补齐后继续收口。已完成缺失模块，没有重复搬入不存在的实现。
+
+- [x] fetch、最新 main／分支／上一轮 PR 和提交核查；安全复用可选商业来源提交。
+- [x] 整理现有 Testing Center；保留六卡、八阶段及检测主线，接入原生销售／财务。
+- [x] Test Request 可选 Quotation／Sales Order、读取权限及客户／公司／来源完整性校验。
+- [x] 三类单据统一“生成文档”，三格式、默认 PDF。
+- [x] Quotation XLSX 使用指定真实模板，保留格式、动态扩行及签字区。
+- [x] 权限、Mapping、三 Renderer、动态行、中文／空字段、长文本续页测试。
+- [x] 隔离站点完整 Frappe 回归、真实浏览器 Workspace／表单验收、九份示例与视觉检查。
+- [x] 更新开发计划、模块文档与验收记录。
+- [ ] Excel／ONLYOFFICE 原生应用打开验收：当前环境缺少这两种应用；openpyxl／LibreOffice Calc 打开及打印已通过，合并前需补验。
+- [ ] PR 审阅与合并；合并后本阶段正式结束，不在本分支追加新需求。
+
+详见 [验收记录](DOCUMENT_OUTPUT_WORKSPACE_FINALIZE_ACCEPTANCE.md)、[模块说明](DOCUMENT_OUTPUT.md)、[九份示例](examples/document_output/README.md)。提交／Push／PR 状态以本分支 Git 和 GitHub 为准。
