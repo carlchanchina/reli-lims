@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-29",
+  "engine": "ONLYOFFICE Document Server x2t",
+  "version": "10.0.0.169",
+  "mode": "Existing native engine, isolated temporary files; no service configuration changes or app integration.",
+  "samples": [
+    {
+      "source_file": "检测委托单-示例.docx",
+      "source_sha256": "b209c6d01628f8bfa9951b834a8ce32df968b371fe09eee56f817f962665347e",
+      "native_pdf": "检测委托单-示例-docx.pdf",
+      "pdf_sha256": "1abae83339204ebd250a09b74390a77c4e74b839039ff0c9d4aec5e32cebc30d",
+      "pages": 1,
+      "exit_code": 0
+    },
+    {
+      "source_file": "检测委托单-示例.xlsx",
+      "source_sha256": "49ab325c800c7e323aa508c970bc8a144125dcad4f8160c5615fc429d6abdfa7",
+      "native_pdf": "检测委托单-示例-xlsx.pdf",
+      "pdf_sha256": "b1ab69fec8cee3e822b01b35a510d6d4448a35b3622f987a34af661f1ce6b8b6",
+      "pages": 2,
+      "exit_code": 0
+    },
+    {
+      "source_file": "检测报价单-示例.docx",
+      "source_sha256": "eb904bef8f73015f0cab69a9cbec76f73499b98b08b9efae66f7092d5e3cc759",
+      "native_pdf": "检测报价单-示例-docx.pdf",
+      "pdf_sha256": "e41f30527f42c7e95d82cbf11509fcbf29da1b2d7df5a2771b66a409326c3d11",
+      "pages": 1,
+      "exit_code": 0
+    },
+    {
+      "source_file": "检测报价单-示例.xlsx",
+      "source_sha256": "edd172e35ac57ec024c07154c94b04c8ce603c014513e1339fdb717393778f5c",
+      "native_pdf": "检测报价单-示例-xlsx.pdf",
+      "pdf_sha256": "755d938cf33519205e63a5bd2358753440de632784388bf2a6cb38cbca35f8ef",
+      "pages": 2,
+      "exit_code": 0
+    },
+    {
+      "source_file": "检测报告-示例.docx",
+      "source_sha256": "53aa54c6c8f14f517e26793a1677893a8ea1e18dd32de634d8ebf62baecf2992",
+      "native_pdf": "检测报告-示例-docx.pdf",
+      "pdf_sha256": "5fa0fe5c2a067fda8e1b1e274e0033c1b083e224ad86ae5bdf10a1f23727cb50",
+      "pages": 1,
+      "exit_code": 0
+    },
+    {
+      "source_file": "检测报告-示例.xlsx",
+      "source_sha256": "31eeade7b692aa403e13e54c215e944103ab782ef49b9a8ce397848ff3e7a00c",
+      "native_pdf": "检测报告-示例-xlsx.pdf",
+      "pdf_sha256": "a01ea8ddc95e2b2f461de3aa71e71c91645b8ce729a0c869a53226623ab14cdb",
+      "pages": 1,
+      "exit_code": 0
+    }
+  ],
+  "limitations": [
+    "Backend native import/render acceptance, not browser editor interaction.",
+    "Direct converter prints active worksheet. Continuation tests explicitly select the existing continuation sheet in temporary copies.",
+    "Quotation XLSX prints two pages in this engine; signature is on page 2."
+  ],
+  "long_text_checks": [
+    {
+      "native_pdf": "long-quotation-appendix-xlsx.pdf",
+      "pages": 3,
+      "end_marker_present": true,
+      "repeated_character_counts": {
+        "合": 800,
+        "同": 800,
+        "内": 800,
+        "容": 800,
+        "。": 800
+      },
+      "pdf_sha256": "855386cacb868a543a258c10a034086d987095d17ecd33d2300ce4323e7bf77f"
+    },
+    {
+      "native_pdf": "long-report-appendix-xlsx.pdf",
+      "pages": 3,
+      "end_marker_present": true,
+      "repeated_character_counts": {
+        "合": 800,
+        "同": 800,
+        "内": 800,
+        "容": 800,
+        "。": 800
+      },
+      "pdf_sha256": "e41631b17923861781514ffa6fc482a52b2173637912e1eb73caa4a32ad6b037"
+    }
+  ]
+}

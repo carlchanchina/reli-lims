@@ -274,7 +274,7 @@ Quotation XLSX 使用真实报价模板并验证 Excel / ONLYOFFICE 可正常打
 - [x] 权限、Mapping、三 Renderer、动态行、中文／空字段、长文本续页测试。
 - [x] 隔离站点完整 Frappe 回归、真实浏览器 Workspace／表单验收、九份示例与视觉检查。
 - [x] 更新开发计划、模块文档与验收记录。
-- [ ] Excel／ONLYOFFICE 原生应用打开验收：当前环境缺少这两种应用；openpyxl／LibreOffice Calc 打开及打印已通过，合并前需补验。
+- [x] ONLYOFFICE 原生引擎兼容验收：用户提供现有容器后，三份 XLSX／三份 DOCX 的原生载入／打印全部通过；长文本续页完整。证据和分页差异已记录，未新增集成或修改服务配置。
 - [ ] PR 审阅与合并；合并后本阶段正式结束，不在本分支追加新需求。
 
 详见 [验收记录](DOCUMENT_OUTPUT_WORKSPACE_FINALIZE_ACCEPTANCE.md)、[模块说明](DOCUMENT_OUTPUT.md)、[九份示例](examples/document_output/README.md)。提交／Push／PR 状态以本分支 Git 和 GitHub 为准。

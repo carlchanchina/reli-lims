@@ -59,7 +59,9 @@ Frappe 回归有既有 `limit_page_length` 弃用提示，以及既有测试 PDF
 
 ## 明确边界与剩余项
 
-开发和自动回归已完成。当前验收环境没有 Microsoft Excel 或 ONLYOFFICE，因此 **未宣称完成计划中的 Excel／ONLYOFFICE 原生打开验收**；已完成 openpyxl 和 LibreOffice Calc 打开／打印验证，该项留待合并前人工确认或在已有验收环境补验。没有为此新增 Drive／ONLYOFFICE 接入。
+开发和自动回归已完成。用户提供现有 ONLYOFFICE 容器后，已补齐指定 Office 引擎兼容验收：`x2t 10.0.0.169` 成功原生载入并打印三份 XLSX 和三份 DOCX，输入哈希与仓库示例一致；中文、金额、条款和签字区完整。长文本续页选为活动表后完整打印，末尾标记及字符计数通过。报价 XLSX 在 ONLYOFFICE 打印两页，签字区在第 2 页。
+
+[ONLYOFFICE 验收证据](acceptance/document_output/onlyoffice/README.md)含原生输出 PDF、报价截图和哈希清单。此次为后端原生导入／排版引擎验证，没有宣称浏览器编辑器交互或 Microsoft Excel 专项验收。没有为此新增 Drive／ONLYOFFICE 接入或修改运行服务配置。当前仅余 PR 审阅与合并。
 
 无重复 DocType；无 ERPNext/Frappe Core、Bridge、Mercur 或生产修改；不新增其他需求。PR 待审阅及合并。合并后本阶段结束，本分支不再追加新需求。
 
@@ -123,3 +125,18 @@ Frappe 回归有既有 `limit_page_length` 弃用提示，以及既有测试 PDF
 - `tests/test_document_workspace.py`
 - `tests/test_request_commercial.py`
 - `tools/build_document_templates.py`
+
+## ONLYOFFICE 补验文件
+
+- `docs/acceptance/document_output/onlyoffice/README.md`
+- `docs/acceptance/document_output/onlyoffice/long-quotation-appendix-xlsx.pdf`
+- `docs/acceptance/document_output/onlyoffice/long-report-appendix-xlsx.pdf`
+- `docs/acceptance/document_output/onlyoffice/manifest.json`
+- `docs/acceptance/document_output/onlyoffice/quotation-page-1.png`
+- `docs/acceptance/document_output/onlyoffice/quotation-page-2.png`
+- `docs/acceptance/document_output/onlyoffice/检测委托单-示例-docx.pdf`
+- `docs/acceptance/document_output/onlyoffice/检测委托单-示例-xlsx.pdf`
+- `docs/acceptance/document_output/onlyoffice/检测报价单-示例-docx.pdf`
+- `docs/acceptance/document_output/onlyoffice/检测报价单-示例-xlsx.pdf`
+- `docs/acceptance/document_output/onlyoffice/检测报告-示例-docx.pdf`
+- `docs/acceptance/document_output/onlyoffice/检测报告-示例-xlsx.pdf`
