@@ -28,10 +28,10 @@ class TestDistribution(unittest.TestCase):
         self.assertEqual(workspace["public"], 1)
         self.assertEqual({r["role"] for r in workspace["roles"]},
                          {"Lab Manager", "Lab Engineer", "Lab Reviewer"})
-        self.assertEqual({s["link_to"] for s in workspace["shortcuts"]}, {"Test Request", "Test Program", "Test Standard", "Test Method", "Test Report"})
-        self.assertEqual(len(workspace['shortcuts']), 6)
+        self.assertEqual({s["link_to"] for s in workspace["shortcuts"]}, {"Test Request", "Test Program", "Test Report", "Sample", "Customer", "Quotation", "Sales Order"})
+        self.assertEqual(len(workspace['shortcuts']), 9)
         self.assertEqual(len(workspace['number_cards']), 6)
-        self.assertTrue({'Sample', 'Project', 'Task', 'Asset', 'Customer', 'Test Report'} <=
+        self.assertTrue({'Project', 'Task', 'Asset', 'Contact', 'Address', 'Test Method', 'Test Standard', 'Sales Invoice', 'Payment Entry'} <=
                         {link.get('link_to') for link in workspace['links']})
         blocks = json.loads(workspace["content"])
         card_labels = {row['label'] for row in workspace['number_cards']}

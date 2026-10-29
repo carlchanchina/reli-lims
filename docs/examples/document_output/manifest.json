@@ -1,0 +1,98 @@
+{
+  "Quotation": {
+    "source_name": "SAL-QTN-2026-00001",
+    "files": [
+      {
+        "file_name": "检测报价单-示例.pdf",
+        "output_format": "pdf",
+        "mime_type": "application/pdf",
+        "template": "检测报价单",
+        "size_bytes": 19717,
+        "sha256": "ed9719359924e378081da313d83f518b0cfd9de5198d9d8d05046fb99174fc32",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测报价单-示例.docx",
+        "output_format": "docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "template": "检测报价单",
+        "size_bytes": 37946,
+        "sha256": "eb904bef8f73015f0cab69a9cbec76f73499b98b08b9efae66f7092d5e3cc759",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测报价单-示例.xlsx",
+        "output_format": "xlsx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "template": "检测报价单",
+        "size_bytes": 9381,
+        "sha256": "edd172e35ac57ec024c07154c94b04c8ce603c014513e1339fdb717393778f5c",
+        "source_attachment_is_private": true
+      }
+    ]
+  },
+  "Test Request": {
+    "source_name": "REQ-00007",
+    "files": [
+      {
+        "file_name": "检测委托单-示例.pdf",
+        "output_format": "pdf",
+        "mime_type": "application/pdf",
+        "template": "检测委托单",
+        "size_bytes": 24186,
+        "sha256": "497fe67dc131ffae424d37eb0d8cd1bab915b5240282a02d29a7bf1b337f3786",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测委托单-示例.docx",
+        "output_format": "docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "template": "检测委托单",
+        "size_bytes": 38156,
+        "sha256": "b209c6d01628f8bfa9951b834a8ce32df968b371fe09eee56f817f962665347e",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测委托单-示例.xlsx",
+        "output_format": "xlsx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "template": "检测委托单",
+        "size_bytes": 6766,
+        "sha256": "49ab325c800c7e323aa508c970bc8a144125dcad4f8160c5615fc429d6abdfa7",
+        "source_attachment_is_private": true
+      }
+    ]
+  },
+  "Test Report": {
+    "source_name": "RPT-00011",
+    "files": [
+      {
+        "file_name": "检测报告-示例.pdf",
+        "output_format": "pdf",
+        "mime_type": "application/pdf",
+        "template": "检测报告",
+        "size_bytes": 20684,
+        "sha256": "5d699e505c2df2a811e37d7d2dc45f414abcda46159e829bd049d097d1aa0d3b",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测报告-示例.docx",
+        "output_format": "docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "template": "检测报告",
+        "size_bytes": 37990,
+        "sha256": "53aa54c6c8f14f517e26793a1677893a8ea1e18dd32de634d8ebf62baecf2992",
+        "source_attachment_is_private": true
+      },
+      {
+        "file_name": "检测报告-示例.xlsx",
+        "output_format": "xlsx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "template": "检测报告",
+        "size_bytes": 6392,
+        "sha256": "31eeade7b692aa403e13e54c215e944103ab782ef49b9a8ce397848ff3e7a00c",
+        "source_attachment_is_private": true
+      }
+    ]
+  }
+}
