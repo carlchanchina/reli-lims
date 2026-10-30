@@ -43,6 +43,18 @@ class TestRequest(Document):
         from reli_lims.request_commercial import validate_commercial_links
         validate_commercial_links(self)
         validate_photos(self)
+        from reli_lims.request_confirmation import validate_confirmation
+        validate_confirmation(self)
+
+    @frappe.whitelist(methods=['POST'])
+    def request_customer_confirmation(self):
+        from reli_lims.request_confirmation import await_customer
+        await_customer(self)
+
+    @frappe.whitelist(methods=['POST'])
+    def share_customer_attachment(self, file_id: str):
+        from reli_lims.request_confirmation import share_customer_attachment
+        return share_customer_attachment(self, file_id)
 
     def before_submit(self):
         require_role('Lab Manager')
