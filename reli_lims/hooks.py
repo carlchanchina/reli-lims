@@ -37,3 +37,8 @@ scheduler_events = {"daily": ["reli_lims.progress.refresh_all"]}
 # One shared output dialog, including ERPNext's native Quotation form.
 doctype_js = {dt: 'public/js/document_output.js'
               for dt in ('Quotation', 'Test Request', 'Test Report')}
+
+# Sprint4: native private attachment changes invalidate technical confirmation.
+doc_events['File'] = {event: 'reli_lims.request_confirmation.file_changed' for event in ('after_insert','on_update','after_delete')}
+after_migrate.append('reli_lims.request_confirmation_setup.after_migrate')
+doc_events['File']['validate'] = 'reli_lims.request_confirmation.validate_file_visibility'

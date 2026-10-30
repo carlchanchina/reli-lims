@@ -10,6 +10,19 @@ frappe.ui.form.on('Test Request', {
     },
     refresh(frm) {
         frm.events.update_choices(frm);
+        if (frm.doc.docstatus === 0 && !frm.is_new() &&
+            frappe.user_roles.some(role => ['Lab Manager', 'Lab Engineer'].includes(role))) {
+            frm.add_custom_button(__('请求客户确认'), () => {
+                if (frm.is_dirty()) { frappe.msgprint(__('请先保存委托内容，再请求客户确认。')); return; }
+                frm.call('request_customer_confirmation').then(() => frm.reload_doc());
+            });
+            frm.add_custom_button(__('分享私有附件给客户'), () => {
+                if (frm.is_dirty()) { frappe.msgprint(__('请先保存委托内容，再分享附件。')); return; }
+                frappe.prompt([{fieldname:'file_id',fieldtype:'Link',options:'File',label:__('当前委托私有附件'),reqd:1,
+                    get_query: () => ({filters:{attached_to_doctype:'Test Request',attached_to_name:frm.doc.name,is_private:1}})}],
+                    values => frm.call('share_customer_attachment', values).then(() => frm.reload_doc()), __('分享委托附件'));
+            });
+        }
         if (frm.doc.docstatus !== 1) return;
         if (frm.doc.project) {
             frm.add_custom_button(__("项目"), () => frappe.set_route('Form', 'Project', frm.doc.project));
