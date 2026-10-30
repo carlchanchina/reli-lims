@@ -63,6 +63,8 @@ class TestRequest(Document):
                                      ['docstatus', 'project'], as_dict=True, for_update=True)
         if not stored or stored.docstatus != 0 or stored.project:
             frappe.throw(_('本委托单已经确认，请勿重复确认。'))
+        from reli_lims.request_submission import validate_submission
+        validate_submission(self, stored)
 
     def on_submit(self):
         from reli_lims.services.test_request import create_project
