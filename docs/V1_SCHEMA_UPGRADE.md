@@ -61,3 +61,18 @@ public pages, registration, inquiry or quotation operations.
 Seven of these cover migration/replay, pre-upsert storage conflicts, missing
 native links, File read-only enforcement, hook resolution, Lab Manager
 permission and optional additions for legacy drafts.
+
+## Formal submission: active execution masters only
+
+The previous scope validator required a nonempty Method/Standard reference but
+did not check the referenced state. Native submission now checks that each
+Method is active and each Standard is Active before existing Project creation.
+References are deduplicated and locked in a consistent order. Draft editing,
+inquiry and quotation paths are not restricted by this additional guard.
+
+Six tests cover inactive/missing masters, Draft/Superseded standards, locked
+reads, repeated items, and invocation from the existing submission guard. The
+request suite now passes 25 tests. An original-host disposable database also
+verified that the original Draft standard is rejected, an explicitly labelled
+non-business Active fixture is accepted, and an inactive Method is rejected;
+all fixture changes were rolled back. No production standard was activated.

@@ -29,3 +29,27 @@ def validate_submission(doc, stored):
     quotation=frappe.get_doc('Quotation',doc.quotation)
     if quotation.get('status') in ('Lost','Expired','Cancelled','Closed') or (quotation.get('valid_till') and str(quotation.valid_till)[:10]<frappe.utils.today()):
         frappe.throw('报价已失效，请内部复核商业来源。')
+
+    validate_execution_scope(doc)
+
+
+def validate_execution_scope(doc):
+    """Only formal intake requires active technical masters; drafts stay editable."""
+    import frappe
+    methods, standards = set(), set()
+    for item in doc.items:
+        method, standard = item.get('test_method'), item.get('standard')
+        if not method or not standard:
+            frappe.throw('请内部补齐检测项目和标准后再正式受理。')
+        methods.add(method)
+        standards.add(standard)
+    if not methods:
+        frappe.throw('请内部补齐检测项目和标准后再正式受理。')
+    for name in sorted(methods):
+        method = frappe.db.get_value('Test Method', name, ['active'], as_dict=True, for_update=True)
+        if not method or method.get('active') != 1:
+            frappe.throw('检测项目未启用，不能正式受理。')
+    for name in sorted(standards):
+        standard = frappe.db.get_value('Test Standard', name, ['status'], as_dict=True, for_update=True)
+        if not standard or standard.get('status') != 'Active':
+            frappe.throw('检测标准尚未审核启用，请实验室负责人确认适用标准后再正式受理。')
