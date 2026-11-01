@@ -28,13 +28,15 @@
       "fieldname": "title",
       "fieldtype": "Data",
       "label": "标准名称",
-      "reqd": 1
+      "reqd": 1,
+      "in_list_view": 1
     },
     {
       "fieldname": "version",
       "fieldtype": "Data",
       "label": "版本年份",
-      "reqd": 1
+      "reqd": 1,
+      "in_list_view": 1
     },
     {
       "fieldname": "full_name",
@@ -111,5 +113,7 @@
   "sort_order": "DESC",
   "states": [],
   "title_field": "full_name",
-  "track_changes": 1
+  "track_changes": 1,
+  "show_title_field_in_link": 1,
+  "search_fields": "standard_code,title,version,full_name"
 }
