@@ -15,7 +15,7 @@ FIELDS = [
 
 FILE_FIELDS = [
     {'fieldname': 'reli_customer_visible', 'label': '客户可见委托附件',
-     'fieldtype': 'Check', 'default': '0', 'read_only': 1},
+     'fieldtype': 'Check', 'default': '0', 'read_only': 1, 'no_copy': 1},
 ]
 FILE_HOOKS = {
     'validate': 'reli_lims.request_confirmation.validate_file_visibility',

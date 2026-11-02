@@ -28,4 +28,6 @@ def copy_sample_photos(request, sample_code, sample):
         if row.sample_code != sample_code:
             continue
         source = photo_file(request, row.photo)
+        # Drop source-only sharing grants before the native helper copies all fields.
+        source = frappe.copy_doc(source, ignore_no_copy=False)
         source.create_attachment_copy('Sample', sample.name)
