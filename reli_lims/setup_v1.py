@@ -28,6 +28,7 @@ def after_migrate():
             show_percentage_stats=0, filters_json=json.dumps(filters, ensure_ascii=False),
             dynamic_filters_json=json.dumps(dynamic), color='#cf4444' if stage is None else '#268575')
         _upsert('Number Card', name, values)
+    _setup_commercial_intake()
     board = dict(kanban_board_name='检测主流程', reference_doctype='Test Request',
         field_name='business_stage', private=0, is_standard='No', module='Reli LIMS',
         filters=json.dumps([['Test Request', 'docstatus', '!=', 2]]),
@@ -48,3 +49,28 @@ def _upsert(doctype, name, values):
         doc.save(ignore_permissions=True)
     else:
         frappe.get_doc(dict(doctype=doctype, name=name, **values)).insert(ignore_permissions=True, set_name=name)
+
+
+def _setup_commercial_intake():
+    from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+    fieldname = 'custom_reli_test_method'
+    field = frappe.get_meta('Item').get_field(fieldname)
+    if field and (field.fieldtype != 'Link' or field.options != 'Test Method'):
+        frappe.throw('Item.custom_reli_test_method must link to Test Method.')
+    create_custom_fields({'Item': [dict(
+        fieldname=fieldname, label='检测方法', fieldtype='Link',
+        options='Test Method', insert_after='item_group',
+    )]}, update=False)
+
+    for name, label, doctype in (
+        ('Reli LIMS 商业报价草稿', '报价草稿', 'Quotation'),
+        ('Reli LIMS 商业委托草稿', '委托草稿', 'Test Request'),
+    ):
+        filters = [[doctype, 'docstatus', '=', 0]]
+        _upsert('Number Card', name, dict(
+            label=label, type='Document Type', document_type=doctype,
+            function='Count', is_public=1, is_standard=0, module='Reli LIMS',
+            show_percentage_stats=0, filters_json=json.dumps(filters),
+            dynamic_filters_json='[]', color='#268575',
+        ))
