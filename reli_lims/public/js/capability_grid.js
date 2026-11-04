@@ -128,7 +128,12 @@ reli_lims.capabilities.mount = async function (frm, mode) {
                 frm.refresh_field("items");
                 return this.mount(frm, mode);
             })).appendTo(detail);
-        $("<button type='button' class='btn btn-default btn-xs'>").text(quote ? __("编辑数量、单位和单价") : __("关联样品及编辑数量"))
+        if (!quote) {
+            $("<button type='button' class='btn btn-default btn-xs'>").text(__("关联样品"))
+                .on("click", () => frm.script_manager.trigger("select_samples", row.line.doctype, row.line.name))
+                .appendTo(detail);
+        }
+        $("<button type='button' class='btn btn-default btn-xs'>").text(quote ? __("编辑数量、单位和单价") : __("编辑委托数量及备注"))
             .on("click", () => frm.fields_dict.items.grid.grid_rows_by_docname[row.line.name]?.toggle_view(true))
             .appendTo(detail);
     }});

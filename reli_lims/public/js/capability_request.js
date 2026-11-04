@@ -1,6 +1,24 @@
+for (const [doctype, key] of [["Test Method", "method_label"], ["Test Standard", "standard_label"]]) {
+    const original = frappe.form.link_formatters[doctype];
+    frappe.form.link_formatters[doctype] = function (value, doc, ...args) {
+        if (doc?.doctype === "Test Request Item" && doc.technical_configuration) {
+            const config = typeof doc.technical_configuration === "string"
+                ? JSON.parse(doc.technical_configuration) : doc.technical_configuration;
+            if (config.snapshot?.[key]) return frappe.utils.escape_html(config.snapshot[key]);
+        }
+        return original ? original.call(this, value, doc, ...args) : value;
+    };
+}
+
 frappe.provide("reli_lims.requests");
 
 reli_lims.requests.add_items = function (frm, items) {
+    const [placeholder] = frm.doc.items || [];
+    if (frm.is_new() && frm.doc.items?.length === 1 && !placeholder.test_method && !placeholder.standard &&
+        !placeholder.test_condition && !placeholder.notes && !placeholder.capability &&
+        !(frm.doc.sample_assignments || []).some(pair => pair.item_code === placeholder.item_code)) {
+        frm.clear_table("items");
+    }
     const samples = frm.doc.samples || [];
     const codes = new Set((frm.doc.items || []).map(row => row.item_code));
     let index = 1;

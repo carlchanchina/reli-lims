@@ -165,6 +165,7 @@ frappe.ui.form.on('Test Request Item', {
             frm.events.update_choices(frm);
             frm.refresh_field('items');
             frm.dirty();
+            window.reli_lims?.capabilities?.mount?.(frm, "request");
             dialog.hide();
         }});
         dialog.show();

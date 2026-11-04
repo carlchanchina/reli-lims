@@ -14,6 +14,11 @@ frappe.ui.form.on("Quotation", {
                 async onSelect(selections) {
                     if (!selections.length) return;
                     const { message } = await frappe.call("reli_lims.capability_quotation.prepare_lines", { selections });
+                    const [placeholder] = frm.doc.items || [];
+                    if (frm.is_new() && frm.doc.items?.length === 1 && !placeholder.item_code &&
+                        !placeholder.item_name && !placeholder.description && !placeholder.qty && !placeholder.rate) {
+                        frm.clear_table("items");
+                    }
                     for (const values of message) {
                         const row = frm.add_child("items", {
                             custom_reli_capability: values.custom_reli_capability, item_name: values.item_name,
@@ -39,6 +44,7 @@ frappe.ui.form.on("Quotation", {
                 doc.customer = message.customer;
                 doc.company = message.company;
                 if (message.quotation) doc.quotation = message.quotation;
+                doc.items = (doc.items || []).filter(row => row.test_method || row.standard || row.test_condition || row.notes);
                 for (const [index, values] of message.items.entries()) {
                     Object.assign(frappe.model.add_child(doc, "Test Request Item", "items"), values,
                         { item_code: `CAP-${index + 1}` });
