@@ -74,8 +74,17 @@
     }
   ],
   "charts": [],
-  "number_cards": [],
+  "number_cards": [
+    {
+      "number_card_name": "Reli LIMS 商业报价草稿",
+      "label": "报价草稿"
+    },
+    {
+      "number_card_name": "Reli LIMS 商业委托草稿",
+      "label": "委托草稿"
+    }
+  ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\":\"commercial-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">商业接单中心</span>\",\"col\":12}},{\"id\":\"commercial-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"阶段一 · 客户与询价 → 报价 → 客户确认 → 发起检测委托。实验室接收后进入检测履约中心。\",\"col\":12}},{\"id\":\"commercial-actions\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">常用操作</span>\",\"col\":12}},{\"id\":\"commercial-action-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建客户\",\"col\":3}},{\"id\":\"commercial-action-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建报价单\",\"col\":3}},{\"id\":\"commercial-action-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"报价单列表\",\"col\":3}},{\"id\":\"commercial-action-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售订单\",\"col\":3}},{\"id\":\"commercial-action-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建检测委托\",\"col\":3}},{\"id\":\"commercial-action-5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"委托列表\",\"col\":3}},{\"id\":\"commercial-action-6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售服务目录\",\"col\":3}}]"
+  "content": "[{\"id\":\"commercial-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">商业接单中心</span>\",\"col\":12}},{\"id\":\"commercial-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"阶段一 · 客户与询价 → 报价 → 客户确认 → 发起检测委托。实验室接收后进入检测履约中心。\",\"col\":12}},{\"id\":\"commercial-count-0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"报价草稿\",\"col\":6}},{\"id\":\"commercial-count-1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"委托草稿\",\"col\":6}},{\"id\":\"commercial-actions\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">常用操作</span>\",\"col\":12}},{\"id\":\"commercial-action-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建客户\",\"col\":3}},{\"id\":\"commercial-action-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建报价单\",\"col\":3}},{\"id\":\"commercial-action-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"报价单列表\",\"col\":3}},{\"id\":\"commercial-action-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售订单\",\"col\":3}},{\"id\":\"commercial-action-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建检测委托\",\"col\":3}},{\"id\":\"commercial-action-5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"委托列表\",\"col\":3}},{\"id\":\"commercial-action-6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售服务目录\",\"col\":3}}]"
 }
