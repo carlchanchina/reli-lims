@@ -42,3 +42,7 @@ doctype_js = {dt: 'public/js/document_output.js'
 doc_events['File'] = {event: 'reli_lims.request_confirmation.file_changed' for event in ('after_insert','on_update','after_delete')}
 after_migrate.append('reli_lims.request_confirmation_setup.after_migrate')
 doc_events['File']['validate'] = 'reli_lims.request_confirmation.validate_file_visibility'
+
+after_migrate.append("reli_lims.capability_quotation.after_migrate")
+doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
+doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}

@@ -1,5 +1,6 @@
 """Shared technical selection contract for Desk and later document adapters."""
 import json
+import math
 
 import frappe
 
@@ -15,10 +16,14 @@ FIELDS = ["name", "laboratory", "test_method", "test_standard", "industry",
           "limitation", "scope_effective_date", "condition_schema", "status"]
 
 
+def is_dev_preview():
+    return frappe.local.site == "carl" and bool(frappe.conf.developer_mode)
+
+
 def eligibility(mode):
     if mode not in {"quotation", "request", "execution", "catalog"}:
         frappe.throw("未知的能力选择模式。")
-    if mode == "catalog":
+    if mode == "catalog" or (mode in {"quotation", "request"} and is_dev_preview()):
         return {"status": ["!=", "已停用"]}
     return {"status": "已发布", "published": 1}
 
@@ -60,7 +65,7 @@ def build_configuration(name, conditions, mode):
         frappe.throw("履约条件须从已确认委托读取。")
     capability = frappe.get_doc("Laboratory Capability", name)
     capability.check_permission("read")
-    if mode != "catalog" and (capability.status != "已发布" or not capability.published):
+    if mode != "catalog" and not is_dev_preview() and (capability.status != "已发布" or not capability.published):
         frappe.throw("能力尚未发布。")
     schema = frappe.parse_json(capability.condition_schema) or []
     if not isinstance(conditions, dict) or set(conditions) - {field["key"] for field in schema}:
@@ -75,7 +80,7 @@ def build_configuration(name, conditions, mode):
             continue
         if field["type"] == "number":
             value = float(value)
-            if not __import__("math").isfinite(value):
+            if not math.isfinite(value):
                 frappe.throw("请输入有限数值。")
         elif field["type"] == "select" and value not in field.get("options", []):
             frappe.throw(f"无效的{field['label']}。")
