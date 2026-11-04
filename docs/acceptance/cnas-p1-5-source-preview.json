@@ -1,0 +1,100 @@
+{
+  "source_revision": "7b274efedb94e6d6250db29423b0b4376ce9609a",
+  "source_hashes": {
+    "app/labs/L11464/out_v2/items.csv": "810914e0223445542801c427b6a7af6dc277f5fdd647027cdc57f5327fbf48c7",
+    "app/labs/L11464/out_v2/standards.csv": "48e1f5e4d8907b5d4e354c38d37d49978d8265ad053add0414af267f4c5268fe",
+    "app/labs/L11464/out_v2/scope_standards.csv": "2e4dd6ca2cfe4e88e4efb46e6a2c1ffe560f42fd2c559617d90fd531891394df",
+    "app/labs/L11464/out_v2/pending.csv": "0841934e34ba8120837560c4734e92b0a7978aa35e91490976376601e19fdbd2",
+    "seed/cnas.db": "d566f7e134408c9d6a53968a2f6e9ae475398529f94bcda0054fc68f2238cad7",
+    "app/validate_scope.py": "6ca428c7ca9176a0c713df521a69ebe45a28f9c2ce9efc6aa0565e18e4b61b14"
+  },
+  "laboratory_code": "L11464",
+  "method_candidates": 118,
+  "duplicate_method_codes": 0,
+  "standard_candidates": 207,
+  "duplicate_standard_codes": 0,
+  "raw_scope_rows": 660,
+  "retained_scope_rows": 650,
+  "matching_seed_rows": 650,
+  "retained_only": 0,
+  "seed_only": 0,
+  "normalization_fixes": 230,
+  "warning_rows": 20,
+  "historical_pending_csv_rows": 7,
+  "duplicates": [
+    {
+      "method": "TM-PROT-002",
+      "export_index": "2"
+    },
+    {
+      "method": "TM-FUNC-001",
+      "export_index": "2"
+    },
+    {
+      "method": "TM-FUNC-015",
+      "export_index": "2"
+    }
+  ],
+  "blocked": [
+    {
+      "export_key": "TM-MECH-011#3",
+      "reasons": [
+        "STD_PLACEHOLDER",
+        "LIMIT_TRUNC"
+      ]
+    },
+    {
+      "export_key": "TM-MECH-014#1",
+      "reasons": [
+        "STD_PLACEHOLDER",
+        "NAME_TRUNC"
+      ]
+    },
+    {
+      "export_key": "TM-CLIM-005#20",
+      "reasons": [
+        "STD_PLACEHOLDER"
+      ]
+    },
+    {
+      "export_key": "TM-CLIM-005#24",
+      "reasons": [
+        "STD_PLACEHOLDER"
+      ]
+    },
+    {
+      "export_key": "TM-CLIM-019#2",
+      "reasons": [
+        "STD_PLACEHOLDER",
+        "NAME_TRUNC"
+      ]
+    },
+    {
+      "export_key": "TM-CLIM-027#30",
+      "reasons": [
+        "STD_PLACEHOLDER"
+      ]
+    },
+    {
+      "export_key": "TM-VIS-007#5",
+      "reasons": [
+        "STD_PLACEHOLDER"
+      ]
+    }
+  ],
+  "normalized_standard_collisions": 0,
+  "standard_aliases": {
+    "GB /T 15763.2-2025": "GB/T 15763.2-2025"
+  },
+  "missing_master_references": [],
+  "source_page_column_available": false,
+  "database_writes": 0,
+  "site_preview": {
+    "standard_exact_version_matches": 0,
+    "standard_ambiguous_matches": 0,
+    "method_exact_name_review_candidates": 2,
+    "laboratory_exact_name_candidates": 0,
+    "active_non_stock_sales_items": 7,
+    "authorized_creates_or_updates": 0
+  }
+}
