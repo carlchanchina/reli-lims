@@ -200,6 +200,8 @@
   ],
   "sort_field": "modified",
   "sort_order": "DESC",
-  "title_field": "test_method",
-  "track_changes": 1
+  "title_field": "project_parameter",
+  "track_changes": 1,
+  "show_title_field_in_link": 1,
+  "search_fields": "project_parameter,product_scope,industry"
 }

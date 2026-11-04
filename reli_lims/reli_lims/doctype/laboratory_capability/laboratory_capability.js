@@ -16,6 +16,7 @@ frappe.ui.form.on('Laboratory Capability', {
 frappe.ui.form.on("Laboratory Capability", {
     refresh(frm) {
         frm.add_custom_button(__("检测能力选择"), async () => {
+            await frappe.require("/assets/reli_lims/js/capability_grid.js");
             await frappe.require("/assets/reli_lims/js/capability_selector.js");
             return reli_lims.capabilities.open({ mode: "catalog" });
         });

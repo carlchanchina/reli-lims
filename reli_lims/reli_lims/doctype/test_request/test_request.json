@@ -24,6 +24,7 @@
     "step_tests",
     "test_info",
     "items",
+    "reli_details",
     "sample_assignments",
     "step_confirm",
     "requirements",
@@ -60,6 +61,7 @@
     "overdue_status"
   ],
   "fields": [
+    {"fieldname": "reli_details", "fieldtype": "HTML", "label": "检测项目明细"},
     {
       "fieldname": "basic",
       "fieldtype": "Section Break",

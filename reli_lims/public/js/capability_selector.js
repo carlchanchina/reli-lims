@@ -1,6 +1,6 @@
 frappe.provide("reli_lims.capabilities");
 
-reli_lims.capabilities.open = function ({ mode = "catalog", onSelect }) {
+reli_lims.capabilities.open = function ({ mode = "catalog", onSelect, source }) {
     const selected = new Map();
     let offset = 0;
     let generation = 0;
@@ -36,32 +36,22 @@ reli_lims.capabilities.open = function ({ mode = "catalog", onSelect }) {
         const current = ++generation;
         const filters = Object.fromEntries(dimensions.map(([key]) => [key, dialog.get_value(key)]));
         const { message } = await frappe.call("reli_lims.capability_selection.search", {
-            mode, text: dialog.get_value("search"), facets: filters, offset,
+            mode, source, text: dialog.get_value("search"), facets: filters, offset,
         });
         if (current !== generation) return;
         const area = dialog.fields_dict.results.$wrapper.empty();
-        for (const row of message.rows) {
-            const detail = $("<details>").appendTo(area);
-            $("<summary>").text([row.product_scope, row.method_label, row.standard_label].filter(Boolean).join(" · ")).appendTo(detail);
-            $("<p>").text([row.industry, row.project_parameter, row.laboratory_label, row.limitation, row.status].filter(Boolean).join(" · ")).appendTo(detail);
-            const conditions = selected.get(row.name)?.conditions || {};
-            for (const field of (typeof row.condition_schema === "string" ? JSON.parse(row.condition_schema) : row.condition_schema || [])) {
-                const label = $("<label>").addClass("d-block").text(field.label).appendTo(detail);
-                const input = field.type === "select" ? $("<select>") : $("<input>").attr("type", field.type === "number" ? "number" : "text");
-                if (field.type === "select") {
-                    $("<option>").val("").appendTo(input);
-                    for (const option of field.options || []) $("<option>").val(option).text(option).appendTo(input);
-                }
-                input.val(conditions[field.key] ?? "").on("change", () => { conditions[field.key] = input.val(); }).appendTo(label);
-            }
-            if (onSelect) {
-                $("<input type='checkbox'>").prop("checked", selected.has(row.name)).on("change", function () {
-                    if (this.checked) selected.set(row.name, { capability_id: row.name, conditions });
-                    else selected.delete(row.name);
-                }).appendTo($("<label>").text(__("选择 ")).appendTo(detail));
-            }
-        }
-        if (!message.rows.length) $("<p>").text(__("没有匹配能力")).appendTo(area);
+        reli_lims.capabilities.renderGrid(area, message.rows, {
+            selected: onSelect ? selected : null,
+            actions: onSelect ? (detail, row) => {
+                $("<button type='button' class='btn btn-default btn-xs'>").text(__("编辑条件并选中"))
+                    .on("click", () => reli_lims.capabilities.edit(row, selected.get(row.name)?.conditions || {}, conditions => {
+                        selected.set(row.name, {capability_id: row.name, conditions});
+                        return render();
+                    })).appendTo(detail);
+            } : null,
+        });
+        $("<p>").text(__("第 {0} 页 · 当前 {1} 条 · 已选 {2} 条",
+            [offset / 30 + 1, message.rows.length, selected.size])).appendTo(area);
         if (offset > 0) $("<button class='btn btn-default'>").text(__("上一页")).on("click", () => { offset -= 30; render(); }).appendTo(area);
         if (message.has_more) $("<button class='btn btn-default'>").text(__("下一页")).on("click", () => { offset += 30; render(); }).appendTo(area);
     }

@@ -6,9 +6,10 @@ from reli_lims.capability_selection import build_configuration
 
 def to_request_item(config):
     snapshot = config["snapshot"]
+    labels = {field["key"]: field["label"] for field in snapshot.get("condition_schema", [])}
     return {
         "test_method": snapshot["test_method"], "standard": snapshot["test_standard"],
-        "test_condition": "；".join(f"{key}: {value}" for key, value in config["conditions"].items()),
+        "test_condition": "；".join(f"{labels[key]}：{value}" if key in labels else f"{key}: {value}" for key, value in config["conditions"].items()),
         "capability": config["capability_id"], "technical_configuration": config,
     }
 

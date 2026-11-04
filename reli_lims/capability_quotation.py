@@ -9,6 +9,8 @@ from reli_lims.capability_selection import build_configuration, is_dev_preview
 
 def after_migrate():
     create_custom_fields({
+        "Quotation": [{"fieldname": "custom_reli_details", "label": "检测项目明细",
+                       "fieldtype": "HTML", "insert_after": "items"}],
         "Quotation Item": [
             {"fieldname": "custom_reli_capability", "label": "检测能力", "fieldtype": "Link",
              "options": "Laboratory Capability", "insert_after": "description", "read_only": 1},
@@ -60,16 +62,19 @@ def prepare_lines(selections):
         config = build_configuration(selection["capability_id"], selection.get("conditions", {}), "quotation")
         capability = frappe.get_doc("Laboratory Capability", config["capability_id"])
         item = service_item(capability, selection.get("item_code"))
-        snapshot = config["snapshot"]
-        method = frappe.db.get_value("Test Method", snapshot["test_method"], "method_name")
-        standard = frappe.db.get_value("Test Standard", snapshot["test_standard"], "full_name")
-        text = "；".join(filter(None, [snapshot["product_scope"], method, standard, snapshot["limitation"]]))
-        if config["conditions"]:
-            text += "；" + "，".join(f"{key}: {value}" for key, value in config["conditions"].items())
         result.append({"item_code": item.name, "item_name": item.item_name, "uom": item.stock_uom,
-                       "description": frappe.utils.escape_html(text), "qty": 1,
+                       "description": description(config), "qty": 1,
                        "custom_reli_capability": capability.name, "custom_reli_configuration": config})
     return result
+
+
+def description(config):
+    snapshot = config["snapshot"]
+    labels = {field["key"]: field["label"] for field in snapshot.get("condition_schema", [])}
+    conditions = "，".join(f"{labels.get(key, key)}：{value}" for key, value in config["conditions"].items())
+    text = "；".join(filter(None, [snapshot.get("product_scope"), snapshot.get("project_label"),
+                                  snapshot.get("standard_label"), conditions, snapshot.get("limitation")]))
+    return frappe.utils.escape_html(text)
 
 
 def validate(doc, method=None):
@@ -84,9 +89,11 @@ def validate(doc, method=None):
         if not isinstance(config, dict) or config.get("capability_id") != row.custom_reli_capability:
             frappe.throw("报价能力和技术条件快照不一致。")
         if config != old_config:
-            row.custom_reli_configuration = build_configuration(
+            config = build_configuration(
                 row.custom_reli_capability, config.get("conditions", {}), "quotation",
             )
+            row.custom_reli_configuration = config
+            row.description = description(config)
         capability = frappe.get_doc("Laboratory Capability", row.custom_reli_capability)
         if not (old_row and old_row.item_code == row.item_code and old_config == config):
             item = service_item(capability, row.item_code)

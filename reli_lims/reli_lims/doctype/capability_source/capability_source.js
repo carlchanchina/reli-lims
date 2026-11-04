@@ -11,3 +11,14 @@ frappe.ui.form.on('Capability Source', {
         }); });
     }
 });
+
+frappe.ui.form.on("Capability Source", {
+    refresh(frm) {
+        if (frm.is_new()) return;
+        frm.add_custom_button(__("CNAS 能力明细表"), async () => {
+            await frappe.require("/assets/reli_lims/js/capability_grid.js");
+            await frappe.require("/assets/reli_lims/js/capability_selector.js");
+            return reli_lims.capabilities.open({mode: "catalog", source: frm.doc.name});
+        });
+    },
+});

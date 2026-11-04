@@ -18,6 +18,7 @@ reli_lims.requests.add_items = function (frm, items) {
     frm.refresh_field("items");
     frm.refresh_field("sample_assignments");
     frm.dirty();
+    reli_lims.capabilities.mount(frm, "request");
 };
 
 reli_lims.requests.import_quote = async function (frm, name) {
@@ -38,6 +39,7 @@ frappe.ui.form.on("Test Request", {
     refresh(frm) {
         if (frm.doc.docstatus !== 0) return;
         frm.add_custom_button(__("选择检测能力"), async () => {
+            await frappe.require("/assets/reli_lims/js/capability_grid.js");
             await frappe.require("/assets/reli_lims/js/capability_selector.js");
             return reli_lims.capabilities.open({
                 mode: "request",
@@ -58,5 +60,12 @@ frappe.ui.form.on("Test Request", {
             delete frappe.route_options.reli_source_quotation;
             reli_lims.requests.import_quote(frm, name);
         }
+    },
+});
+
+frappe.ui.form.on("Test Request", {
+    async refresh(frm) {
+        await frappe.require("/assets/reli_lims/js/capability_grid.js");
+        return reli_lims.capabilities.mount(frm, "request");
     },
 });
