@@ -1,6 +1,6 @@
-frappe.form.link_formatters.Item = ((original) => (value, doc) => {
-    if (doc?.doctype === "Quotation Item" && doc.item_name && doc.custom_reli_capability) return doc.item_name;
-    return original ? original(value, doc) : value;
+frappe.form.link_formatters.Item = ((original) => function (value, doc, ...args) {
+    if (doc?.doctype === "Quotation Item" && doc.item_name && doc.custom_reli_capability) return frappe.utils.escape_html(doc.item_name);
+    return original ? original.call(this, value, doc, ...args) : value;
 })(frappe.form.link_formatters.Item);
 
 frappe.ui.form.on("Quotation", {
@@ -15,7 +15,9 @@ frappe.ui.form.on("Quotation", {
                     if (!selections.length) return;
                     const { message } = await frappe.call("reli_lims.capability_quotation.prepare_lines", { selections });
                     for (const values of message) {
-                        const row = frm.add_child("items");
+                        const row = frm.add_child("items", {
+                            custom_reli_capability: values.custom_reli_capability, item_name: values.item_name,
+                        });
                         await frappe.model.set_value(row.doctype, row.name, "item_code", values.item_code);
                         Object.assign(row, values);
                     }
