@@ -130,21 +130,43 @@ class OutputTests(unittest.TestCase):
             self.assertFalse(any(c.data_type == 'f' for row in book['续页'] for c in row))
             self.assertTrue(all(len(str(c.value or '')) <= 32767 for sheet in book for row in sheet for c in row))
 
-    def test_pdf_escapes_markup_and_calls_native_pdf(self):
+    def test_pdf_escapes_markup_and_calls_native_chrome_pdf(self):
         from reli_lims.document_output.registry import get_template
         from reli_lims.document_output.renderers.pdf_renderer import render
         native = Mock(return_value=b'%PDF-test')
         modules = {'frappe': types.SimpleNamespace(), 'frappe.utils': types.ModuleType('frappe.utils'),
-                   'frappe.utils.pdf': types.SimpleNamespace(get_pdf=native)}
+                   'frappe.utils.pdf': types.SimpleNamespace(get_chrome_pdf=native)}
         with patch.dict(sys.modules, modules):
             result = render(get_template('Test Request'), dict(title='<script>', name='WT', notice='',
                 fields=[['客户', '<img src="http://secret">']], columns=['项目'], rows=[[0]], sections=[]))
         self.assertEqual(result, b'%PDF-test')
-        html = native.call_args.args[0]
+        html = native.call_args.kwargs['html']
+        self.assertIsNone(native.call_args.kwargs['print_format'])
+        self.assertIsNone(native.call_args.kwargs['output'])
+        self.assertEqual(native.call_args.kwargs['pdf_generator'], 'chrome')
+        self.assertEqual(native.call_args.kwargs['options']['page-size'], 'A4')
         self.assertNotIn('<script>', html)
         self.assertNotIn('<img', html)
         self.assertIn('&lt;script&gt;', html)
         self.assertIn('<td>0</td>', html)
+
+
+    def test_pdf_chrome_failure_is_not_retried_with_legacy_renderer(self):
+        from reli_lims.document_output.registry import get_template
+        from reli_lims.document_output.renderers.pdf_renderer import render
+        chrome = Mock(side_effect=RuntimeError('Chromium unavailable'))
+        legacy = Mock()
+        modules = {'frappe': types.SimpleNamespace(), 'frappe.utils': types.ModuleType('frappe.utils'),
+                   'frappe.utils.pdf': types.SimpleNamespace(get_chrome_pdf=chrome, get_pdf=legacy)}
+        context = dict(title='兼容验收', name='FIXTURE', notice='非真实业务资料',
+                       fields=[], columns=[], rows=[], sections=[])
+        with patch.dict(sys.modules, modules):
+            for doctype in ('Quotation', 'Test Request', 'Test Report'):
+                with self.subTest(doctype=doctype):
+                    with self.assertRaisesRegex(RuntimeError, 'Chromium unavailable'):
+                        render(get_template(doctype), context)
+        self.assertEqual(chrome.call_count, 3)
+        legacy.assert_not_called()
 
 
 class ServiceTests(unittest.TestCase):
