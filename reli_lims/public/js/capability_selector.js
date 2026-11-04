@@ -9,7 +9,7 @@ reli_lims.capabilities.open = function ({ mode = "catalog", onSelect, source }) 
         ["standard", "标准"], ["method", "方法"],
     ];
     const dialog = new frappe.ui.Dialog({
-        title: __("检测能力选择"),
+        title: __(onSelect ? "检测能力选择" : "CNAS 能力明细表"),
         size: "extra-large",
         fields: [
             { fieldtype: "Data", fieldname: "search", label: __("搜索"), onchange: refresh },

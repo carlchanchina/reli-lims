@@ -43,9 +43,9 @@ Object.assign(reli_lims.capabilities, {
         const table = $("<table>").addClass("table table-bordered table-hover").appendTo(
             $("<div>").css("overflow-x", "auto").appendTo(area),
         );
-        table.attr("aria-label", __("检测项目明细"));
+        table.attr("aria-label", __("检测项目明细")).css("min-width", mode === "catalog" ? "1050px" : "1350px");
         const heading = $("<tr>").appendTo($("<thead>").appendTo(table));
-        headers.forEach(label => $("<th scope='col'>").text(__(label)).appendTo(heading));
+        headers.forEach(label => $("<th scope='col'>").css("white-space", "nowrap").text(__(label)).appendTo(heading));
         const body = $("<tbody>").appendTo(table);
         for (const row of rows) {
             const tr = $("<tr>").appendTo(body);
@@ -82,8 +82,13 @@ Object.assign(reli_lims.capabilities, {
 
 reli_lims.capabilities.mount = async function (frm, mode) {
     const quote = mode === "quotation";
-    const wrapper = frm.fields_dict[quote ? "custom_reli_details" : "reli_details"]?.$wrapper;
-    if (!wrapper) return;
+    const items = frm.fields_dict.items?.$wrapper;
+    if (!items) return;
+    let wrapper = frm.fields_dict[quote ? "custom_reli_details" : "reli_details"]?.$wrapper;
+    if (!wrapper) {
+        wrapper = items.next(".reli-capability-details");
+        if (!wrapper.length) wrapper = $("<div class='reli-capability-details'>").insertAfter(items);
+    }
     const configurationField = quote ? "custom_reli_configuration" : "technical_configuration";
     const generation = Symbol();
     wrapper.data("reli-generation", generation);

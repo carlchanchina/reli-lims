@@ -1,3 +1,8 @@
+frappe.form.link_formatters.Item = ((original) => (value, doc) => {
+    if (doc?.doctype === "Quotation Item" && doc.item_name && doc.custom_reli_capability) return doc.item_name;
+    return original ? original(value, doc) : value;
+})(frappe.form.link_formatters.Item);
+
 frappe.ui.form.on("Quotation", {
     refresh(frm) {
         if (frm.doc.docstatus !== 0) return;
