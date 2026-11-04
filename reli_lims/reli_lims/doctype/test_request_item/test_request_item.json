@@ -8,7 +8,14 @@
     "test_condition",
     "applicable_sample_codes",
     "select_samples",
-    "notes"
+    "notes",
+    "capability",
+    "technical_configuration",
+    "source_quotation",
+    "source_quotation_item",
+    "quoted_quantity",
+    "requested_quantity",
+    "quotation_difference"
   ],
   "fields": [
     {
@@ -56,6 +63,50 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "备注"
+    },
+    {
+      "fieldname": "capability",
+      "fieldtype": "Link",
+      "label": "检测能力",
+      "read_only": 1,
+      "options": "Laboratory Capability"
+    },
+    {
+      "fieldname": "technical_configuration",
+      "fieldtype": "JSON",
+      "label": "检测条件快照",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_quotation",
+      "fieldtype": "Link",
+      "label": "来源报价",
+      "read_only": 1,
+      "options": "Quotation"
+    },
+    {
+      "fieldname": "source_quotation_item",
+      "fieldtype": "Data",
+      "label": "来源报价行",
+      "read_only": 1
+    },
+    {
+      "fieldname": "quoted_quantity",
+      "fieldtype": "Float",
+      "label": "报价数量",
+      "read_only": 1
+    },
+    {
+      "fieldname": "requested_quantity",
+      "fieldtype": "Float",
+      "label": "委托数量",
+      "read_only": 0
+    },
+    {
+      "fieldname": "quotation_difference",
+      "fieldtype": "Check",
+      "label": "与报价存在差异",
+      "read_only": 1
     }
   ],
   "istable": 1,

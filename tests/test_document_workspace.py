@@ -27,4 +27,6 @@ class WorkspaceFinalTests(unittest.TestCase):
         import runpy
         hooks = runpy.run_path(str(ROOT / 'reli_lims/hooks.py'))
         for dt in ('Quotation', 'Test Request', 'Test Report'):
-            self.assertEqual(hooks['doctype_js'][dt], 'public/js/document_output.js')
+            scripts = hooks['doctype_js'][dt]
+            scripts = [scripts] if isinstance(scripts, str) else scripts
+            self.assertEqual(scripts.count('public/js/document_output.js'), 1)

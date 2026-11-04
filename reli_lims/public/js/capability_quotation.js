@@ -20,3 +20,21 @@ frappe.ui.form.on("Quotation", {
         });
     },
 });
+
+frappe.ui.form.on("Quotation", {
+    refresh(frm) {
+        if (frm.is_new() || frm.doc.docstatus === 2 || !frm.doc.items?.some(row => row.custom_reli_capability)) return;
+        frm.add_custom_button(__("发起检测委托"), async () => {
+            const { message } = await frappe.call("reli_lims.capability_request.quotation_items", { name: frm.doc.name });
+            await frappe.new_doc("Test Request", {}, doc => {
+                doc.customer = message.customer;
+                doc.company = message.company;
+                if (message.quotation) doc.quotation = message.quotation;
+                for (const [index, values] of message.items.entries()) {
+                    Object.assign(frappe.model.add_child(doc, "Test Request Item", "items"), values,
+                        { item_code: `CAP-${index + 1}` });
+                }
+            });
+        });
+    },
+});

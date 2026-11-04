@@ -3,8 +3,10 @@
   "autoname": "format:REQ-{#####}",
   "doctype": "DocType",
   "field_order": [
+    "step_customer",
     "basic",
     "title",
+    "company",
     "request_date",
     "delivery_date",
     "customer",
@@ -15,10 +17,15 @@
     "commercial_source",
     "quotation",
     "sales_order",
+    "step_samples",
     "sample_info",
     "samples",
+    "photos",
+    "step_tests",
     "test_info",
     "items",
+    "sample_assignments",
+    "step_confirm",
     "requirements",
     "result_judgment",
     "judgment_basis",
@@ -27,7 +34,6 @@
     "sample_handling_notes",
     "report_requirements",
     "system_details",
-    "company",
     "applicant_address",
     "payer_same_as_customer",
     "payer_customer",
@@ -38,8 +44,6 @@
     "report_copies",
     "report_format",
     "test_purpose",
-    "photos",
-    "sample_assignments",
     "fixture_required",
     "fixture_provider",
     "test_flow_notes",
@@ -412,6 +416,26 @@
       "options": "Sales Order",
       "label": "关联销售订单",
       "no_copy": 1
+    },
+    {
+      "fieldname": "step_customer",
+      "fieldtype": "Tab Break",
+      "label": "1 · 客户与委托"
+    },
+    {
+      "fieldname": "step_samples",
+      "fieldtype": "Tab Break",
+      "label": "2 · 样品"
+    },
+    {
+      "fieldname": "step_tests",
+      "fieldtype": "Tab Break",
+      "label": "3 · 检测项目与条件"
+    },
+    {
+      "fieldname": "step_confirm",
+      "fieldtype": "Tab Break",
+      "label": "4 · 确认与提交"
     }
   ],
   "is_submittable": 1,
