@@ -2,3 +2,4 @@
 
 [post_model_sync]
 reli_lims.patches.p16_test_project_dictionary
+reli_lims.patches.p161_legacy_dictionary_cleanup

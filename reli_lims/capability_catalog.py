@@ -54,6 +54,8 @@ def ensure_custom_fields():
                   options="Laboratory Capability", insert_after="custom_reli_test_method", read_only=1)
     _ensure_field("Item", "custom_reli_test_project", label="检测项目", fieldtype="Link",
                   options="Test Project", insert_after="custom_reli_service_capability")
+    _ensure_field("Item", "custom_reli_business_relations", label="关联检测项目", fieldtype="HTML",
+                  insert_after="custom_reli_test_project")
     _ensure_field("Quotation", "custom_reli_details", label="检测项目明细", fieldtype="HTML", insert_after="items")
     _ensure_field("Quotation Item", "custom_reli_capability", label="检测能力", fieldtype="Link",
                   options="Laboratory Capability", insert_after="description", read_only=1)

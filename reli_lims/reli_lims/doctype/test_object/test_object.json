@@ -3,7 +3,7 @@
   "autoname": "format:OBJ-{#####}",
   "doctype": "DocType",
   "engine": "InnoDB",
-  "field_order": ["object_name", "normalized_name", "category", "aliases", "active"],
+  "field_order": ["object_name", "normalized_name", "category", "aliases", "active", "relations_section", "relations_html"],
   "fields": [
     {
       "fieldname": "object_name",
@@ -39,6 +39,15 @@
       "fieldtype": "Check",
       "in_list_view": 1,
       "label": "启用状态"
+    },
+    {
+      "fieldname": "relations_section",
+      "fieldtype": "Section Break",
+      "label": "关联检测项目、依据、能力与服务商品"
+    },
+    {
+      "fieldname": "relations_html",
+      "fieldtype": "HTML"
     }
   ],
   "index_web_pages_for_search": 1,

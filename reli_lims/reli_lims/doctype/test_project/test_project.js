@@ -1,5 +1,6 @@
 frappe.ui.form.on("Test Project", {
     refresh(frm) {
+        reli_lims.relations.mount_project(frm);
         if (frm.is_new()) return;
         if (frappe.model.can_read("Laboratory Capability")) {
             frm.add_custom_button(__("查看实验室能力"), () => frappe.set_route("List", "Laboratory Capability", {

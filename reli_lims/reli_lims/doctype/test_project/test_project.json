@@ -17,7 +17,9 @@
     "standards_section",
     "standards",
     "objects_section",
-    "objects"
+    "objects",
+    "relations_section",
+    "relations_html"
   ],
   "fields": [
     {
@@ -96,6 +98,15 @@
       "fieldtype": "Table",
       "label": "检测对象",
       "options": "Test Project Object"
+    },
+    {
+      "fieldname": "relations_section",
+      "fieldtype": "Section Break",
+      "label": "关联实验室能力与服务商品"
+    },
+    {
+      "fieldname": "relations_html",
+      "fieldtype": "HTML"
     }
   ],
   "grid_page_length": 50,

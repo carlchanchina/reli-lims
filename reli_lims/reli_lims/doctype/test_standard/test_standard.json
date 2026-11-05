@@ -15,7 +15,9 @@
     "status",
     "effective_date",
     "attachment",
-    "notes"
+    "notes",
+    "relations_section",
+    "relations_html"
   ],
   "fields": [
     {
@@ -77,6 +79,15 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "备注"
+    },
+    {
+      "fieldname": "relations_section",
+      "fieldtype": "Section Break",
+      "label": "关联检测项目、实验室能力与服务商品"
+    },
+    {
+      "fieldname": "relations_html",
+      "fieldtype": "HTML"
     }
   ],
   "grid_page_length": 50,
