@@ -1,19 +1,36 @@
 # RELI LIMS 发布前收口报告（Carl 开发站）
 
 - 报告时间：2026-11-05
-- 目标提交：`a20d800`（分支 `feat/customer-collaboration`，PR #20）
-- 环境：Carl 开发站 `http://carl:8000`（192.168.10.204，站点 `carl`）
+- 目标提交：`a778e8f`（分支 `feat/customer-collaboration`，PR #20）
+  功能提交停在 `a20d800`，`a778e8f` 只追加本文与权限矩阵、能力审核、迁移回滚三份文档和验收证据
+- 环境：Carl 开发站 `http://carl:8000`（192.168.10.204，站点 `carl`），当前已部署 `a778e8f`
 - 范围：只操作开发站；**未合并到 main，未部署 Carl-1**
 
 ## 1. 结论
 
 | 判断 | 结论 | 说明 |
 | --- | --- | --- |
-| 代码合并（#18 → #19 → #20） | **GO** | 本地按序演练 0 冲突；单元/集成/验收全绿；三个 PR 均为链式 base，可顺序合并 |
+| 代码合并（#18 → #19 → #20） | **GO** | 本地按序演练 0 冲突；三个 PR 实测均 `MERGEABLE / CLEAN`；单元/集成/验收全绿 |
 | 生产部署（Carl-1） | **NO-GO** | 5 项业务/配置前置未关闭，见第 7 节 |
 
 合并顺序必须是 `main → #18 → #19 → #20`，三者是严格链式依赖，不能单独上线。
 建议以 squash 方式合并 #20，让历史提交里出现过的演示链接密钥不进入 main。
+
+### 关于 PR #20 的 `mergeable=false`
+
+用户报的阻断点（HEAD `8369763`）已排查，结论是**不是内容冲突**：
+
+| 证据 | 结果 |
+| --- | --- |
+| 以 `origin/main` 为起点，按 `#18 → #19 → #20` 顺序合并 | 三次全部 exit=0，冲突文件 0 个，终态 `a778e8f` |
+| PR 页面当前状态（HEAD `a778e8f`） | #18 `MERGEABLE/CLEAN`、#19 `MERGEABLE/CLEAN`、#20 `MERGEABLE/CLEAN` |
+| 期间是否做过 rebase / 冲突解决 | 没有。只前进了修复与文档提交 |
+
+`mergeable=false` 出现在栈式 PR 的合并性重算窗口里（base 分支更新后 GitHub 会短时间返回
+`UNKNOWN`，重算期间也可能给出 false），不是三方合并真的对不上。判定以「本地按序合并演练 +
+PR 当前状态」两个直接证据为准。#20 的 base 是 #19 的分支，因此必须先合 #18、再合 #19，
+#20 的合并性才有意义。
+
 
 ## 2. 本次关闭的问题
 
@@ -36,19 +53,20 @@
 7. **能力审核记录子表**：新增 `Capability Review Log`，每次审核/发布/停用都追加一条，
    含动作、前后状态、操作人、角色、时间、意见。
 
-## 3. 测试总账（目标提交 a20d800）
+## 3. 测试总账（目标提交 a778e8f，全部在开发站实跑）
 
 | 类型 | 命令 | 结果 |
 | --- | --- | --- |
 | 纯逻辑单元测试 | `pytest tests` | **107 passed / 7 subtests** |
-| Frappe 集成测试 | `bench --site carl run-tests --app reli_lims` | **62 passed**（61 + 1） |
+| Frappe 集成测试 | `bench --site carl run-tests --app reli_lims` | **62 passed** |
 | 免登录共享安全 | `tools/acceptance/customer_share_security.py` | **39 / 39** |
 | 最小权限 + 能力审核 | `tools/acceptance/capability_review_and_roles.py` | **25 / 25** |
 | 正式受理与执行链路 | `tools/acceptance/formal_acceptance_flow.py` | **26 / 26** |
 | 打印与 PDF | `tools/acceptance/print_pdf_check.py` | **17 / 17** |
 
-验收合计 **107 项通过，0 失败**。明细见 `docs/acceptance/customer-collab/SECURITY_AND_FORMAL_ACCEPTANCE.md`
-与开发站 `~/pilot/state/*.json`。
+四项验收脚本在部署到 `a778e8f` 之后复跑，全部为最终提交的结果（不是 `a20d800` 的旧账）：
+`39/39`、`25/25`、`26/26`、`17/17`。明细见
+`docs/acceptance/customer-collab/SECURITY_AND_FORMAL_ACCEPTANCE.md` 与开发站 `~/pilot/state/*.json`。
 
 ## 4. 最终 E2E 走查（同一批单据）
 
