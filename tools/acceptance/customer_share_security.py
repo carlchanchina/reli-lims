@@ -82,6 +82,14 @@ def new_request(customer, suffix, template):
     doc.request_date = frappe.utils.today()
     doc.delivery_date = frappe.utils.add_days(frappe.utils.today(), 14)
     doc.customer_confirmation_state = "Draft"
+    # 验收草稿只复刻技术范围，不继承模板的商业来源，避免客户与报价不一致。
+    doc.quotation = None
+    doc.sales_order = None
+    for row in doc.items:
+        row.source_quotation = None
+        row.source_quotation_item = None
+        row.quoted_quantity = None
+        row.requested_quantity = None
     for field in ("customer_confirmed_by", "customer_confirmed_at", "customer_confirmation_fingerprint",
                   "lab_reviewed_by", "lab_reviewed_at", "customer_attachment"):
         if doc.meta.has_field(field):
@@ -148,6 +156,8 @@ def main():
     key_b = create_link(request_b)
     key_c = create_link(request_c)
     key_d = create_link(request_d)
+    # 客户页面由另一个进程读取，先提交事务，否则链接在 HTTP 端不可见。
+    frappe.db.commit()
     ARTIFACTS.update({
         "request_a": request_a.name, "request_b": request_b.name,
         "request_c": request_c.name, "request_d": request_d.name,
@@ -205,6 +215,7 @@ def main():
 
     status, body = guest_accept(key_a, dict(base_payload, customer_attachment=f"data:image/png;base64,{PNG}"))
     check("合法附件保存成功", status == 200, f"HTTP {status} {body[:80]}")
+    frappe.db.commit()
     request_a.reload()
     attachment_url = request_a.customer_attachment or ""
     file_row = frappe.db.get_value("File", {"file_url": attachment_url}, ["name", "is_private", "attached_to_doctype",
@@ -213,7 +224,7 @@ def main():
           f"{attachment_url}")
     check("附件绑定当前委托", file_row.get("attached_to_doctype") == "Test Request"
           and file_row.get("attached_to_name") == request_a.name)
-    status, _ = http("GET", attachment_url)
+    status, _ = http("GET", urllib.parse.quote(attachment_url))
     check("客户附件不能匿名下载", status in (403, 302, 401), f"HTTP {status}")
 
     # ---------------------------------------------------------------- 3 越权字段
@@ -248,6 +259,7 @@ def main():
     check("重复确认被拒", status in (417, 403), f"HTTP {status} {body[:80]}")
     status, body = guest_accept(key_a, base_payload)
     check("确认后客户不能再保存", status in (417, 403), f"HTTP {status}")
+    frappe.db.commit()
     audit = frappe.get_all("Test Request Share Event", filters={"test_request": request_a.name},
                            fields=["event", "actor_type", "event_time", "actor_ip", "changed_fields"])
     check("确认动作写入审计", any(row.event == "客户确认提交" for row in audit), f"{len(audit)} 条事件")
@@ -257,6 +269,7 @@ def main():
     # ---------------------------------------------------------------- 6 撤销
     request_d.reload()
     request_d.run_method("revoke_customer_fill_link")
+    frappe.db.commit()
     status, body = http("GET", f"/customer-request/{request_d.name}?web_form_request_key={key_d}")
     check("撤销后链接不可打开", status in (403, 410), f"HTTP {status}")
     status, _ = guest_accept(key_d, payload_for(request_d))
@@ -269,12 +282,14 @@ def main():
     frappe.db.set_value("Web Form Request",
                         frappe.db.get_value("Web Form Request", {"key": key_c}), "expires_on",
                         frappe.utils.add_days(frappe.utils.now_datetime(), -1))
+    frappe.db.commit()
     status, _ = http("GET", f"/customer-request/{request_c.name}?web_form_request_key={key_c}")
     check("过期链接不可打开", status in (403, 410), f"HTTP {status}")
     status, _ = guest_accept(key_c, payload_for(request_c))
     check("过期链接不能保存", status in (403, 410), f"HTTP {status}")
 
     # ---------------------------------------------------------------- 8 审计完整性
+    frappe.db.commit()
     events = frappe.get_all("Test Request Share Event",
                             filters={"test_request": ["in", [request_a.name, request_b.name,
                                                              request_c.name, request_d.name]]},
@@ -288,7 +303,7 @@ def main():
     check("审计记录访问 IP", all(row.actor_ip is not None for row in events))
 
     # 客户（Guest）直接查询审计表应无权限
-    status, _ = http("GET", "/api/resource/Test Request Share Event")
+    status, _ = http("GET", "/api/resource/" + urllib.parse.quote("Test Request Share Event"))
     check("Guest 不能读取审计资源", status in (403, 401), f"HTTP {status}")
 
     frappe.db.commit()

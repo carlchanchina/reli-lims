@@ -42,7 +42,6 @@ def enforce_workspaces():
 
 
 def after_migrate():
-    enforce_workspaces()
     directory = Path(__file__).parent / "templates" / "workbench"
     values = {"html": (directory / "home.html").read_text(),
               "style": (directory / "home.css").read_text(),
@@ -63,4 +62,6 @@ def after_migrate():
         custom = frappe.db.get_value("Custom Field", {"dt": "Item", "fieldname": field}, "name")
         if custom:
             frappe.db.set_value("Custom Field", custom, {"hidden": 1, "read_only": 1}, update_modified=False)
+    # Workspace.save() 会用 name 回写 label，因此中文标签必须在保存之后收敛。
+    enforce_workspaces()
     frappe.clear_cache()
