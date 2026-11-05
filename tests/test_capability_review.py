@@ -1,12 +1,21 @@
-"""能力审核工作流的纯逻辑测试（不依赖 Frappe 运行时）。"""
+"""能力审核工作流的纯逻辑测试（不依赖 Frappe 运行时）。
+
+注意：本文件与 test_customer_share 共用一份 `frappe` 桩。桩必须是两者的超集，
+并且幂等（已存在时只补缺失属性），否则两个模块同时运行会互相踩踏。
+"""
 import importlib
 import sys
 import types
 import unittest
+from datetime import datetime, timedelta
 
 
 def _install_frappe_stub():
-    frappe = types.ModuleType("frappe")
+    frappe = sys.modules.get("frappe")
+    if frappe is None or not hasattr(frappe, "__version__"):
+        frappe = types.ModuleType("frappe")
+        frappe.__version__ = "16.0.0-stub"
+        sys.modules["frappe"] = frappe
 
     class ValidationError(Exception):
         pass
@@ -17,19 +26,55 @@ def _install_frappe_stub():
     def throw(message, exc=None):
         raise (exc or ValidationError)(message)
 
-    frappe._ = lambda text, *args, **kwargs: text
-    frappe.throw = throw
-    frappe.ValidationError = ValidationError
-    frappe.PermissionError = PermissionError_
-    frappe.session = types.SimpleNamespace(user="Administrator")
-    frappe.get_roles = lambda user=None: ["Lab Manager"]
-    frappe.whitelist = lambda *args, **kwargs: (lambda fn: fn)
-    utils = types.ModuleType("frappe.utils")
-    utils.now_datetime = lambda: None
-    utils.get_datetime = lambda value: value
+    def whitelist(*args, **kwargs):
+        def decorator(fn):
+            return fn
+        if args and callable(args[0]):
+            return args[0]
+        return decorator
+
+    defaults = {
+        "flags": {},
+        "local": types.SimpleNamespace(request=None),
+        "_": lambda text, *a, **k: text,
+        "throw": throw,
+        "whitelist": whitelist,
+        "ValidationError": ValidationError,
+        "PermissionError": PermissionError_,
+        "session": types.SimpleNamespace(user="Administrator"),
+        "get_roles": lambda user=None: ["Lab Manager"],
+        "get_all": lambda *a, **k: [],
+        "get_doc": lambda *a, **k: None,
+        "get_meta": lambda doctype: types.SimpleNamespace(fields=[]),
+        "has_permission": lambda *a, **k: True,
+    }
+    for key, value in defaults.items():
+        if not hasattr(frappe, key):
+            setattr(frappe, key, value)
+    if not hasattr(frappe, "db"):
+        frappe.db = types.SimpleNamespace(exists=lambda *a: False, count=lambda *a, **k: 0,
+                                          get_value=lambda *a, **k: None,
+                                          set_value=lambda *a, **k: None)
+
+    utils = sys.modules.get("frappe.utils")
+    if utils is None or not hasattr(utils, "__name__"):
+        utils = types.ModuleType("frappe.utils")
+        sys.modules["frappe.utils"] = utils
+    for key, value in {
+        "now_datetime": lambda: datetime(2026, 11, 5, 12, 0, 0),
+        "get_datetime": lambda value: value,
+        "add_days": lambda value, days: value + timedelta(days=days),
+        "add_to_date": lambda value, **kwargs: value + timedelta(**kwargs),
+        "cint": lambda value: int(value or 0),
+    }.items():
+        if not hasattr(utils, key):
+            setattr(utils, key, value)
     frappe.utils = utils
-    sys.modules["frappe"] = frappe
-    sys.modules["frappe.utils"] = utils
+
+    if "frappe.rate_limiter" not in sys.modules:
+        rate_limiter = types.ModuleType("frappe.rate_limiter")
+        rate_limiter.rate_limit = lambda **kwargs: (lambda fn: fn)
+        sys.modules["frappe.rate_limiter"] = rate_limiter
     return frappe
 
 
