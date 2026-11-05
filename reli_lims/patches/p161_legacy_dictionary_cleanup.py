@@ -98,15 +98,21 @@ def _delete_link_metadata():
             frappe.delete_doc(doctype, row.name, ignore_permissions=True, force=True)
 
 
-def _drop_orphan_capability_column():
-    if frappe.db.has_column("Laboratory Capability", "detection_project"):
-        frappe.db.sql_ddl("alter table `tabLaboratory Capability` drop column `detection_project`")
+def _drop_orphan_columns():
+    for doctype, fieldname in (
+        ("Item", "custom_reli_detection_project"),
+        ("Laboratory Capability", "detection_project"),
+    ):
+        if frappe.db.has_column(doctype, fieldname):
+            frappe.db.sql_ddl(
+                "alter table `tab{0}` drop column `{1}`".format(doctype, fieldname)
+            )
 
 
 def execute():
     counts = _verify_legacy_mapping()
     _delete_link_metadata()
-    _drop_orphan_capability_column()
+    _drop_orphan_columns()
     frappe.clear_cache()
     frappe.logger("reli_lims").info(
         "P1.6.1 removed retired Detection Project links: items=%s capabilities=%s",
