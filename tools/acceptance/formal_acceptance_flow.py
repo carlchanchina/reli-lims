@@ -278,6 +278,44 @@ def guest_fill_and_confirm(url_key, name, samples):
     check("客户确认提交", status == 200 and "Awaiting Lab Review" in body, f"HTTP {status}")
 
 
+def check_quotation_projection(customer, company, capability, manager):
+    """实验室角色不持有 Quotation DocPerm，但必须能把报价行转成委托行。"""
+    from reli_lims.capability_quotation import prepare_lines
+    from reli_lims.capability_request import quotation_items
+
+    as_user("Administrator")
+    lines = prepare_lines([{"capability_id": capability.name,
+                            "conditions": {"temp_c": -40, "duration_h": 24, "mode": "低温贮存"}}])
+    for line in lines:
+        line["rate"] = 1200
+    quote = frappe.get_doc({
+        "doctype": "Quotation", "quotation_to": "Customer", "party_name": customer,
+        "company": company, "transaction_date": TODAY,
+        "valid_till": frappe.utils.add_days(TODAY, 30),
+        "currency": frappe.db.get_value("Company", company, "default_currency") or "CNY",
+        "conversion_rate": 1, "plc_conversion_rate": 1, "items": lines,
+    })
+    quote.insert(ignore_permissions=True)
+    quote.submit()
+
+    as_user(manager)
+    payload = quotation_items(quote.name)
+    check("实验室角色可读报价有界投影",
+          bool(payload["items"]) and payload["customer"] == customer,
+          f"{len(payload['items'])} 行，客户 {payload['customer']}")
+    check("投影带出可生成委托的报价行",
+          all(row.get("source_quotation") == quote.name for row in payload["items"]),
+          f"{len(payload['items'])} 行带来源")
+    denied = False
+    try:
+        frappe.get_doc("Quotation", quote.name).check_permission("read")
+    except frappe.PermissionError:
+        denied = True
+    check("实验室角色不能直接打开报价单据", denied)
+    as_user("Administrator")
+    return quote.name
+
+
 def main():
     global BASE, SITE, TODAY
     parser = argparse.ArgumentParser()
@@ -332,6 +370,8 @@ def main():
     ARTIFACTS.update({"request": request.name, "quotation": quotation})
     check("委托草稿引用已发布能力", all(row.capability == capability.name for row in request.items),
           f"{len(request.items)} 条检测项目")
+    capability_quotation = check_quotation_projection(customer, company, capability, manager)
+    ARTIFACTS["capability_quotation"] = capability_quotation
 
     as_user(manager)
     link = request.run_method("send_customer_fill_link", expires_days=7,
@@ -339,7 +379,10 @@ def main():
     as_user("Administrator")
     # 客户页面由另一个进程读取，必须先提交事务，否则链接不可见。
     frappe.db.commit()
-    ARTIFACTS["customer_url"] = link["url"]
+    # 状态文件会被贴进验收报告，只记录掩码与分享号。
+    ARTIFACTS["customer_share"] = link["share"]
+    ARTIFACTS["customer_url_masked"] = (link["url"].split("web_form_request_key=")[0]
+                                        + "web_form_request_key=***")
     sample_payload = [{"sample_code": row.sample_code, "product_name": row.product_name,
                        "model": row.model, "quantity": row.quantity,
                        "serial_no": row.serial_no} for row in request.samples]
