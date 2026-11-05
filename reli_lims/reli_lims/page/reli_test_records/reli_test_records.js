@@ -27,7 +27,7 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
                     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
                     event.preventDefault();
                     event.stopPropagation();
-                    frappe.set_route(`/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`);
+                    window.location.assign(`/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`);
                 }).appendTo($("<td>").appendTo(tr));
             [row.project_label, row.standard_label, row.test_condition, __(row.status, null, "Test Program Item"), row.result, row.conclusion]
                 .forEach(value => $("<td>").text(value || "—").appendTo(tr));
