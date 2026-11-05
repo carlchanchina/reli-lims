@@ -303,7 +303,7 @@ def _map_items_and_lines():
 
 def _retire_intermediate_detection_project():
     # Detection Project was an unpushed local experiment. Keep any historical
-    # table data for audit, but hide the duplicate concept from business forms.
+    # table data for audit, but retire the duplicate concept from business use.
     custom_field = frappe.db.get_value("Custom Field", {
         "dt": "Item", "fieldname": "custom_reli_detection_project"
     })
@@ -312,7 +312,10 @@ def _retire_intermediate_detection_project():
             "label": "旧预研检测项目（兼容）", "hidden": 1, "read_only": 1,
         }, update_modified=False)
     if frappe.db.exists("DocType", "Detection Project"):
-        frappe.db.set_value("DocType", "Detection Project", "hidden", 1, update_modified=False)
+        frappe.db.set_value("DocType", "Detection Project", {
+            "deprecated": 1,
+            "description": "旧预研检测项目，仅保留历史数据；业务统一使用 Test Project。",
+        }, update_modified=False)
     field = frappe.db.get_value("DocField", {
         "parent": "Laboratory Capability", "fieldname": "detection_project"
     })
