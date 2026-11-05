@@ -60,7 +60,7 @@ class LaboratoryCapability(Document):
         if self.published and self.status != "已发布":
             frappe.throw(_("发布标记与能力状态不一致。"))
 
-    def after_save(self):
+    def on_update(self):
         from reli_lims.capability_catalog import ensure_project_relations
         if self.test_project:
             ensure_project_relations(self.test_project, self.test_standard, self.test_object)
