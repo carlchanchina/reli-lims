@@ -29,14 +29,15 @@ SKIP_SUFFIXES = (
 def tracked_files(repo: str, rev: str | None) -> list[str]:
     cmd = ["git", "-C", repo, "ls-tree", "-r", "--name-only", rev] if rev else \
           ["git", "-C", repo, "ls-files"]
-    out = subprocess.run(cmd, capture_output=True, text=True, check=True).stdout
+    out = subprocess.run(cmd, capture_output=True, check=True,
+                         encoding="utf-8", errors="replace").stdout
     return [name for name in out.splitlines() if name and not name.endswith(SKIP_SUFFIXES)]
 
 
 def read(repo: str, rev: str | None, path: str) -> str:
     if rev:
         result = subprocess.run(["git", "-C", repo, "show", f"{rev}:{path}"],
-                                capture_output=True, text=True)
+                                capture_output=True, encoding="utf-8", errors="replace")
         return result.stdout if result.returncode == 0 else ""
     try:
         with open(f"{repo}/{path}", encoding="utf-8", errors="replace") as handle:
