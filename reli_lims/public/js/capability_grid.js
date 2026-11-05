@@ -57,8 +57,11 @@ Object.assign(reli_lims.capabilities, {
                         else selected.delete(row.name);
                     }).appendTo(cell(""));
             }
+            const template = this.parse(row.condition_schema);
+            const condition = row.condition_text || (selecting || mode === "catalog"
+                ? (template || []).map(field => field.label).join("、") : "");
             for (const field of ["product_scope", "project_label", "standard_label", "method_label",
-                "condition_text", "limitation", "laboratory_label"]) cell(row[field] || "—");
+                "condition_text", "limitation", "laboratory_label"]) cell((field === "condition_text" ? condition : row[field]) || "—");
             if (mode === "quotation") ["item_name", "qty", "uom", "rate"].forEach(key => cell(row[key]));
             if (mode === "request") ["samples", "qty", "notes"].forEach(key => cell(row[key]));
             const detail = $("<details>").appendTo(cell(""));
