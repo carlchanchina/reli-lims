@@ -1,9 +1,11 @@
 frappe.provide("reli_lims.relations");
 
 (function () {
-    const language = String(frappe.boot?.lang || frappe.local?.lang || "").toLowerCase();
-    if (!language.startsWith("zh")) return;
+    const language = () => String(
+        frappe.boot?.lang || frappe.local?.lang || document.documentElement.lang || ""
+    ).toLowerCase();
     const apply_service_item_labels = () => {
+        if (!language().startsWith("zh")) return;
         frappe._messages = frappe._messages || {};
         Object.assign(frappe._messages, {
             Item: "服务商品",
@@ -13,8 +15,35 @@ frappe.provide("reli_lims.relations");
             "Add Item": "添加服务商品",
         });
     };
-    apply_service_item_labels();
-    frappe.ready(apply_service_item_labels);
+
+    const apply_service_item_navigation = () => {
+        if (!language().startsWith("zh")) return;
+        document.querySelectorAll("a.item-anchor[href]").forEach(anchor => {
+            if (!/\/desk\/(?:stock\/)?item$/.test(anchor.getAttribute("href") || "")) return;
+            const label = anchor.querySelector(".sidebar-item-label");
+            if (label && ["选项", "Item"].includes(label.textContent.trim())) {
+                label.textContent = "服务商品";
+            }
+        });
+    };
+
+    const apply_labels = () => {
+        apply_service_item_labels();
+        apply_service_item_navigation();
+    };
+
+    apply_labels();
+    document.addEventListener("DOMContentLoaded", () => {
+        apply_labels();
+        const dock = document.getElementById("desk-dock");
+        if (dock && window.MutationObserver) {
+            new MutationObserver(apply_service_item_navigation).observe(dock, {
+                childList: true,
+                subtree: true,
+            });
+        }
+        window.setTimeout(apply_labels, 500);
+    });
 })();
 
 (function () {
