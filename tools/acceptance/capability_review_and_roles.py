@@ -54,18 +54,21 @@ def main() -> int:
     today = frappe.utils.today()
 
     # ------------------------------------------------------------ 基础数据
-    labs = frappe.get_all("Laboratory Capability", fields=["laboratory", "count(*) as total"],
-                          group_by="laboratory", order_by="total desc")
-    labs = [row for row in labs if row.laboratory]
+    rows = frappe.get_all("Laboratory Capability", fields=["laboratory"], limit_page_length=0)
+    counts = {}
+    for row in rows:
+        if row.get("laboratory"):
+            counts[row["laboratory"]] = counts.get(row["laboratory"], 0) + 1
+    labs = sorted(counts.items(), key=lambda item: -item[1])
     if not labs:
         print("站点没有实验室能力，无法验收。")
         return 1
-    lab_a = labs[0].laboratory
-    lab_b = labs[1].laboratory if len(labs) > 1 else None
+    lab_a, lab_a_total = labs[0]
+    lab_b = labs[1][0] if len(labs) > 1 else None
     ARTIFACTS.update({"laboratory": lab_a, "laboratory_b": lab_b})
     baseline_pending = frappe.db.count("Laboratory Capability", {"status": "待确认"})
     baseline_total = frappe.db.count("Laboratory Capability")
-    print(f"实验室 {lab_a}｜能力 {labs[0].total} 条｜待确认总数 {baseline_pending}")
+    print(f"实验室 {lab_a}｜能力 {lab_a_total} 条｜待确认总数 {baseline_pending}")
 
     project = frappe.db.get_value("Test Project", {"active": 1}, "name") or \
         frappe.get_all("Test Project", pluck="name")[0]

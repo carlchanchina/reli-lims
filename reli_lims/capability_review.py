@@ -187,14 +187,11 @@ def search(laboratory=None, test_project=None, test_standard=None, status=None,
 
 
 def status_counts(laboratory=None):
+    # Frappe v16 禁止在 fields 里传裸 SQL 聚合，这里按状态逐个计数，数据集小且可走索引。
     filters = {"laboratory": laboratory} if laboratory else {}
-    result = {status: 0 for status in STATUSES}
-    for row in frappe.get_all("Laboratory Capability", filters=filters,
-                              fields=["status", "count(*) as total"], group_by="status"):
-        if row.status in result:
-            result[row.status] = row.total
-    result["演示"] = frappe.db.count("Laboratory Capability",
-                                     dict(filters, demo_only=1))
+    result = {status: frappe.db.count("Laboratory Capability", dict(filters, status=status))
+              for status in STATUSES}
+    result["演示"] = frappe.db.count("Laboratory Capability", dict(filters, demo_only=1))
     return result
 
 
