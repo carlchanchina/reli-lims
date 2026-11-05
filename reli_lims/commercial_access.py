@@ -136,6 +136,6 @@ def sales_order_facts(name):
 
 
 def quotation_lines(name):
-    """销售订单与报价单的引用关系（只读引用字段）。"""
+    """销售订单引用了哪些报价单（只读引用字段，不读行明细）。"""
     return frappe.get_all("Sales Order Item", filters={"parent": name},
-                          fields=["prevdoc_docname"], limit_page_length=500)
+                          pluck="prevdoc_docname", limit_page_length=500)

@@ -64,10 +64,16 @@ def ensure_user(email, first_name, roles):
         user = frappe.get_doc("User", email)
         existing = {row.role for row in user.roles}
         missing = [role for role in roles if role not in existing]
-        if missing:
+        # 反向收敛：历史跑批留下的 Sales User 必须清掉，否则"最小权限"结论不成立。
+        extra = [row for row in user.roles
+                 if row.role not in roles and row.role not in ("All", "Guest")]
+        if missing or extra:
             for role in missing:
                 user.append("roles", {"role": role})
+            for row in extra:
+                user.remove(row)
             user.save(ignore_permissions=True)
+        frappe.clear_cache(user=email)
     frappe.db.commit()
     return email
 

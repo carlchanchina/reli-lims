@@ -30,6 +30,6 @@ def validate_commercial_links(request):
             frappe.throw(_('销售订单与委托单位或公司不一致。'))
         if quotation:
             from reli_lims.commercial_access import quotation_lines
-            sources = {row.prevdoc_docname for row in quotation_lines(sales_order) if row.prevdoc_docname}
+            sources = {name for name in quotation_lines(sales_order) if name}
             if quotation not in sources:
                 frappe.throw(_('销售订单未引用所选报价单，请核对商业来源。'))
