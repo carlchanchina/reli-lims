@@ -5,12 +5,13 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
     const host = $("<div>").appendTo(page.body);
     let start = 0;
     let generation = 0;
-    const search = page.add_field({fieldname: "search", label: __("搜索"), fieldtype: "Data",
+    let search;
+    search = page.add_field({fieldname: "search", label: __("搜索"), fieldtype: "Data",
         change() { start = 0; load(); }});
-    const load = async () => {
+    async function load() {
         const current = ++generation;
         const {message} = await frappe.call("reli_lims.execution_records.list_records", {
-            text: search.get_value(), start,
+            text: search?.get_value(), start,
         });
         if (current !== generation) return;
         host.empty();

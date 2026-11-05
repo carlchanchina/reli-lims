@@ -36,16 +36,20 @@ def list_records(text=None, start=0):
     if not titles:
         return {"rows": [], "has_more": False}
     rows = frappe.get_all("Test Program Item", filters={"parent": ["in", list(titles)]},
-        fields=["name", "parent", "item_code", "test_project", "standard", "test_condition",
+        fields=["name", "parent", "item_code", "test_project", "test_method", "standard", "test_condition", "technical_configuration",
                 "status", "result", "conclusion", "raw_data", "actual_start", "actual_end"],
         order_by="modified desc, name asc", limit_page_length=0)
     projects = dict(frappe.get_all("Test Project", fields=["name", "project_name"], as_list=True))
     standards = dict(frappe.get_all("Test Standard", fields=["name", "full_name"], as_list=True))
+    methods = dict(frappe.get_all("Test Method", fields=["name", "method_name"], as_list=True))
     term = (text or "").strip().casefold()[:100]
     matched = []
     for row in rows:
-        row.project_label = projects.get(row.test_project) or row.item_code
-        row.standard_label = standards.get(row.standard) or row.standard
+        configuration = frappe.parse_json(row.technical_configuration) or {}
+        snapshot = configuration.get("snapshot") or {}
+        row.project_label = snapshot.get("project_label") or projects.get(row.test_project) or methods.get(row.test_method) or row.item_code
+        row.standard_label = snapshot.get("standard_label") or standards.get(row.standard) or row.standard
+        row.pop("technical_configuration", None)
         row.program_title = titles[row.parent] or row.parent
         if not term or term in " ".join(str(value or "") for value in row.values()).casefold():
             matched.append(row)

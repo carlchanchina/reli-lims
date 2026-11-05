@@ -327,6 +327,16 @@ class TestTestingRequest(IntegrationTestCase):
         for output_format in ('pdf', 'docx', 'xlsx'):
             content = render_document(get_template('Test Report'), context, output_format)
             self.assertGreater(len(content), 100)
+            if output_format == 'docx':
+                from docx import Document
+                document = Document(BytesIO(content))
+                text = ' '.join(cell.text for table in document.tables for row in table.rows for cell in row.cells)
+                self.assertIn('P19-SOFTWARE-CONDITION-15', text)
+            if output_format == 'xlsx':
+                from openpyxl import load_workbook
+                workbook = load_workbook(BytesIO(content))
+                text = ' '.join(str(cell.value or '') for sheet in workbook for row in sheet for cell in row)
+                self.assertIn('P19-SOFTWARE-CONDITION-15', text)
             if output_format == 'pdf':
                 text = ''.join(page.extract_text() for page in PdfReader(BytesIO(content)).pages)
                 self.assertIn('P19-SOFTWARE-CONDITION-15', text)
@@ -337,6 +347,9 @@ class TestTestingRequest(IntegrationTestCase):
             html = frappe.get_print(doctype, name, print_format=print_format)
             self.assertIn('P19-SOFTWARE-CONDITION-15', html)
             self.assertIn(original_label, html)
+            from frappe.utils.pdf import get_pdf
+            pdf = get_pdf(html)
+            self.assertGreater(len(PdfReader(BytesIO(pdf)).pages), 0)
         from reli_lims.execution_records import list_records
         self.assertTrue(any(row.parent == program.name for row in list_records('P19-SOFTWARE-CONDITION-15')['rows']))
 
