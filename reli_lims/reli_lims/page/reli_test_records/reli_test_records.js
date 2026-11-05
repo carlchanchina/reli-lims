@@ -24,7 +24,7 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
             const tr = $("<tr>").appendTo(body);
             $("<a>").attr("href", `/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`)
                 .text(row.program_title).appendTo($("<td>").appendTo(tr));
-            [row.project_label, row.standard_label, row.test_condition, __(row.status), row.result, row.conclusion]
+            [row.project_label, row.standard_label, row.test_condition, __(row.status, null, "Test Program Item"), row.result, row.conclusion]
                 .forEach(value => $("<td>").text(value || "—").appendTo(tr));
         }
         if (!message.rows.length) $("<td colspan='7'>").text(__("暂无匹配的试验记录"))
