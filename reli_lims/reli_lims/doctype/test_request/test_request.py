@@ -11,6 +11,12 @@ from reli_lims.validation import require_role
 
 class TestRequest(Document):
     def validate(self):
+        from reli_lims.customer_share import (customer_scope_errors, in_customer_save,
+                                              prepare_customer_rows)
+        customer_links = in_customer_save()
+        if customer_links:
+            # 客户链接保存：新增样品行没有内部编号，先补号再校验。
+            prepare_customer_rows(self)
         if not self.company:
             self.company = frappe.defaults.get_user_default('Company') or frappe.defaults.get_global_default('company')
         if not self.company:
@@ -19,19 +25,30 @@ class TestRequest(Document):
                 self.company = companies[0]
         if not self.company:
             frappe.throw(_('请先设置默认公司，再创建检测委托单。'))
+        if self.get('customer') and not self.get('customer_display_name'):
+            self.customer_display_name = frappe.db.get_value('Customer', self.customer, 'customer_name')
         try:
-            validate_scope(self.as_dict())
+            if customer_links:
+                # 客户可以先保存未完成草稿，只拦会破坏数据结构的输入。
+                errors = customer_scope_errors(self.as_dict())
+                if errors:
+                    frappe.throw(' '.join(errors))
+            else:
+                validate_scope(self.as_dict())
         except ValueError as exc:
             frappe.throw(scope_error_message(exc))
         previous = self.get_doc_before_save()
         for key in ('project', 'confirmed_by', 'confirmed_on'):
             if str(self.get(key) or '') != str((previous.get(key) if previous else None) or ''):
                 frappe.throw(_('确认记录字段不能直接修改。'))
-        for dt, name in (('Customer', self.customer), ('Company', self.company)):
-            frappe.get_doc(dt, name).check_permission('read')
+        if not customer_links:
+            # 客户链接读取的客户/公司由 Web Form Request.doc_values 固定，
+            # 不能再用实验室内部角色的读取权限作为保存前提。
+            for dt, name in (('Customer', self.customer), ('Company', self.company)):
+                frappe.get_doc(dt, name).check_permission('read')
         if self.get('payer_same_as_customer'):
             self.payer_customer = self.customer
-        if self.get('payer_customer'):
+        if self.get('payer_customer') and not customer_links:
             frappe.get_doc('Customer', self.payer_customer).check_permission('read')
         if self.get('report_same_as_customer'):
             self.report_company = frappe.db.get_value('Customer', self.customer, 'customer_name')
@@ -55,6 +72,21 @@ class TestRequest(Document):
     def share_customer_attachment(self, file_id: str):
         from reli_lims.request_confirmation import share_customer_attachment
         return share_customer_attachment(self, file_id)
+
+    @frappe.whitelist(methods=['POST'])
+    def send_customer_fill_link(self, expires_days=7, customer_email=None, note=None):
+        from reli_lims.customer_share import send_link
+        return send_link(self.name, expires_days=expires_days, customer_email=customer_email, note=note)
+
+    @frappe.whitelist(methods=['POST'])
+    def revoke_customer_fill_link(self):
+        from reli_lims.customer_share import revoke_link
+        return revoke_link(self.name)
+
+    @frappe.whitelist(methods=['POST'])
+    def review_customer_fill(self, approve=1, note=None):
+        from reli_lims.customer_share import lab_review
+        return lab_review(self.name, approve=approve, note=note)
 
     def before_submit(self):
         require_role('Lab Manager')

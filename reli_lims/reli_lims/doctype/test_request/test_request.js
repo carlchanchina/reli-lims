@@ -23,6 +23,7 @@ frappe.ui.form.on('Test Request', {
                     values => frm.call('share_customer_attachment', values).then(() => frm.reload_doc()), __('分享委托附件'));
             });
         }
+        frm.events.customer_collaboration(frm);
         if (frm.doc.docstatus !== 1) return;
         if (frm.doc.project) {
             frm.add_custom_button(__("项目"), () => frappe.set_route('Form', 'Project', frm.doc.project));
@@ -37,6 +38,88 @@ frappe.ui.form.on('Test Request', {
                     if (response.message) frappe.set_route('Form', 'Test Program', response.message);
                 }});
         });
+    },
+    customer_collaboration(frm) {
+        if (frm.doc.docstatus !== 0 || frm.is_new()) return;
+        if (!frappe.user_roles.some(role => ['Lab Manager', 'Lab Engineer'].includes(role))) return;
+        const group = __('客户共同填写');
+        const state = frm.doc.customer_confirmation_state;
+
+        frm.add_custom_button(__('发送客户填写链接'), () => {
+            if (frm.is_dirty()) { frappe.msgprint(__('请先保存委托内容，再发送客户链接。')); return; }
+            const dialog = new frappe.ui.Dialog({
+                title: __('发送客户填写链接'),
+                fields: [
+                    {fieldname: 'expires_days', fieldtype: 'Int', label: __('链接有效期（天）'), default: 7, reqd: 1},
+                    {fieldname: 'customer_email', fieldtype: 'Data', label: __('客户邮箱（可选）'), default: frm.doc.contact_email || ''},
+                ],
+                primary_action_label: __('生成链接'),
+                primary_action(values) {
+                    frm.call({method: 'send_customer_fill_link', args: values}).then(response => {
+                        dialog.hide();
+                        const data = response.message || {};
+                        frappe.msgprint({
+                            title: __('客户填写链接已生成'),
+                            indicator: 'green',
+                            message: `<p>${__('请把下面的链接发给客户，客户免登录即可填写。')}</p>
+                                <p><a href="${data.url}" target="_blank">${data.url}</a></p>
+                                <p class="text-muted">${__('有效期至')} ${data.expires_on}</p>`,
+                        });
+                        frm.reload_doc();
+                    });
+                },
+            });
+            dialog.show();
+        }, group);
+
+        frm.add_custom_button(__('查看客户链接'), () => {
+            frm.call('list_links').then(response => {
+                const rows = response.message || [];
+                if (!rows.length) { frappe.msgprint(__('尚未生成客户填写链接。')); return; }
+                const body = rows.map(row => `<tr>
+                    <td><a href="${row.url}" target="_blank">${__('打开')}</a></td>
+                    <td>${row.status}</td><td>${row.expires_on}</td>
+                    <td>${row.used ? row.used_on : __('未填写')}</td><td>${row.use_count}</td></tr>`).join('');
+                frappe.msgprint({
+                    title: __('客户填写链接'),
+                    wide: true,
+                    message: `<table class="table table-bordered table-sm"><thead><tr>
+                        <th></th><th>${__('状态')}</th><th>${__('有效期至')}</th>
+                        <th>${__('首次填写')}</th><th>${__('填写次数')}</th></tr></thead><tbody>${body}</tbody></table>`,
+                });
+            });
+        }, group);
+
+        if (['Draft', 'Awaiting Customer Confirmation', 'Needs Reconfirmation'].includes(state)) {
+            frm.add_custom_button(__('撤销客户链接'), () => {
+                frappe.confirm(__('撤销后客户将无法再通过现有链接填写，是否继续？'), () => {
+                    frm.call('revoke_customer_fill_link').then(() => {
+                        frappe.show_alert({message: __('链接已撤销'), indicator: 'orange'});
+                        frm.reload_doc();
+                    });
+                });
+            }, group);
+        }
+
+        if (state === 'Awaiting Lab Review') {
+            frm.add_custom_button(__('实验室审核'), () => {
+                const dialog = new frappe.ui.Dialog({
+                    title: __('实验室审核客户填写内容'),
+                    fields: [{fieldname: 'note', fieldtype: 'Small Text', label: __('审核意见')}],
+                    primary_action_label: __('通过并允许正式受理'),
+                    primary_action(values) {
+                        frm.call({method: 'review_customer_fill', args: {approve: 1, note: values.note}})
+                            .then(() => { dialog.hide(); frm.reload_doc(); });
+                    },
+                    secondary_action_label: __('退回客户补充'),
+                    secondary_action() {
+                        frm.call({method: 'review_customer_fill', args: {approve: 0, note: dialog.get_value('note')}})
+                            .then(() => { dialog.hide(); frm.reload_doc(); });
+                    },
+                });
+                dialog.show();
+            }, group).addClass('btn-primary');
+        }
     },
     update_choices(frm) {
         const choices = field => (frm.doc[field] || []).map(row => {

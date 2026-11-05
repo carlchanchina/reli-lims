@@ -9,14 +9,14 @@ TECHNICAL_FIELDS = ('customer','company','quotation','sales_order','execution_co
  'customer_requirements','customer_expected_tests','customer_reference_standards','customer_declared_conditions','customer_shipping_details',
  'contact_person','contact_phone','contact_email','applicant_address','report_requirements','report_company','report_address',
  'report_language','report_copies','report_format','sample_handling_notes','sample_return','result_judgment','judgment_basis',
- 'fixture_required','fixture_provider','method_choice_consent','subcontract_consent')
+ 'fixture_required','fixture_provider','method_choice_consent','subcontract_consent','customer_attachment')
 CHILD_FIELDS = {
  'samples': ('sample_code','customer_sample_code','product_name','model','serial_no','quantity','dimensions','weight_kg'),
  'items': ('item_code','test_method','standard','test_condition'),
  'sample_assignments': ('item_code','sample_code'),
  'photos': ('sample_code','photo'),
 }
-PROTECTED = ('customer_confirmation_state','customer_confirmed_by','customer_confirmed_at','customer_confirmation_fingerprint')
+PROTECTED = ('customer_confirmation_state','customer_confirmed_by','customer_confirmed_at','customer_confirmation_fingerprint','lab_reviewed_by','lab_reviewed_at')
 _MUTATION = object()
 
 
@@ -77,7 +77,20 @@ def validate_confirmation(doc):
     import frappe
     if not frappe.get_meta('Test Request').has_field('customer_confirmation_state'):return
     previous=doc.get_doc_before_save()
-    if doc.flags.get('_reli_customer_confirmation_mutation') is not _MUTATION:
+    from reli_lims.customer_share import in_customer_save
+    mutated = doc.flags.get('_reli_customer_confirmation_mutation') is _MUTATION
+    if in_customer_save() and not mutated:
+        # 客户链接保存：受保护字段以服务端既有值为准。原生 Web Form 会把表单内
+        # 所有字段按提交内容回写（缺失即空），这里统一回滚，避免客户越权或误清空。
+        if previous:
+            for field in PROTECTED:
+                doc.set(field, previous.get(field))
+        else:
+            doc.set('customer_confirmation_state','Draft')
+            for field in PROTECTED:
+                if field!='customer_confirmation_state':
+                    doc.set(field,None)
+    elif not mutated:
         for field in PROTECTED:
             old=previous.get(field) if previous else None
             if field=='customer_confirmation_state' and not old and doc.get(field) in (None,'','Draft'):
@@ -88,7 +101,9 @@ def validate_confirmation(doc):
         if current_fingerprint(doc)!=doc.customer_confirmation_fingerprint:
             doc.customer_confirmation_state='Needs Reconfirmation'
     if doc.get('execution_company'):
-        frappe.get_doc('Company',doc.execution_company).check_permission('read')
+        from reli_lims.customer_share import in_customer_save
+        if not in_customer_save():
+            frappe.get_doc('Company',doc.execution_company).check_permission('read')
 
 
 def confirm(doc, receipt):
@@ -178,6 +193,7 @@ TECHNICAL_LABELS = {
  'report_company':'报告抬头','report_address':'报告地址','report_language':'报告语言','report_copies':'报告份数','report_format':'报告形式',
  'sample_handling_notes':'样品处置要求','sample_return':'样品返还安排','result_judgment':'结果判定要求','judgment_basis':'判定依据',
  'fixture_required':'工装要求','fixture_provider':'工装提供方','method_choice_consent':'方法选择许可','subcontract_consent':'分包许可',
+ 'customer_attachment':'客户补充附件',
 }
 PUBLIC_EDIT_FIELDS = ('customer_requirements','customer_expected_tests','customer_reference_standards','customer_declared_conditions','customer_shipping_details',
  'contact_person','contact_phone','contact_email','applicant_address','delivery_date','report_requirements')

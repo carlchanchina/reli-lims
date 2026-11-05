@@ -3,6 +3,7 @@
   "name": "Testing Center",
   "type": "Workspace",
   "label": "工作台首页",
+  "type": "Workspace",
   "title": "工作台首页",
   "module": "Reli LIMS",
   "icon": "lab",

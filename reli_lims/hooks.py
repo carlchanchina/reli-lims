@@ -56,3 +56,10 @@ doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capabil
 doc_events["Test Request"]["validate"] = "reli_lims.capability_request.validate"
 doctype_js["Item"] = "public/js/item_relations.js"
 jinja = {"methods": ["reli_lims.execution_records.print_context"]}
+
+# 客户共同填写：复用原生 Web Form + Web Form Request，不引入新的表单系统。
+after_migrate.append("reli_lims.customer_share_setup.after_migrate")
+override_whitelisted_methods = {
+    "frappe.website.doctype.web_form.web_form.accept": "reli_lims.customer_share.accept",
+}
+doc_events["Test Request"]["on_trash"] = "reli_lims.customer_share.prevent_linked_trash"
