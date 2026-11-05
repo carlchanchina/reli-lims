@@ -104,8 +104,9 @@ CLIENT_SCRIPT = r"""
   if (!key) return;
   if (!window.__reliViewLogged) {
     window.__reliViewLogged = true;
+    // 访问审计失败不能影响客户填写页面。
     frappe.call({ method: 'reli_lims.customer_share.log_view', type: 'POST',
-                  args: { web_form_request_key: key } });
+                  args: { web_form_request_key: key }, error: function () {} });
   }
   var state = (frappe.reference_doc || {}).customer_confirmation_state || 'Draft';
   var locked = ['Customer Confirmed', 'Awaiting Lab Review', 'Lab Reviewed'].includes(state);

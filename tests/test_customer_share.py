@@ -193,6 +193,26 @@ class ShareDiffTest(unittest.TestCase):
         self.assertTrue(any("行数" in item for item in customer_share.diff(before, after)))
 
 
+class AuditEventDeclarationTest(unittest.TestCase):
+    def setUp(self):
+        self.meta = json.loads((
+            ROOT / "reli_lims/reli_lims/doctype/test_request_share_event/test_request_share_event.json"
+        ).read_text())
+        self.options = next(field["options"] for field in self.meta["fields"]
+                            if field["fieldname"] == "event").split("\n")
+        self.source = (ROOT / "reli_lims/customer_share.py").read_text()
+
+    def test_every_logged_event_is_a_declared_select_option(self):
+        for event in ("发送客户填写链接", "撤销客户填写链接", "客户打开链接", "客户保存",
+                      "客户确认提交", "实验室审核通过", "实验室退回补充"):
+            self.assertIn(event, self.options, f"审计下拉缺少事件：{event}")
+            self.assertIn(event, self.source, f"代码未使用事件：{event}")
+
+    def test_audit_records_actor_ip_and_time(self):
+        for field in ("actor_type", "actor_ip", "event_time", "changed_fields", "web_form_request"):
+            self.assertIn(field, [row["fieldname"] for row in self.meta["fields"]])
+
+
 class AttachmentLimitTest(unittest.TestCase):
     PNG = base64.b64encode(
         bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"

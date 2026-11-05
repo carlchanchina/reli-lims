@@ -50,6 +50,7 @@ after_migrate.append("reli_lims.capability_quotation.after_migrate")
 after_migrate.append("reli_lims.capability_catalog.after_migrate")
 after_migrate.append("reli_lims.patches.p161_legacy_dictionary_cleanup.after_migrate")
 after_migrate.append("reli_lims.workbench_navigation.after_migrate")
+after_migrate.append("reli_lims.ui_terms.after_migrate")
 doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
 doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}
 doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capability_request.js"]
