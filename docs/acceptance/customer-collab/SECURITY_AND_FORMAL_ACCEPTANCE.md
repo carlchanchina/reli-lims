@@ -166,7 +166,7 @@
 
 | 类型 | 结果 |
 | --- | --- |
-| 单元测试（pytest，含子测试） | 88 passed, 7 subtests passed |
+| 单元测试（pytest，含子测试） | 90 passed, 7 subtests passed |
 | 免登录共享安全验收 | 39/39 |
 | 正式受理与执行链路验收 | 21/21 |
 
