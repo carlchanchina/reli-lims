@@ -193,6 +193,37 @@ class ShareDiffTest(unittest.TestCase):
         self.assertTrue(any("行数" in item for item in customer_share.diff(before, after)))
 
 
+class ExecutionScopeGateTest(unittest.TestCase):
+    """真实 CNAS 发布校验不允许被客户端流程放宽。"""
+
+    def setUp(self):
+        self.frappe = sys.modules["frappe"]
+        self.original = self.frappe.db
+
+    def tearDown(self):
+        self.frappe.db = self.original
+
+    def _doc(self):
+        return types.SimpleNamespace(items=[{"test_project": "TPR-1", "test_method": None,
+                                            "standard": "STD-1"}])
+
+    def _with_standard(self, status):
+        def get_value(doctype, name=None, fields=None, as_dict=False, for_update=False):
+            return {"status": status} if doctype == "Test Standard" else {"active": 1}
+        self.frappe.db = types.SimpleNamespace(get_value=get_value, exists=lambda *a, **k: True,
+                                               count=lambda *a, **k: 0)
+
+    def test_draft_standard_blocks_formal_acceptance(self):
+        self._with_standard("Draft")
+        with self.assertRaises(StubThrow) as context:
+            request_submission.validate_execution_scope(self._doc())
+        self.assertIn("检测标准", str(context.exception))
+
+    def test_active_standard_passes_scope_check(self):
+        self._with_standard("Active")
+        request_submission.validate_execution_scope(self._doc())
+
+
 class AuditEventDeclarationTest(unittest.TestCase):
     def setUp(self):
         self.meta = json.loads((
