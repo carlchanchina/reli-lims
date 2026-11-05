@@ -177,14 +177,17 @@
       "collapsible": 1,
       "fieldname": "compatibility_section",
       "fieldtype": "Section Break",
-      "label": "兼容数据"
+      "label": "兼容数据",
+      "hidden": 1
     },
     {
       "fieldname": "test_method",
       "fieldtype": "Link",
       "label": "原检测项目（兼容）",
       "options": "Test Method",
-      "description": "旧 Test Method 仅保留用于历史报价、委托与来源追溯；新业务使用统一检测项目。"
+      "description": "旧 Test Method 仅保留用于历史报价、委托与来源追溯；新业务使用统一检测项目。",
+      "hidden": 1,
+      "read_only": 1
     }
   ],
   "module": "Reli LIMS",

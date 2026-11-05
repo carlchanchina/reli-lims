@@ -18,7 +18,7 @@ frappe.ui.form.on("Capability Source", {
         render_source_overview(frm);
         frm.add_custom_button(__("CNAS 能力明细表"), async () => {
             await frappe.require("capability_grid.bundle.js");
-            await frappe.require("/assets/reli_lims/js/capability_selector.js");
+            await frappe.require("capability_selector.bundle.js");
             return reli_lims.capabilities.open({mode: "catalog", source: frm.doc.name});
         });
     },
@@ -47,7 +47,7 @@ function render_source_overview(frm) {
             .text(__("按项目、对象、依据、实验室筛选"))
             .on("click", async () => {
                 await frappe.require("capability_grid.bundle.js");
-                await frappe.require("/assets/reli_lims/js/capability_selector.js");
+                await frappe.require("capability_selector.bundle.js");
                 reli_lims.capabilities.open({mode: "catalog", source: frm.doc.name});
             }).appendTo(wrapper);
         $("<button type='button' class='btn btn-default btn-sm'>")
