@@ -14,7 +14,7 @@ fixtures = [
 app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
 app_home = "/desk/reli-lims/testing-center"
 
-app_include_js = ["public/js/business_relations.js"]
+app_include_js = ["/assets/reli_lims/js/business_relations.js"]
 
 add_to_apps_screen = [
     {
@@ -47,6 +47,7 @@ doc_events['File']['validate'] = 'reli_lims.request_confirmation.validate_file_v
 
 after_migrate.append("reli_lims.capability_quotation.after_migrate")
 after_migrate.append("reli_lims.capability_catalog.after_migrate")
+after_migrate.append("reli_lims.patches.p161_legacy_dictionary_cleanup.after_migrate")
 doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
 doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}
 doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capability_request.js"]

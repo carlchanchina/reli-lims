@@ -109,12 +109,27 @@ def _drop_orphan_columns():
             )
 
 
-def execute():
+def _cleanup():
     counts = _verify_legacy_mapping()
     _delete_link_metadata()
     _drop_orphan_columns()
     frappe.clear_cache()
+    return counts
+
+
+def execute():
+    counts = _cleanup()
     frappe.logger("reli_lims").info(
         "P1.6.1 removed retired Detection Project links: items=%s capabilities=%s",
         counts["items"], counts["capabilities"],
     )
+
+
+def after_migrate():
+    """Self-heal sites where an intermediate patch had already been logged."""
+    counts = _cleanup()
+    if counts["items"] or counts["capabilities"]:
+        frappe.logger("reli_lims").info(
+            "P1.6.1 post-migrate cleanup: items=%s capabilities=%s",
+            counts["items"], counts["capabilities"],
+        )

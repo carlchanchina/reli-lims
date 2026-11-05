@@ -5,6 +5,7 @@ import frappe
 from frappe.tests import IntegrationTestCase
 
 from reli_lims import business_relations
+from reli_lims.patches.p161_legacy_dictionary_cleanup import _cleanup
 
 
 class TestBusinessRelations(IntegrationTestCase):
@@ -103,3 +104,22 @@ class TestBusinessRelations(IntegrationTestCase):
         content = translations.read_text()
         self.assertIn("Item,服务商品", content)
         self.assertIn("Items,服务商品", content)
+
+    def test_global_relation_asset_uses_built_url(self):
+        includes = frappe.get_hooks("app_include_js") or []
+        self.assertIn("/assets/reli_lims/js/business_relations.js", includes)
+        asset = Path(frappe.get_app_path("reli_lims")) / "public/js/business_relations.js"
+        self.assertTrue(asset.is_file())
+
+    def test_legacy_cleanup_is_idempotent_without_touching_business_data(self):
+        before = (
+            frappe.db.count("Test Project"), frappe.db.count("Test Object"),
+            frappe.db.count("Test Standard"), frappe.db.count("Laboratory Capability"),
+        )
+        self.assertEqual(_cleanup(), {"items": 0, "capabilities": 0})
+        self.assertEqual(_cleanup(), {"items": 0, "capabilities": 0})
+        after = (
+            frappe.db.count("Test Project"), frappe.db.count("Test Object"),
+            frappe.db.count("Test Standard"), frappe.db.count("Laboratory Capability"),
+        )
+        self.assertEqual(before, after)
