@@ -19,6 +19,13 @@ def dump(path, data):
 def build_child():
     LOG_DOCTYPE.mkdir(parents=True, exist_ok=True)
     (LOG_DOCTYPE / "__init__.py").write_text("", encoding="utf-8")
+    (LOG_DOCTYPE / "capability_review_log.py").write_text(
+        "from frappe.model.document import Document\n\n\n"
+        "class CapabilityReviewLog(Document):\n"
+        '    """能力审核记录：只追加，不覆盖；用于逐条追溯审核与发布。"""\n\n'
+        "    pass\n",
+        encoding="utf-8",
+    )
     doc = {
         "actions": [],
         "autoname": "hash",
