@@ -3,7 +3,7 @@ import uuid
 
 import frappe
 from frappe.tests import IntegrationTestCase
-from frappe.utils import add_days, today
+from frappe.utils import add_days, now_datetime, today
 
 from reli_lims.services.test_request import make_test_program, receive_samples
 
@@ -23,15 +23,33 @@ class TestTestingRequest(IntegrationTestCase):
         self.method = frappe.get_doc(dict(doctype='Test Method',method_name=f'Intake {token}')).insert()
         self.standard = frappe.get_doc(dict(doctype='Test Standard',standard_code=f'I-{token}',
             title='Intake standard',version='1',status='Active')).insert()
+        service = frappe.get_doc(dict(doctype='Item', item_code=f'INTAKE-{token}',
+            item_name='Intake testing service', item_group='All Item Groups',
+            stock_uom='Nos', is_stock_item=0, is_sales_item=1)).insert()
+        self.quotation = frappe.get_doc(dict(doctype='Quotation', quotation_to='Customer',
+            party_name=self.customer.name, company=self.company.name,
+            transaction_date=today(), currency='USD', selling_price_list='Standard Selling',
+            items=[dict(item_code=service.name, qty=1, rate=100)])).insert()
+        self.quotation.submit()
 
     def request(self):
         return frappe.get_doc(dict(doctype='Test Request',title='DEMO intake',
             customer=self.customer.name,company=self.company.name,request_date=today(),
-            delivery_date=add_days(today(),7),report_copies=1,
+            delivery_date=add_days(today(),7),report_copies=1,quotation=self.quotation.name,
+            customer_requirements='Acceptance test only',customer_expected_tests='Verify sample integrity',
+            contact_person='Acceptance Contact',contact_email='acceptance@example.test',
             samples=[dict(sample_code=code,product_name='Device '+code,model='A',
                           quantity=1,dimensions='100 x 200 mm') for code in ('S1','S2')],
             items=[dict(item_code='LT',test_method=self.method.name,standard=self.standard.name)],
             sample_assignments=[dict(item_code='LT',sample_code=code) for code in ('S1','S2')])).insert()
+
+    def submit(self, request):
+        from reli_lims.request_confirmation import confirm, current_fingerprint
+
+        confirm(request, dict(fingerprint=current_fingerprint(request),
+                              confirmed_by='Acceptance Contact', confirmed_at=now_datetime()))
+        request.submit()
+        return request
 
     def receipts(self):
         return [dict(sample_code=code,quantity=1,received_date=today(),received_by='Administrator')
@@ -49,7 +67,7 @@ class TestTestingRequest(IntegrationTestCase):
     def test_confirmation_receipt_and_program_are_idempotent(self):
         request=self.request()
         self.assertFalse(request.project)
-        request.submit()
+        self.submit(request)
         self.assertTrue(request.project)
         self.assertEqual(frappe.db.get_value('Project',request.project,'customer'),self.customer.name)
         self.assertFalse(frappe.db.exists('Sample',{'test_request':request.name}))
@@ -67,7 +85,7 @@ class TestTestingRequest(IntegrationTestCase):
         request=self.request()
         with self.assertRaises(frappe.ValidationError):
             receive_samples(request.name,self.receipts())
-        request.submit()
+        self.submit(request)
         receive_samples(request.name,self.receipts()[:1])
         with self.assertRaisesRegex(frappe.ValidationError,'S2'):
             make_test_program(request.name)
@@ -86,7 +104,7 @@ class TestTestingRequest(IntegrationTestCase):
             request.save()
 
     def test_received_sample_source_cannot_be_reassigned(self):
-        request=self.request().submit()
+        request=self.submit(self.request())
         name=receive_samples(request.name,self.receipts())[0]
         sample=frappe.get_doc('Sample',name)
         sample.test_request=None
@@ -95,7 +113,7 @@ class TestTestingRequest(IntegrationTestCase):
             sample.save()
 
     def test_confirmed_fields_and_receipt_state_are_protected(self):
-        request = self.request().submit()
+        request = self.submit(self.request())
         request.confirmed_by = 'Guest'
         with self.assertRaises(frappe.ValidationError):
             request.save()
@@ -107,10 +125,14 @@ class TestTestingRequest(IntegrationTestCase):
         self.assertEqual(names, receive_samples(request.name, self.receipts()))
 
     def test_private_photo_is_copied_to_received_sample(self):
+        from reli_lims.request_confirmation import share_customer_attachment
+
         request = self.request()
         image = self.image_file(request)
         request.append('photos', dict(sample_code='S1', photo=image.file_url))
-        request.save().submit()
+        request.save()
+        share_customer_attachment(request, image.name)
+        self.submit(request)
         name = receive_samples(request.name, self.receipts()[:1])[0]
         self.assertTrue(frappe.db.exists('File', dict(file_url=image.file_url, is_private=1,
             attached_to_doctype='Sample', attached_to_name=name)))
@@ -132,7 +154,7 @@ class TestTestingRequest(IntegrationTestCase):
             with patch('erpnext.projects.doctype.project.project.Project.after_insert',
                        create=True, side_effect=frappe.ValidationError('forced project failure')):
                 with self.assertRaises(frappe.ValidationError):
-                    request.submit()
+                    self.submit(request)
         finally:
             frappe.db.rollback(save_point='request_confirm_failure')
         self.assertEqual(frappe.db.get_value('Test Request',request.name,'docstatus'),0)
@@ -140,7 +162,7 @@ class TestTestingRequest(IntegrationTestCase):
 
     def test_partial_receipt_failure_rolls_back_batch(self):
         from unittest.mock import patch
-        request = self.request().submit()
+        request = self.submit(self.request())
         frappe.db.savepoint('request_receipt_failure')
         try:
             with patch('reli_lims.services.test_request.copy_sample_photos',
@@ -174,7 +196,8 @@ class TestTestingRequest(IntegrationTestCase):
             request.append('items', dict(item_code=code, test_method=method.name, standard=standard.name))
             for sample in request.samples:
                 request.append('sample_assignments', dict(item_code=code, sample_code=sample.sample_code))
-        request.save().submit()
+        request.save()
+        self.submit(request)
         samples = receive_samples(request.name, self.receipts())
         program = frappe.get_doc('Test Program', make_test_program(request.name))
         self.assertEqual(len(program.items), 3)
@@ -213,7 +236,7 @@ class TestTestingRequest(IntegrationTestCase):
         self.assertEqual(samples, receive_samples(request.name, self.receipts()))
 
     def test_stage_updates_after_confirm_receive_execute_and_cancel(self):
-        request = self.request().submit()
+        request = self.submit(self.request())
         self.assertEqual(frappe.db.get_value('Test Request', request.name, 'business_stage'), '待收样')
         receive_samples(request.name, self.receipts()[:1])
         self.assertEqual(frappe.db.get_value('Test Request', request.name, 'business_stage'), '待收样')

@@ -49,14 +49,15 @@ class TestCapabilityDictionary(IntegrationTestCase):
         self.capability_two = self.capability(self.laboratory_two, self.standard_two)
 
     def capability(self, laboratory, standard, **values):
-        return frappe.get_doc(dict(
+        data = dict(
             doctype="Laboratory Capability", laboratory=laboratory.name,
             test_project=self.project.name, test_object=self.test_object.name,
             test_method=self.method.name, test_standard=standard.name,
             product_scope=self.test_object.object_name, capability_scope="受控范围",
             condition_schema='[{"key":"original_text","label":"检测条件原文","type":"text"}]',
-            **values,
-        )).insert()
+        )
+        data.update(values)
+        return frappe.get_doc(data).insert()
 
     def test_multiple_laboratories_and_standards_share_one_project(self):
         counts = capability_catalog._project_counts(self.project.name)
