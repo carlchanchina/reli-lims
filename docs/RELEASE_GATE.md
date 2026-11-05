@@ -38,6 +38,9 @@ PR 当前状态」两个直接证据为准。#20 的 base 是 #19 的分支，�
    新增 `tools/rotate_customer_links.py`（唯一撤销入口）、`tools/acceptance/make_demo_link.py`
    （完整链接只落本机 600 文件，终端只打印掩码）、`tools/check_no_secrets.py`（部署前硬闸门）。
    开发站现存可用链接 = 1 条（仅用于演示，文件在 `~/pilot/state/demo-link.json`，权限 600）。
+   注：验收脚本每跑一次会自己签发新链接，因此复跑后要再执行一次轮换。最终复核时撤销了
+   7 条脚本遗留的可用链接，只保留 1 条演示链接（`REQ-01509`，分享号 `m16ttdgclg`，
+   有效期至 2026-11-13，密钥 `rFC****`，完整值只在上述 600 文件里）。
 2. **开发站对外域名错误**：站点 `host_name` 原指向 `https://carl-1.taila47902.ts.net`（Tailscale
    100.98.232.97，不是本机），会签发指向生产域名的客户链接。已改为 `http://carl:8000`，
    并重新轮换链接。
@@ -75,7 +78,7 @@ PR 当前状态」两个直接证据为准。#20 的 base 是 #19 的分支，�
 | 三中心工作台（中文、无重复入口） | — | `01-three-centers-home.png` |
 | 商业接单中心（商务角色） | `SAL-QTN-2026-00008` | `02-commercial-intake.png`、`06-quotation.png` |
 | 检测履约中心 | — | `03-testing-fulfillment.png` |
-| 实验室能力中心 + 审核台 | 651 条能力 / 待确认 652 | `04-laboratory-capability.png`、`05-capability-review.png` |
+| 实验室能力中心 + 审核台 | 库内 659 条能力 / 待确认 652 | `04-laboratory-capability.png`、`05-capability-review.png` |
 | 委托单（含客户协作） | `REQ-01523` | `07-test-request.png`、`request.pdf` |
 | 客户免登录填写（手机/桌面） | `REQ-01509` 草稿链接 | `08-customer-mobile.png`、`09-customer-desktop.png` |
 | 正式受理 → 项目 → 收样 | `PROJ-0014`、`SMP-01524/01525` | 验收脚本断言 |
@@ -123,7 +126,7 @@ PR 当前状态」两个直接证据为准。#20 的 base 是 #19 的分支，�
 
 | # | 阻断 | 影响 | 关闭方式 |
 | --- | --- | --- | --- |
-| 1 | 652 条历史能力仍为「待确认」，仅 3 条演示能力已发布 | 真实报价/委托选不到认可能力 | 由实验室按 `docs/CAPABILITY_REVIEW.md` 分批审核发布（业务动作，代码不代办） |
+| 1 | 652 条历史能力仍为「待确认」；已发布仅 7 条，其中 6 条是演示能力 | 真实报价/委托选不到认可能力 | 由实验室按 `docs/CAPABILITY_REVIEW.md` 分批审核发布（业务动作，代码不代办） |
 | 2 | 正式报告版式缺 CNAS 标识、授权签字人、页码/骑缝章位 | 不能对外签发 | 补 `Reli Testing Report` 模板字段（下一迭代，不属于本 PR 范围） |
 | 3 | 客户链接为单因子 URL（有有效期、可撤销、限流），仍可能被转发 | 客户数据暴露面 | 生产前评估是否叠加短信验证码/邮箱验证 |
 | 4 | 生产站需自行设置 `host_name`，并确认 wkhtmltopdf 为 patched qt（开发站是 unpatched，PDF 证据改用无头 Chrome） | 链接与 PDF 可能异常 | 部署 Carl-1 前逐项核对 |
