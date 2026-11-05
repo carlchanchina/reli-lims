@@ -107,8 +107,8 @@ class TestBusinessRelations(IntegrationTestCase):
 
     def test_global_relation_asset_uses_built_url(self):
         includes = frappe.get_hooks("app_include_js") or []
-        self.assertIn("/assets/reli_lims/js/business_relations.js", includes)
-        asset = Path(frappe.get_app_path("reli_lims")) / "public/js/business_relations.js"
+        self.assertIn("business_relations.bundle.js", includes)
+        asset = Path(frappe.get_app_path("reli_lims")) / "public/js/business_relations.bundle.js"
         self.assertTrue(asset.is_file())
 
     def test_legacy_cleanup_is_idempotent_without_touching_business_data(self):
