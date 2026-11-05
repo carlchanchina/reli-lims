@@ -1,12 +1,20 @@
 frappe.ui.form.on('Test Request', {
     setup(frm) {
-        frm.set_query('quotation', () => ({filters: {
-            quotation_to: 'Customer', party_name: frm.doc.customer,
-            company: frm.doc.company, docstatus: 1
-        }}));
-        frm.set_query('sales_order', () => ({filters: {
-            customer: frm.doc.customer, company: frm.doc.company, docstatus: 1
-        }}));
+        // 实验室角色不持有 Customer / Quotation / Sales Order 的 DocPerm
+        // （否则要叠加 Sales User，连带取得销售单据写入权）。
+        // 选择器改为有界投影接口：只返回编号与名称/日期，且限定客户与公司。
+        frm.set_query('customer', () => ({
+            query: 'reli_lims.commercial_access.customer_query',
+            filters: {company: frm.doc.company},
+        }));
+        frm.set_query('quotation', () => ({
+            query: 'reli_lims.commercial_access.quotation_query',
+            filters: {customer: frm.doc.customer, company: frm.doc.company},
+        }));
+        frm.set_query('sales_order', () => ({
+            query: 'reli_lims.commercial_access.sales_order_query',
+            filters: {customer: frm.doc.customer, company: frm.doc.company},
+        }));
     },
     refresh(frm) {
         frm.events.update_choices(frm);

@@ -165,6 +165,19 @@ done
 NEW_SHA="$RESOLVED"
 log "目标提交 $NEW_SHA ($(git -C "$APP_DIR" log -1 --format=%s "$NEW_SHA"))"
 
+log "密钥泄露预检（客户免登录链接 key 不得入库）"
+if git -C "$APP_DIR" cat-file -e "$NEW_SHA:tools/check_no_secrets.py" 2>/dev/null; then
+  SECRET_CHECK="$(mktemp)"
+  git -C "$APP_DIR" show "$NEW_SHA:tools/check_no_secrets.py" >"$SECRET_CHECK"
+  if ! python3 "$SECRET_CHECK" --repo "$APP_DIR" --rev "$NEW_SHA" 2>&1 | tee -a "$LOG_FILE"; then
+    rm -f "$SECRET_CHECK"
+    fail "待部署提交包含完整客户链接密钥。请改为占位写法并撤销该链接后再部署。"
+  fi
+  rm -f "$SECRET_CHECK"
+else
+  log "目标提交尚无密钥检查脚本，跳过"
+fi
+
 if [[ "$NEW_SHA" == "$PREV_SHA" ]]; then
   log "运行目录已是目标提交，仅做健康检查"
   health_check || fail "健康检查失败"

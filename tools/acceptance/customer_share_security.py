@@ -161,8 +161,8 @@ def main():
     ARTIFACTS.update({
         "request_a": request_a.name, "request_b": request_b.name,
         "request_c": request_c.name, "request_d": request_d.name,
-        "url_a": f"{BASE}/customer-request/{request_a.name}?web_form_request_key={key_a}",
-        "url_b": f"{BASE}/customer-request/{request_b.name}?web_form_request_key={key_b}",
+        # 产物文件会被贴进验收报告，只记录掩码，不落完整密钥。
+        "key_a_masked": f"{key_a[:3]}****", "key_b_masked": f"{key_b[:3]}****",
     })
 
     # ---------------------------------------------------------------- 1 链接权限

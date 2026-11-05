@@ -37,24 +37,29 @@ def prepare_items(selections):
 
 @frappe.whitelist()
 def quotation_items(name):
-    quote = frappe.get_doc("Quotation", name)
-    quote.check_permission("read")
+    from reli_lims.commercial_access import quotation_detail
+
     if not frappe.has_permission("Test Request", "create"):
         frappe.throw("没有创建委托权限。", frappe.PermissionError)
-    if quote.docstatus == 2 or quote.quotation_to != "Customer":
+    # 实验室角色不持有 Quotation 的 DocPerm，改读有界投影：编号、客户、公司、
+    # 行号、数量与技术快照；不返回价格与税额。
+    quote = quotation_detail(name)
+    if not quote:
+        frappe.throw("报价单不存在。")
+    if quote["docstatus"] == 2 or quote["quotation_to"] != "Customer":
         frappe.throw("请选择有效客户报价。")
-    if quote.docstatus == 0 and not (frappe.local.site == "carl" and frappe.conf.developer_mode):
+    if quote["docstatus"] == 0 and not (frappe.local.site == "carl" and frappe.conf.developer_mode):
         frappe.throw("请先提交报价。")
     items = []
-    for row in quote.items:
-        configuration = frappe.parse_json(row.custom_reli_configuration)
+    for row in quote["items"]:
+        configuration = frappe.parse_json(row.get("custom_reli_configuration"))
         if not configuration:
             continue
-        items.append(dict(to_request_item(configuration), source_quotation=quote.name,
-                          source_quotation_item=row.name, quoted_quantity=row.qty,
-                          requested_quantity=row.qty))
-    return {"customer": quote.party_name, "company": quote.company,
-            "quotation": quote.name if quote.docstatus == 1 else None, "items": items}
+        items.append(dict(to_request_item(configuration), source_quotation=quote["name"],
+                          source_quotation_item=row["name"], quoted_quantity=row["qty"],
+                          requested_quantity=row["qty"]))
+    return {"customer": quote["party_name"], "company": quote["company"],
+            "quotation": quote["name"] if quote["docstatus"] == 1 else None, "items": items}
 
 
 def validate(doc, method=None):
@@ -72,13 +77,14 @@ def validate(doc, method=None):
         if row.source_quotation or row.source_quotation_item:
             if not row.source_quotation or not row.source_quotation_item:
                 frappe.throw("请同时保留报价单和报价行来源。")
-            quote = frappe.get_doc("Quotation", row.source_quotation)
-            if not old or (old.source_quotation, old.source_quotation_item) != (row.source_quotation, row.source_quotation_item):
-                quote.check_permission("read")
+            from reli_lims.commercial_access import quotation_facts, quotation_line
+            quote = quotation_facts(row.source_quotation)
+            if not quote:
+                frappe.throw("来源报价不存在。")
             if quote.docstatus == 2 or quote.party_name != doc.customer or quote.company != doc.company:
                 frappe.throw("来源报价与委托客户或公司不一致。")
-            original = next((item for item in quote.items if item.name == row.source_quotation_item), None)
-            if not original or not original.custom_reli_capability:
+            original = quotation_line(row.source_quotation_item)
+            if not original or original.parent != row.source_quotation or not original.custom_reli_capability:
                 frappe.throw("报价行来源无效。")
             quoted = frappe.parse_json(original.custom_reli_configuration)
             if config != quoted and (not old or config != frappe.parse_json(old.technical_configuration)):

@@ -4,28 +4,32 @@ from frappe import _
 
 
 def validate_commercial_links(request):
+    from reli_lims.commercial_access import quotation_facts, sales_order_facts
     from reli_lims.customer_share import in_customer_save
     # 客户链接只读商业来源；来源一致性仍校验，但不再要求客户具备内部读取权限。
+    # 实验室角色不持有 Quotation / Sales Order 的 DocPerm（避免连带销售写入权），
+    # 因此这里只读取校验必需的四个字段，不读金额与明细。
     check_permission = not in_customer_save()
     quotation = request.get('quotation')
     sales_order = request.get('sales_order')
     if quotation:
-        doc = frappe.get_doc('Quotation', quotation)
-        if check_permission:
-            doc.check_permission('read')
+        doc = quotation_facts(quotation)
+        if not doc:
+            frappe.throw(_('报价单不存在。'))
         if doc.docstatus != 1 or doc.quotation_to != 'Customer':
             frappe.throw(_('请选择已提交且面向客户的报价单。'))
         if doc.party_name != request.customer or doc.company != request.company:
             frappe.throw(_('报价单与委托单位或公司不一致。'))
     if sales_order:
-        doc = frappe.get_doc('Sales Order', sales_order)
-        if check_permission:
-            doc.check_permission('read')
+        doc = sales_order_facts(sales_order)
+        if not doc:
+            frappe.throw(_('销售订单不存在。'))
         if doc.docstatus != 1:
             frappe.throw(_('请选择已提交的销售订单。'))
         if doc.customer != request.customer or doc.company != request.company:
             frappe.throw(_('销售订单与委托单位或公司不一致。'))
         if quotation:
-            sources = {row.prevdoc_docname for row in doc.items if row.prevdoc_docname}
+            from reli_lims.commercial_access import quotation_lines
+            sources = {row.prevdoc_docname for row in quotation_lines(sales_order) if row.prevdoc_docname}
             if quotation not in sources:
                 frappe.throw(_('销售订单未引用所选报价单，请核对商业来源。'))

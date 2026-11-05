@@ -66,6 +66,16 @@ Prefer these existing DocTypes:
 - 禁止在运行目录手工 `git checkout` / `git reset` / `bench migrate` / `bench build`。
 - 只允许操作 Carl 开发站，禁止操作 Carl-1 生产站。
 
+## 客户链接密钥纪律
+
+- 客户免登录链接的 `web_form_request_key` 等同于密码，**不得**出现在聊天、PR、Issue、
+  提交、文档、测试日志或截图中。文档一律写 `web_form_request_key=<运行时生成>`。
+- 需要演示链接时用 `tools/acceptance/make_demo_link.py --request <编号>`：完整链接只写入
+  本机 `~/pilot/state/demo-link.json`（600），终端只显示掩码。
+- 一旦完整密钥外泄，先 `tools/rotate_customer_links.py --reason "<原因>"` 撤销，再重新生成。
+- `tools/check_no_secrets.py` 是提交与部署的硬闸门，`dev-site-deploy.sh` 部署前会对待部署
+  提交执行一次，命中即拒绝部署。
+
 ## Coding constraints
 
 - Favor standard Frappe DocType JSON + small Python controllers.

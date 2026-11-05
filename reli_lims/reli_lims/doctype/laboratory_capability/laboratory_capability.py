@@ -28,6 +28,9 @@ class LaboratoryCapability(Document):
             required = {"Lab Manager", "System Manager"}
             if previous == "待确认" and self.status == "已确认":
                 required.add("Lab Reviewer")
+            if previous == "已确认" and self.status == "待确认":
+                # 退回补充是审核动作，审核员必须具备。
+                required.add("Lab Reviewer")
             if not roles.intersection(required):
                 frappe.throw(_("没有权限变更能力状态。"), frappe.PermissionError)
         fields = ("laboratory", "test_project", "test_object", "test_method", "test_standard", "product_scope",

@@ -18,6 +18,16 @@
     "evidence",
     "status",
     "published",
+    "review_section",
+    "demo_only",
+    "scope_evidence_section",
+    "reviewed_by",
+    "reviewed_on",
+    "published_by",
+    "published_on",
+    "review_note",
+    "review_log_section",
+    "review_log",
     "merchant_offer_id",
     "wiki_page_id",
     "remarks",
@@ -37,7 +47,8 @@
       "label": "实验室",
       "options": "Laboratory Profile",
       "reqd": 1,
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_standard_filter": 1
     },
     {
       "fieldname": "test_project",
@@ -83,7 +94,7 @@
       "fieldname": "accreditation_type",
       "fieldtype": "Select",
       "label": "认可类型",
-      "options": "CNAS\nCMA\n其他\n未认证",
+      "options": "CNAS\nCMA\n其他\n未认证\n演示（非认可）",
       "default": "未认证",
       "reqd": 1
     },
@@ -115,7 +126,8 @@
       "options": "待确认\n已确认\n已发布\n已停用",
       "default": "待确认",
       "reqd": 1,
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_standard_filter": 1
     },
     {
       "fieldname": "published",
@@ -188,6 +200,67 @@
       "description": "旧 Test Method 仅保留用于历史报价、委托与来源追溯；新业务使用统一检测项目。",
       "hidden": 1,
       "read_only": 1
+    },
+    {
+      "fieldname": "review_section",
+      "fieldtype": "Section Break",
+      "label": "CNAS 审核与发布",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "demo_only",
+      "fieldtype": "Check",
+      "label": "演示能力（非认可）",
+      "default": "0",
+      "description": "勾选后该能力仅用于开发/演示，不计入 CNAS 认可范围，对外必须标注为非认可。"
+    },
+    {
+      "fieldname": "scope_evidence_section",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "reviewed_by",
+      "fieldtype": "Link",
+      "label": "审核人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reviewed_on",
+      "fieldtype": "Datetime",
+      "label": "审核时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "published_by",
+      "fieldtype": "Link",
+      "label": "发布人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "published_on",
+      "fieldtype": "Datetime",
+      "label": "发布时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "review_note",
+      "fieldtype": "Small Text",
+      "label": "最新审核意见",
+      "read_only": 1
+    },
+    {
+      "fieldname": "review_log_section",
+      "fieldtype": "Section Break",
+      "label": "审核记录"
+    },
+    {
+      "fieldname": "review_log",
+      "fieldtype": "Table",
+      "label": "审核记录",
+      "options": "Capability Review Log",
+      "read_only": 1
     }
   ],
   "module": "Reli LIMS",
@@ -223,6 +296,12 @@
       "report": 1,
       "export": 1,
       "print": 1
+    },
+    {
+      "role": "Lab Engineer",
+      "read": 1,
+      "print": 1,
+      "report": 1
     }
   ],
   "sort_field": "modified",

@@ -153,12 +153,26 @@ def ensure_capability(standard, project, method, laboratory, test_object, review
             "product_scope": "控制盒、车载电子部件",
             "capability_scope": "开发演示：低温贮存 -40℃ 与高温工作 +85℃",
             "limitation": "开发演示能力，不用于真实对外报告。",
-            "accreditation_type": "CNAS", "certificate_no": "DEMO-ONLY",
+            "accreditation_type": "演示（非认可）", "certificate_no": "DEMO-ONLY",
+            "demo_only": 1, "scope_effective_date": TODAY,
             "industry": "轨道交通", "project_parameter": "温度环境适应性",
             "condition_schema": json.dumps(CONDITION_SCHEMA, ensure_ascii=False),
             "status": "待确认",
         })
         doc.insert(ignore_permissions=True)
+    # 演示能力必须在审核前就标清楚，否则一旦进入已确认/已发布，内容即被冻结。
+    if doc.status == "待确认" and (not doc.get("demo_only")
+                                   or doc.get("accreditation_type") != "演示（非认可）"
+                                   or not (doc.get("certificate_no") or "").startswith("DEMO")):
+        as_user(manager)
+        doc.reload()
+        doc.demo_only = 1
+        doc.accreditation_type = "演示（非认可）"
+        doc.certificate_no = "DEMO-ONLY"
+        doc.scope_effective_date = TODAY
+        doc.save()
+        as_user("Administrator")
+        doc.reload()
     # 走真实状态机：待确认 → 已确认（实验室审核员）→ 已发布（实验室负责人）。
     if doc.status == "待确认":
         as_user(reviewer)
@@ -184,10 +198,12 @@ def ensure_customer():
 
 
 def ensure_quotation(customer, company, item_code, manager):
+    """演示报价由管理员预置：报价属商业单据，不应要求实验室账号具备销售权限。"""
     existing = frappe.get_all("Quotation", filters={"party_name": customer, "docstatus": 1},
                               fields=["name"], limit=1)
     if existing:
         return existing[0].name
+    as_user("Administrator")
     quote = frappe.get_doc({
         "doctype": "Quotation", "quotation_to": "Customer", "party_name": customer,
         "company": company, "transaction_date": TODAY, "valid_till": frappe.utils.add_days(TODAY, 30),
@@ -271,13 +287,15 @@ def main():
     TODAY = frappe.utils.today()
 
     reviewer = ensure_user("demo-lab-reviewer@example.com", "演示审核员", ["Lab Reviewer"])
-    # 受理人需要有 ERPNext 只读商业权限才能读客户与报价；角色组合按真实岗位配置。
-    # 受理要读客户/报价并生成项目；执行要读项目。角色组合按真实岗位配置，
-    # 不是在代码里放宽校验。
+    # 最小权限组合：实验室岗位 + Projects User（履约项目读写）。
+    # 不授予 Sales User：lab 侧读报价/客户改走有界投影，见 reli_lims/commercial_access.py。
     manager = ensure_user("demo-lab-manager@example.com", "演示负责人",
-                          ["Lab Manager", "Sales User", "Projects User"])
+                          ["Lab Manager", "Projects User"])
     engineer = ensure_user("demo-lab-engineer@example.com", "演示工程师",
                            ["Lab Engineer", "Projects User"])
+    for email, forbidden in ((manager, "Sales User"), (engineer, "Sales User")):
+        check(f"受理/执行账号不含无关角色 {forbidden}（{email}）",
+              forbidden not in {row.role for row in frappe.get_doc("User", email).roles})
 
     laboratory = ensure_laboratory()
     test_object = ensure_object()

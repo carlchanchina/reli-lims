@@ -156,7 +156,7 @@
 
 可操作链接（需 `carl` 解析到 192.168.10.204）：
 
-- 客户免登录填写：`http://carl:8000/customer-request/REQ-01481?web_form_request_key=_R99qdFX8JjMRd1vc1BRaOAAgWYPICnhGqpuXQCmMiY`
+- 客户免登录填写：`http://carl:8000/customer-request/REQ-01481?web_form_request_key=<运行时生成>`（用 `tools/acceptance/make_demo_link.py --request REQ-01481` 现取，完整链接只落本机 600 文件）
 - 委托单：`http://carl:8000/app/test-request/REQ-01476`
 - 试验方案：`http://carl:8000/app/test-program/PRG-01479`
 - 报告草稿：`http://carl:8000/app/test-report/RPT-01480`

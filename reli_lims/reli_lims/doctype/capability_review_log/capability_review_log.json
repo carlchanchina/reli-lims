@@ -1,0 +1,89 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-11-05 23:50:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "action",
+    "from_status",
+    "to_status",
+    "column_break_actor",
+    "actor",
+    "actor_role",
+    "at",
+    "section_break_note",
+    "note"
+  ],
+  "fields": [
+    {
+      "fieldname": "action",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "审核动作",
+      "options": "提交审核\n审核通过\n退回补充\n发布\n停用",
+      "reqd": 1
+    },
+    {
+      "fieldname": "from_status",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "原状态",
+      "read_only": 1
+    },
+    {
+      "fieldname": "to_status",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "新状态",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_actor",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "actor",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "操作人",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "actor_role",
+      "fieldtype": "Data",
+      "label": "操作角色",
+      "read_only": 1
+    },
+    {
+      "fieldname": "at",
+      "fieldtype": "Datetime",
+      "in_list_view": 1,
+      "label": "操作时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_note",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "note",
+      "fieldtype": "Small Text",
+      "label": "审核意见"
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "istable": 1,
+  "links": [],
+  "modified": "2026-11-05 23:50:00.000000",
+  "modified_by": "Administrator",
+  "module": "Reli LIMS",
+  "name": "Capability Review Log",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": []
+}
