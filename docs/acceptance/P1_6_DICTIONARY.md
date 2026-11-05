@@ -32,7 +32,7 @@
 | `Test Request Item.capability` | `test_project`、`test_object` | 按能力回填；依据、能力 ID、条件快照、报价来源不覆盖。 |
 | `Test Request Item.test_method` | `test_project` | 对无能力的历史行，通过兼容方法回填项目。 |
 | `Test Program Item.test_method` | `test_project`、`test_object` | 通过方法和原委托行回填，保留履约历史。 |
-| 旧 `Detection Project` | `Test Project` | 不再作为业务概念使用；DocType 已退休，历史表数据保留 124 行用于审计。旧字段隐藏、只读，不作为新数据入口。 |
+| 旧 `Detection Project` | `Test Project` | 不再作为业务概念使用；DocType 已退休，历史表数据保留 124 行用于审计。P1.6.1 已移除残留 Item Link 和能力孤列，详见 [收口验收](P1_6_1_LEGACY_RELATIONS.md)。 |
 
 `Test Standard` 原有标准编号、名称、版本、完整名称、实施日期和附件均保留；新增 `basis_type`，取值为国家标准、行业标准、国际标准、企业标准、实验室方法、其他方法文件。业务页面统一使用「检测依据（标准/方法）」。
 
