@@ -1,5 +1,6 @@
 """Framework-independent validation for the customer-declared testing scope."""
 from datetime import date
+from copy import deepcopy
 from math import isfinite
 
 
@@ -110,7 +111,9 @@ def program_data(request, sample_names):
                          for r in request['samples']],
                 items=[dict(item_code=r['item_code'], test_project=r.get('test_project'),
                             test_object=r.get('test_object'), test_method=r.get('test_method'),
-                            standard=r['standard'], test_condition=r.get('test_condition'), status='Pending')
+                            standard=r['standard'], test_condition=r.get('test_condition'), status='Pending',
+                            capability=r.get('capability'), source_request_item=r.get('name'),
+                            technical_configuration=deepcopy(r.get('technical_configuration')))
                        for r in request['items']],
                 sample_assignments=[dict(item_code=r['item_code'], sample=sample_names[r['sample_code']])
                                     for r in request['sample_assignments']])

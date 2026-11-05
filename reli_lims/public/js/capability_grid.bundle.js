@@ -116,7 +116,7 @@ reli_lims.capabilities.mount = async function (frm, mode) {
     $("<h5>").text(__("检测项目明细")).appendTo(wrapper);
     const rows = lines.map(line => {
         const config = this.parse(line[configurationField]);
-        const view = {...config.snapshot, ...details[config.capability_id],
+        const view = {...details[config.capability_id], ...config.snapshot,
             condition_schema: config.snapshot?.condition_schema || details[config.capability_id]?.condition_schema};
         const assignments = (frm.doc.sample_assignments || []).filter(pair => pair.item_code === line.item_code);
         return {...view, line, config, liveDetails: details[config.capability_id], capability_id: config.capability_id,
@@ -128,6 +128,17 @@ reli_lims.capabilities.mount = async function (frm, mode) {
     });
     this.renderGrid(wrapper, rows, {mode, actions: (detail, row) => {
         if (frm.doc.docstatus !== 0 || !frm.perm?.[0]?.write) return;
+        $("<button type='button' class='btn btn-default btn-xs'>").text(__("更新技术快照"))
+            .on("click", async () => {
+                const {message} = await frappe.call("reli_lims.capability_selection.configure", {
+                    name: row.capability_id, conditions: row.config.conditions, mode,
+                });
+                await frappe.model.set_value(row.line.doctype, row.line.name, configurationField, message);
+                if (!quote) await frappe.model.set_value(row.line.doctype, row.line.name, "test_condition",
+                    this.conditionText(message.conditions, this.schema(message.snapshot)));
+                frm.refresh_field("items");
+                return this.mount(frm, mode);
+            }).appendTo(detail);
         $("<button type='button' class='btn btn-default btn-xs'>").text(__("编辑检测条件"))
             .on("click", () => this.edit(row.liveDetails || row, row.config.conditions, async conditions => {
                 const {message} = await frappe.call("reli_lims.capability_selection.configure", {

@@ -1,0 +1,22 @@
+{
+  "doctype": "Page",
+  "name": "reli-test-records",
+  "page_name": "reli-test-records",
+  "title": "试验记录",
+  "module": "Reli LIMS",
+  "standard": "Yes",
+  "roles": [
+    {
+      "role": "Lab Manager"
+    },
+    {
+      "role": "Lab Engineer"
+    },
+    {
+      "role": "Lab Reviewer"
+    },
+    {
+      "role": "System Manager"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "doctype": "Print Format",
+  "name": "Reli Test Program",
+  "doc_type": "Test Program",
+  "module": "Reli LIMS",
+  "standard": "Yes",
+  "custom_format": 1,
+  "print_format_type": "Jinja",
+  "html": "<style>h1{text-align:center}table{width:100%;border-collapse:collapse;margin:16px 0;table-layout:fixed}th,td{border:1px solid #999;padding:7px;white-space:pre-wrap;overflow-wrap:anywhere}thead{display:table-header-group}tr{page-break-inside:avoid}</style>\n{% set context = print_context(doc) %}\n<h1>{{ context.title | e }}</h1><p>{{ context.name | e }}</p><p>{{ context.notice | e }}</p>\n{% for field in context.fields %}<p>{{ field[0] | e }}　{{ field[1] | e }}</p>{% endfor %}\n<table><thead><tr>{% for column in context.columns %}<th>{{ column | e }}</th>{% endfor %}</tr></thead><tbody>\n{% for row in context.rows %}<tr>{% for value in row %}<td>{{ (value or '') | e }}</td>{% endfor %}</tr>{% endfor %}</tbody></table>\n{% for section in context.sections %}<h3>{{ section.title | e }}</h3><table><thead><tr>{% for column in section.columns %}<th>{{ column | e }}</th>{% endfor %}</tr></thead><tbody>{% for row in section.rows %}<tr>{% for value in row %}<td>{{ (value or '') | e }}</td>{% endfor %}</tr>{% endfor %}</tbody></table>{% endfor %}\n"
+}

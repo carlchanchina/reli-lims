@@ -247,3 +247,108 @@ class TestTestingRequest(IntegrationTestCase):
         program.status = 'Cancelled'
         program.save()
         self.assertEqual(frappe.db.get_value('Test Request', request.name, 'business_stage'), '已收样')
+
+    def test_capability_conditions_survive_formal_intake_execution_and_report_printing(self):
+        from io import BytesIO
+        from pypdf import PdfReader
+        from reli_lims.capability_selection import build_configuration
+        from reli_lims.capability_request import to_request_item
+        from reli_lims.capability_quotation import prepare_lines
+        from reli_lims.document_output.service import build_context, render_document
+        from reli_lims.document_output.registry import get_template
+
+        token = uuid.uuid4().hex[:8]
+        project = frappe.get_doc(doctype='Test Project', project_name=f'闭环验收 {token}').insert()
+        self.method.test_project = project.name
+        self.method.save()
+        laboratory = frappe.get_doc(doctype='Laboratory Profile', mercur_seller_id=f'sel_loop_{token}',
+            laboratory_name=f'软件验收实验室 {token}', review_status='Approved').insert()
+        capability = frappe.get_doc(doctype='Laboratory Capability', laboratory=laboratory.name,
+            test_project=project.name, test_method=self.method.name, test_standard=self.standard.name,
+            capability_scope='SOFTWARE TEST ONLY', condition_schema=frappe.as_json([
+                dict(key='hold_minutes', label='保持时间（分钟）', type='number'),
+                dict(key='original_text', label='检测条件原文', type='text')])).insert()
+        for status in ('已确认', '已发布'):
+            capability.status = status
+            capability.save()
+        config = build_configuration(capability.name,
+            {'hold_minutes': 15, 'original_text': 'P19-SOFTWARE-CONDITION-15'}, 'quotation')
+        item_code = self.quotation.items[0].item_code
+        lines = prepare_lines([dict(capability_id=capability.name, conditions=config['conditions'], item_code=item_code)])
+        lines[0]['rate'] = 100
+        quotation = frappe.get_doc(doctype='Quotation', quotation_to='Customer', party_name=self.customer.name,
+            company=self.company.name, transaction_date=today(), currency='USD',
+            selling_price_list='Standard Selling', items=lines).insert()
+        self.standard.title = '软件验收依据改版'
+        self.standard.save()
+        quotation.reload()
+        quotation.save()
+        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), config)
+        updated = build_configuration(capability.name, config['conditions'], 'quotation')
+        quotation.items[0].custom_reli_configuration = updated
+        quotation.save()
+        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), updated)
+        config = updated
+        quotation.submit()
+        self.quotation = quotation
+        request = self.request()
+        request.items[0].update(dict(to_request_item(config), source_quotation=quotation.name,
+                                    source_quotation_item=quotation.items[0].name, requested_quantity=1))
+        request.save()
+        self.submit(request)
+        receive_samples(request.name, self.receipts())
+        program = frappe.get_doc('Test Program', make_test_program(request.name))
+        self.assertEqual(frappe.parse_json(program.items[0].technical_configuration), config)
+        self.assertIn('15', program.items[0].test_condition)
+        self.assertEqual(program.items[0].source_request_item, request.items[0].name)
+        original_label = config['snapshot']['standard_label']
+        self.standard.title = '重新编辑后的依据名称'
+        self.standard.save()
+        refreshed = build_configuration(capability.name, config['conditions'], 'quotation')
+        self.assertNotEqual(refreshed['snapshot']['standard_label'], original_label)
+        quotation.reload()
+        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), config)
+        program.items[0].technical_configuration = refreshed
+        with self.assertRaises(frappe.ValidationError):
+            program.save()
+        program.reload()
+        for status in ('Ready', 'Running', 'Completed', 'Reviewed'):
+            program.items[0].engineer = 'Administrator'
+            program.items[0].status = status
+            if status == 'Completed':
+                program.items[0].result = 'SOFTWARE TEST ONLY'
+                program.items[0].conclusion = 'Not a physical measurement'
+            program.save()
+        report = frappe.get_doc(doctype='Test Report', project=program.project,
+            test_program=program.name, overall_conclusion='SOFTWARE TEST ONLY').insert()
+        context = build_context(report)
+        self.assertIn(original_label, str(context))
+        self.assertIn('P19-SOFTWARE-CONDITION-15', str(context))
+        for output_format in ('pdf', 'docx', 'xlsx'):
+            content = render_document(get_template('Test Report'), context, output_format)
+            self.assertGreater(len(content), 100)
+            if output_format == 'pdf':
+                text = ''.join(page.extract_text() for page in PdfReader(BytesIO(content)).pages)
+                self.assertIn('P19-SOFTWARE-CONDITION-15', text)
+                from pathlib import Path
+                Path('/tmp/reli-p19-report-conditions.pdf').write_bytes(content)
+        for doctype, name, print_format in [('Test Program', program.name, 'Reli Test Program'),
+                                           ('Test Report', report.name, 'Reli Testing Report')]:
+            html = frappe.get_print(doctype, name, print_format=print_format)
+            self.assertIn('P19-SOFTWARE-CONDITION-15', html)
+            self.assertIn(original_label, html)
+        from reli_lims.execution_records import list_records
+        self.assertTrue(any(row.parent == program.name for row in list_records('P19-SOFTWARE-CONDITION-15')['rows']))
+
+    def test_workbench_navigation_targets_exist_and_are_unique(self):
+        sidebar = frappe.get_doc('Sidebar', 'Reli LIMS')
+        workspaces = [row.link_to for row in sidebar.items if row.link_type == 'Workspace']
+        self.assertEqual(workspaces, ['Testing Center', 'Commercial Intake Center',
+                                    'Testing Fulfillment Center', 'Laboratory Capability Center'])
+        self.assertNotIn('Test Method', [row.link_to for row in sidebar.items])
+        for row in sidebar.items:
+            if row.link_to:
+                self.assertTrue(frappe.db.exists(row.link_type, row.link_to))
+        home = frappe.get_doc('Workspace', 'Testing Center')
+        self.assertEqual(home.custom_blocks[0].custom_block_name, 'Reli Three Centers')
+        self.assertEqual(frappe.get_meta('Item').get_field('custom_reli_test_method').hidden, 1)

@@ -73,10 +73,10 @@ class TestDocumentOutput(IntegrationTestCase):
         self.assertEqual(frappe.db.count('File'), before)
 
     def test_native_workspace_targets_exist_and_cards_are_preserved(self):
-        workspace = frappe.get_doc('Workspace', 'Testing Center')
+        workspace = frappe.get_doc('Workspace', 'Testing Fulfillment Center')
         self.assertEqual(len(workspace.number_cards), 6)
         for row in list(workspace.shortcuts) + list(workspace.links):
             if row.get('link_to'):
-                self.assertTrue(frappe.db.exists('DocType', row.link_to), row.link_to)
+                self.assertTrue(frappe.db.exists(row.get('link_type') or row.get('type'), row.link_to), row.link_to)
         board = frappe.get_doc('Kanban Board', '检测主流程')
         self.assertEqual(len(board.columns), 8)

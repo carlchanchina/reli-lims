@@ -19,12 +19,20 @@ def source_document(doctype: str, name: str, output_format: str = 'pdf'):
 def label_items(data):
     cache = {}
     for row in data.get('items') or []:
+        configuration = frappe.parse_json(row['technical_configuration']) if row.get('technical_configuration') else {}
+        snapshot = configuration.get('snapshot') or {}
         for field, doctype, display in (('test_project', 'Test Project', 'project_name'),
                                          ('test_object', 'Test Object', 'object_name'),
                                          ('test_method', 'Test Method', 'method_name'),
                                          ('standard', 'Test Standard', 'full_name')):
             name = row.get(field)
             if not name:
+                continue
+            snapshot_field = {'test_project': 'project_label', 'test_object': 'test_object_label',
+                              'test_method': 'method_label', 'standard': 'standard_label'}[field]
+            snapshot_link = 'test_standard' if field == 'standard' else field
+            if snapshot.get(snapshot_link) == name and snapshot.get(snapshot_field):
+                row[field + '_label'] = snapshot[snapshot_field]
                 continue
             key = (doctype, name)
             if key not in cache:

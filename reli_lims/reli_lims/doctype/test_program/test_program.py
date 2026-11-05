@@ -53,6 +53,8 @@ class TestProgram(Document):
             if previous.project != self.project and any(row.status in LOCKED_STATES for row in previous.items):
                 frappe.throw(_('开始执行后不能更改所属项目。'))
         for row in self.items:
+            from reli_lims.execution_records import validate_snapshot
+            validate_snapshot(self, row, old_items.get(row.name))
             if not row.test_project and row.test_method:
                 row.test_project = frappe.db.get_value('Test Method', row.test_method, 'test_project')
             if not row.standard or not (row.test_project or row.test_method) or not assignments[row.item_code]:

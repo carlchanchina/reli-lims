@@ -21,24 +21,68 @@
       "role": "Lab Manager"
     }
   ],
-  "links": [],
+  "links": [
+    {
+      "type": "Card Break",
+      "label": "客户与询价"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Customer",
+      "label": "客户"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Opportunity",
+      "label": "询价跟进"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Contact",
+      "label": "联系人"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Address",
+      "label": "地址"
+    }
+  ],
   "shortcuts": [
     {
-      "label": "新建客户",
+      "label": "客户与询价",
       "type": "DocType",
       "link_to": "Customer",
-      "doc_view": "New",
+      "doc_view": "List",
       "color": "Grey"
     },
     {
-      "label": "新建报价单",
+      "label": "询价跟进",
+      "type": "DocType",
+      "link_to": "Opportunity",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "报价单",
       "type": "DocType",
       "link_to": "Quotation",
-      "doc_view": "New",
+      "doc_view": "List",
       "color": "Grey"
     },
     {
-      "label": "报价单列表",
+      "label": "客户确认",
+      "type": "DocType",
+      "link_to": "Test Request",
+      "doc_view": "List",
+      "color": "Grey",
+      "stats_filter": "{\"customer_confirmation_state\": \"Awaiting Customer Confirmation\", \"docstatus\": 0}"
+    },
+    {
+      "label": "生成委托",
       "type": "DocType",
       "link_to": "Quotation",
       "doc_view": "List",
@@ -48,27 +92,6 @@
       "label": "销售订单",
       "type": "DocType",
       "link_to": "Sales Order",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "新建检测委托",
-      "type": "DocType",
-      "link_to": "Test Request",
-      "doc_view": "New",
-      "color": "Grey"
-    },
-    {
-      "label": "委托列表",
-      "type": "DocType",
-      "link_to": "Test Request",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "销售服务目录",
-      "type": "DocType",
-      "link_to": "Item",
       "doc_view": "List",
       "color": "Grey"
     }
@@ -86,5 +109,5 @@
   ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\":\"commercial-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">商业接单中心</span>\",\"col\":12}},{\"id\":\"commercial-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"阶段一 · 客户与询价 → 报价 → 客户确认 → 发起检测委托。实验室接收后进入检测履约中心。\",\"col\":12}},{\"id\":\"commercial-count-0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"报价草稿\",\"col\":6}},{\"id\":\"commercial-count-1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"委托草稿\",\"col\":6}},{\"id\":\"commercial-actions\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">常用操作</span>\",\"col\":12}},{\"id\":\"commercial-action-0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建客户\",\"col\":3}},{\"id\":\"commercial-action-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建报价单\",\"col\":3}},{\"id\":\"commercial-action-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"报价单列表\",\"col\":3}},{\"id\":\"commercial-action-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售订单\",\"col\":3}},{\"id\":\"commercial-action-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建检测委托\",\"col\":3}},{\"id\":\"commercial-action-5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"委托列表\",\"col\":3}},{\"id\":\"commercial-action-6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售服务目录\",\"col\":3}}]"
+  "content": "[{\"id\": \"commercial-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">商业接单中心</span>\", \"col\": 12}}, {\"id\": \"commercial-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"客户与询价 → 报价单 → 客户确认 → 生成委托。进入报价单点击“发起检测委托”，在委托草稿请求客户确认，正式受理后转入履约。\", \"col\": 12}}, {\"id\": \"commercial-count-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报价草稿\", \"col\": 6}}, {\"id\": \"commercial-count-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"委托草稿\", \"col\": 6}}, {\"id\": \"commercial-actions\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"commercial-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户与询价\", \"col\": 4}}, {\"id\": \"commercial-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"询价跟进\", \"col\": 4}}, {\"id\": \"commercial-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"报价单\", \"col\": 4}}, {\"id\": \"commercial-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户确认\", \"col\": 4}}, {\"id\": \"commercial-s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"生成委托\", \"col\": 4}}, {\"id\": \"commercial-s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"销售订单\", \"col\": 4}}, {\"id\": \"commercial-clients\", \"type\": \"card\", \"data\": {\"card_name\": \"客户与询价\", \"col\": 12}}]"
 }

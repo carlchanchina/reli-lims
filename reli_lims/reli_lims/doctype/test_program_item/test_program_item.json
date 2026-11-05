@@ -16,6 +16,9 @@
     "asset",
     "workstation",
     "test_condition",
+    "technical_configuration",
+    "source_request_item",
+    "capability",
     "planned_start",
     "planned_end",
     "actual_start",
@@ -158,6 +161,26 @@
       "hidden": 1,
       "label": "原检测项目（兼容）",
       "options": "Test Method"
+    },
+    {
+      "fieldname": "capability",
+      "fieldtype": "Link",
+      "options": "Laboratory Capability",
+      "label": "受理能力",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_request_item",
+      "fieldtype": "Data",
+      "label": "来源委托行",
+      "read_only": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "technical_configuration",
+      "fieldtype": "JSON",
+      "label": "受理技术快照",
+      "read_only": 1
     }
   ],
   "grid_page_length": 50,

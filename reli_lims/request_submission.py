@@ -39,8 +39,6 @@ def validate_execution_scope(doc):
     projects, methods, standards = set(), set(), set()
     for item in doc.items:
         project, method, standard = item.get('test_project'), item.get('test_method'), item.get('standard')
-        if not project and method:
-            project = frappe.db.get_value('Test Method', method, 'test_project')
         if not (project or method) or not standard:
             frappe.throw('请内部补齐检测项目和标准后再正式受理。')
         if project:
@@ -50,17 +48,18 @@ def validate_execution_scope(doc):
         standards.add(standard)
     if not projects and not methods:
         frappe.throw('请内部补齐检测项目和标准后再正式受理。')
+    for name in sorted(methods):
+        method = frappe.db.get_value('Test Method', name, ['active', 'test_project'], as_dict=True, for_update=True)
+        if not method:
+            frappe.throw('兼容检测项目不存在，不能正式受理。')
+        if method.get('test_project'):
+            projects.add(method['test_project'])
+        elif method.get('active') != 1:
+            frappe.throw('兼容检测项目未启用，不能正式受理。')
     for name in sorted(projects):
         project = frappe.db.get_value('Test Project', name, ['active'], as_dict=True, for_update=True)
         if not project or project.get('active') != 1:
             frappe.throw('检测项目未启用，不能正式受理。')
-    for name in sorted(methods):
-        if not name:
-            continue
-        method = frappe.db.get_value('Test Method', name, ['active', 'test_project'], as_dict=True, for_update=True)
-        if method and not method.get('test_project'):
-            if method.get('active') != 1:
-                frappe.throw('兼容检测项目未启用，不能正式受理。')
     for name in sorted(standards):
         standard = frappe.db.get_value('Test Standard', name, ['status'], as_dict=True, for_update=True)
         if not standard or standard.get('status') != 'Active':

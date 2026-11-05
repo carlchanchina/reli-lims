@@ -1,11 +1,11 @@
 frappe.pages["reli-capability-hub"].on_page_load = function (wrapper) {
     const page = frappe.ui.make_app_page({
-        parent: wrapper, title: __("实验室能力中心"), single_column: true,
+        parent: wrapper, title: __("能力查询"), single_column: true,
     });
     const body = $(page.body);
 
     const open_capabilities = async () => {
-        await frappe.require("/assets/reli_lims/js/capability_grid.js");
+        await frappe.require("capability_grid.bundle.js");
         await frappe.require("/assets/reli_lims/js/capability_selector.js");
         return reli_lims.capabilities.open({mode: "catalog"});
     };
@@ -41,6 +41,7 @@ frappe.pages["reli-capability-hub"].on_page_load = function (wrapper) {
         [__("检测对象分类"), __("受控检测对象及分类、别名"), () => frappe.set_route("List", "Test Object")],
         [__("检测依据（标准/方法）"), __("标准编号、名称、版本与依据类型"), () => frappe.set_route("List", "Test Standard")],
         [__("实验室管理"), __("实验室资料、能力来源与服务商品"), () => frappe.set_route("List", "Laboratory Profile")],
+        [__("能力来源"), __("来源文件与原始结构化能力明细"), () => frappe.set_route("List", "Capability Source")],
         [__("服务商品关联"), __("以中文服务名称关联检测项目与 Item"), () => {
             frappe.route_options = {is_stock_item: 0, is_sales_item: 1};
             frappe.set_route("List", "Item");

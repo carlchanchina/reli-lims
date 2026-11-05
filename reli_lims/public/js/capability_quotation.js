@@ -7,7 +7,7 @@ frappe.ui.form.on("Quotation", {
     refresh(frm) {
         if (frm.doc.docstatus !== 0) return;
         frm.add_custom_button(__("选择检测服务"), async () => {
-            await frappe.require("/assets/reli_lims/js/capability_grid.js");
+            await frappe.require("capability_grid.bundle.js");
             await frappe.require("/assets/reli_lims/js/capability_selector.js");
             return reli_lims.capabilities.open({
                 mode: "quotation",
@@ -57,7 +57,7 @@ frappe.ui.form.on("Quotation", {
 
 frappe.ui.form.on("Quotation", {
     async refresh(frm) {
-        await frappe.require("/assets/reli_lims/js/capability_grid.js");
+        await frappe.require("capability_grid.bundle.js");
         return reli_lims.capabilities.mount(frm, "quotation");
     },
 });

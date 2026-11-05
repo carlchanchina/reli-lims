@@ -1,8 +1,8 @@
 {
   "doctype": "Workspace",
   "name": "Testing Center",
-  "label": "检测工作台",
-  "title": "检测工作台",
+  "label": "工作台首页",
+  "title": "工作台首页",
   "module": "Reli LIMS",
   "icon": "lab",
   "public": 1,
@@ -21,174 +21,11 @@
       "role": "Lab Reviewer"
     }
   ],
-  "links": [
-    {
-      "type": "Card Break",
-      "label": "客户与销售"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Contact",
-      "label": "联系人"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Address",
-      "label": "地址"
-    },
-    {
-      "type": "Card Break",
-      "label": "检测资源与字典"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Test Project",
-      "label": "检测项目"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Test Object",
-      "label": "检测对象"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Test Standard",
-      "label": "检测依据（标准/方法）"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Asset",
-      "label": "设备"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Project",
-      "label": "项目"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Task",
-      "label": "任务"
-    },
-    {
-      "type": "Card Break",
-      "label": "财务"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Sales Invoice",
-      "label": "销售发票"
-    },
-    {
-      "type": "Link",
-      "link_type": "DocType",
-      "link_to": "Payment Entry",
-      "label": "收款"
-    }
-  ],
-  "shortcuts": [
-    {
-      "label": "新建检测委托",
-      "type": "DocType",
-      "link_to": "Test Request",
-      "doc_view": "New",
-      "color": "Grey"
-    },
-    {
-      "label": "收样",
-      "type": "DocType",
-      "link_to": "Test Request",
-      "doc_view": "List",
-      "color": "Grey",
-      "stats_filter": "{\"docstatus\": 1, \"business_stage\": \"待收样\"}"
-    },
-    {
-      "label": "试验方案",
-      "type": "DocType",
-      "link_to": "Test Program",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "检测报告",
-      "type": "DocType",
-      "link_to": "Test Report",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "样品列表",
-      "type": "DocType",
-      "link_to": "Sample",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "新建客户",
-      "type": "DocType",
-      "link_to": "Customer",
-      "doc_view": "New",
-      "color": "Grey"
-    },
-    {
-      "label": "新建报价单",
-      "type": "DocType",
-      "link_to": "Quotation",
-      "doc_view": "New",
-      "color": "Grey"
-    },
-    {
-      "label": "报价单列表",
-      "type": "DocType",
-      "link_to": "Quotation",
-      "doc_view": "List",
-      "color": "Grey"
-    },
-    {
-      "label": "销售订单",
-      "type": "DocType",
-      "link_to": "Sales Order",
-      "doc_view": "List",
-      "color": "Grey"
-    }
-  ],
+  "links": [],
+  "shortcuts": [],
   "charts": [],
-  "number_cards": [
-    {
-      "number_card_name": "Reli LIMS 待确认委托",
-      "label": "待确认委托"
-    },
-    {
-      "number_card_name": "Reli LIMS 待收样",
-      "label": "待收样"
-    },
-    {
-      "number_card_name": "Reli LIMS 试验中",
-      "label": "试验中"
-    },
-    {
-      "number_card_name": "Reli LIMS 待报告",
-      "label": "待报告"
-    },
-    {
-      "number_card_name": "Reli LIMS 报告待审核",
-      "label": "报告待审核"
-    },
-    {
-      "number_card_name": "Reli LIMS 超期",
-      "label": "超期"
-    }
-  ],
+  "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\":\"v1-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">检测履约中心</span>\",\"col\":12}},{\"id\":\"fulfillment-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"收样、试验、报告审核与签发。待确认委托用于实验室接收审核；已确认业务进入收样。\",\"col\":12}},{\"id\":\"v1-card-0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待确认委托\",\"col\":4}},{\"id\":\"v1-card-1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待收样\",\"col\":4}},{\"id\":\"v1-card-2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"试验中\",\"col\":4}},{\"id\":\"v1-card-3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待报告\",\"col\":4}},{\"id\":\"v1-card-4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"报告待审核\",\"col\":4}},{\"id\":\"v1-card-5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"超期\",\"col\":4}},{\"id\":\"v1-flow\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">主流程看板</span>\",\"col\":12}},{\"id\":\"v1-kanban\",\"type\":\"paragraph\",\"data\":{\"text\":\"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a><br>待确认 → 待收样 → 已收样 → 待试验 → 试验中 → 待报告 → 报告审核 → 已完成\",\"col\":12}},{\"id\":\"final-flow\",\"type\":\"paragraph\",\"data\":{\"text\":\"报价 → 委托 → 收样 → 试验 → 报告 → 完成；支持客户直接送检。\",\"col\":12}},{\"id\":\"final-testing\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">高频检测操作</span>\",\"col\":12}},{\"id\":\"final-shortcut-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建检测委托\",\"col\":3}},{\"id\":\"final-shortcut-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"收样\",\"col\":3}},{\"id\":\"final-shortcut-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"试验方案\",\"col\":3}},{\"id\":\"final-shortcut-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"检测报告\",\"col\":3}},{\"id\":\"final-shortcut-5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"样品列表\",\"col\":3}},{\"id\":\"final-sales\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">客户与销售</span>\",\"col\":12}},{\"id\":\"final-shortcut-6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建客户\",\"col\":3}},{\"id\":\"final-shortcut-7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"新建报价单\",\"col\":3}},{\"id\":\"final-shortcut-8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"报价单列表\",\"col\":3}},{\"id\":\"final-shortcut-9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"销售订单\",\"col\":3}},{\"id\":\"final-card-3\",\"type\":\"card\",\"data\":{\"card_name\":\"客户与销售\",\"col\":12}},{\"id\":\"final-resources\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">检测资源与字典</span>\",\"col\":12}},{\"id\":\"final-card-9\",\"type\":\"card\",\"data\":{\"card_name\":\"检测资源与字典\",\"col\":12}},{\"id\":\"final-finance\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">财务入口</span>\",\"col\":12}},{\"id\":\"final-card-12\",\"type\":\"card\",\"data\":{\"card_name\":\"财务\",\"col\":12}}]"
+  "content": "[]"
 }

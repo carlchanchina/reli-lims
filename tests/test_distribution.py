@@ -28,18 +28,18 @@ class TestDistribution(unittest.TestCase):
         self.assertEqual(workspace["public"], 1)
         self.assertEqual({r["role"] for r in workspace["roles"]},
                          {"Lab Manager", "Lab Engineer", "Lab Reviewer"})
-        self.assertEqual({s["link_to"] for s in workspace["shortcuts"]}, {"Test Request", "Test Program", "Test Report", "Sample", "Customer", "Quotation", "Sales Order"})
-        self.assertEqual(len(workspace['shortcuts']), 9)
-        self.assertEqual(len(workspace['number_cards']), 6)
-        self.assertTrue({'Project', 'Task', 'Asset', 'Contact', 'Address', 'Test Method', 'Test Standard', 'Sales Invoice', 'Payment Entry'} <=
-                        {link.get('link_to') for link in workspace['links']})
-        blocks = json.loads(workspace["content"])
-        card_labels = {row['label'] for row in workspace['number_cards']}
-        self.assertEqual({b['data']['number_card_name'] for b in blocks if b['type'] == 'number_card'}, card_labels,
-                         'Frappe workspace blocks resolve Number Cards by the row display label')
-        names = {s["label"] for s in workspace["shortcuts"]}
-        self.assertTrue(all(b["data"]["shortcut_name"] in names
-                            for b in blocks if b["type"] == "shortcut"))
+        self.assertEqual(workspace['label'], '工作台首页')
+        self.assertEqual(workspace['number_cards'], [])
+        fulfillment = json.loads((ROOT / 'reli_lims/reli_lims/workspace/testing_fulfillment_center/testing_fulfillment_center.json').read_text())
+        self.assertEqual(len(fulfillment['number_cards']), 6)
+        self.assertEqual([row['label'] for row in fulfillment['shortcuts']],
+                         ['检测委托单', '样品', '试验方案', '试验记录', '检测报告'])
+        sidebar = json.loads((ROOT / 'reli_lims/reli_lims/sidebar/reli_lims/reli_lims.json').read_text())
+        centers = [row for row in sidebar['items'] if row.get('link_type') == 'Workspace']
+        self.assertEqual([row['label'] for row in centers],
+                         ['工作台首页', '商业接单中心', '检测履约中心', '实验室能力中心'])
+        self.assertNotIn('Test Method', {row.get('link_to') for row in sidebar['items']})
+
 
 
 if __name__ == "__main__":

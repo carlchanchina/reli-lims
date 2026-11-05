@@ -1,0 +1,132 @@
+{
+  "doctype": "Workspace",
+  "name": "Testing Fulfillment Center",
+  "label": "检测履约中心",
+  "title": "检测履约中心",
+  "module": "Reli LIMS",
+  "icon": "lab",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 3,
+  "for_user": "",
+  "parent_page": "",
+  "roles": [
+    {
+      "role": "Lab Manager"
+    },
+    {
+      "role": "Lab Engineer"
+    },
+    {
+      "role": "Lab Reviewer"
+    }
+  ],
+  "links": [
+    {
+      "type": "Card Break",
+      "label": "履约业务"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Request",
+      "label": "检测委托单"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Sample",
+      "label": "样品"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Program",
+      "label": "试验方案"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Report",
+      "label": "检测报告"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Project",
+      "label": "项目"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Asset",
+      "label": "设备"
+    }
+  ],
+  "shortcuts": [
+    {
+      "label": "检测委托单",
+      "type": "DocType",
+      "link_to": "Test Request",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "样品",
+      "type": "DocType",
+      "link_to": "Sample",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "试验方案",
+      "type": "DocType",
+      "link_to": "Test Program",
+      "doc_view": "List",
+      "color": "Grey"
+    },
+    {
+      "label": "试验记录",
+      "type": "Page",
+      "link_to": "reli-test-records",
+      "color": "Blue"
+    },
+    {
+      "label": "检测报告",
+      "type": "DocType",
+      "link_to": "Test Report",
+      "doc_view": "List",
+      "color": "Grey"
+    }
+  ],
+  "charts": [],
+  "number_cards": [
+    {
+      "number_card_name": "Reli LIMS 待确认委托",
+      "label": "待确认委托"
+    },
+    {
+      "number_card_name": "Reli LIMS 待收样",
+      "label": "待收样"
+    },
+    {
+      "number_card_name": "Reli LIMS 试验中",
+      "label": "试验中"
+    },
+    {
+      "number_card_name": "Reli LIMS 待报告",
+      "label": "待报告"
+    },
+    {
+      "number_card_name": "Reli LIMS 报告待审核",
+      "label": "报告待审核"
+    },
+    {
+      "number_card_name": "Reli LIMS 超期",
+      "label": "超期"
+    }
+  ],
+  "quick_lists": [],
+  "custom_blocks": [],
+  "content": "[{\"id\": \"fulfill-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测履约中心</span>\", \"col\": 12}}, {\"id\": \"fulfill-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"检测委托单 → 样品 → 试验方案 → 试验记录 → 检测报告\", \"col\": 12}}, {\"id\": \"fulfill-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测委托单\", \"col\": 4}}, {\"id\": \"fulfill-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"样品\", \"col\": 4}}, {\"id\": \"fulfill-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验方案\", \"col\": 4}}, {\"id\": \"fulfill-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验记录\", \"col\": 4}}, {\"id\": \"fulfill-s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"fulfill-n0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待确认委托\", \"col\": 4}}, {\"id\": \"fulfill-n1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待收样\", \"col\": 4}}, {\"id\": \"fulfill-n2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"试验中\", \"col\": 4}}, {\"id\": \"fulfill-n3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待报告\", \"col\": 4}}, {\"id\": \"fulfill-n4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报告待审核\", \"col\": 4}}, {\"id\": \"fulfill-n5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超期\", \"col\": 4}}, {\"id\": \"fulfill-kanban\", \"type\": \"paragraph\", \"data\": {\"text\": \"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a>\", \"col\": 12}}]"
+}

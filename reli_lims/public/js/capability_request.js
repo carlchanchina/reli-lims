@@ -58,7 +58,7 @@ frappe.ui.form.on("Test Request", {
     refresh(frm) {
         if (frm.doc.docstatus !== 0) return;
         frm.add_custom_button(__("选择检测能力"), async () => {
-            await frappe.require("/assets/reli_lims/js/capability_grid.js");
+            await frappe.require("capability_grid.bundle.js");
             await frappe.require("/assets/reli_lims/js/capability_selector.js");
             return reli_lims.capabilities.open({
                 mode: "request",
@@ -84,7 +84,7 @@ frappe.ui.form.on("Test Request", {
 
 frappe.ui.form.on("Test Request", {
     async refresh(frm) {
-        await frappe.require("/assets/reli_lims/js/capability_grid.js");
+        await frappe.require("capability_grid.bundle.js");
         return reli_lims.capabilities.mount(frm, "request");
     },
 });
