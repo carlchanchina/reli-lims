@@ -15,6 +15,7 @@ app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
 app_home = "/desk/reli-lims/testing-center"
 
 app_include_js = ["business_relations.bundle.js"]
+app_include_css = ["workbench.bundle.css"]
 
 add_to_apps_screen = [
     {

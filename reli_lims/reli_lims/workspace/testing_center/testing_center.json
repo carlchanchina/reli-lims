@@ -1,6 +1,7 @@
 {
   "doctype": "Workspace",
   "name": "Testing Center",
+  "type": "Workspace",
   "label": "工作台首页",
   "title": "工作台首页",
   "module": "Reli LIMS",

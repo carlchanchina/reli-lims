@@ -1,6 +1,7 @@
 {
   "doctype": "Workspace",
   "name": "Commercial Intake Center",
+  "type": "Workspace",
   "label": "商业接单中心",
   "title": "商业接单中心",
   "module": "Reli LIMS",

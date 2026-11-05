@@ -6,7 +6,8 @@ import frappe
 def after_migrate():
     directory = Path(__file__).parent / "templates" / "workbench"
     values = {"html": (directory / "home.html").read_text(),
-              "style": (directory / "home.css").read_text(), "private": 0}
+              "style": (directory / "home.css").read_text(),
+              "script": (directory / "home.js").read_text(), "private": 0}
     name = "Reli Three Centers"
     if frappe.db.exists("Custom HTML Block", name):
         block = frappe.get_doc("Custom HTML Block", name)

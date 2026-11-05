@@ -1,6 +1,7 @@
 {
   "doctype": "Workspace",
   "name": "Testing Fulfillment Center",
+  "type": "Workspace",
   "label": "检测履约中心",
   "title": "检测履约中心",
   "module": "Reli LIMS",

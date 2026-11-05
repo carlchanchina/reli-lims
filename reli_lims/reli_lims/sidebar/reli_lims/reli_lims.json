@@ -28,7 +28,7 @@
       "label": "检测履约中心",
       "link_type": "Workspace",
       "link_to": "Testing Fulfillment Center",
-      "icon": "lab",
+      "icon": "flask-conical",
       "is_default_module": 1
     },
     {
