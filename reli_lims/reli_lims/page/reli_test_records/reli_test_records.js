@@ -23,7 +23,12 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
         for (const row of message.rows) {
             const tr = $("<tr>").appendTo(body);
             $("<a>").attr("href", `/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`)
-                .text(row.program_title).appendTo($("<td>").appendTo(tr));
+                .text(row.program_title).on("click", event => {
+                    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    frappe.set_route("Form", "Test Program", row.parent);
+                }).appendTo($("<td>").appendTo(tr));
             [row.project_label, row.standard_label, row.test_condition, __(row.status, null, "Test Program Item"), row.result, row.conclusion]
                 .forEach(value => $("<td>").text(value || "—").appendTo(tr));
         }
