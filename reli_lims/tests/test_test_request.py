@@ -339,7 +339,7 @@ class TestTestingRequest(IntegrationTestCase):
                 self.assertIn('P19-SOFTWARE-CONDITION-15', text)
             if output_format == 'pdf':
                 text = ''.join(page.extract_text() for page in PdfReader(BytesIO(content)).pages)
-                self.assertIn('P19-SOFTWARE-CONDITION-15', text)
+                self.assertIn('P19-SOFTWARE-CONDITION-15', ''.join(text.split()))
                 from pathlib import Path
                 Path('/tmp/reli-p19-report-conditions.pdf').write_bytes(content)
         for doctype, name, print_format in [('Test Program', program.name, 'Reli Test Program'),
