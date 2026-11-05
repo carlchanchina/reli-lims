@@ -1,5 +1,6 @@
 """Framework-independent validation for the customer-declared testing scope."""
 from datetime import date
+from copy import deepcopy
 from math import isfinite
 
 
@@ -37,8 +38,8 @@ def validate_scope(data):
         if row.get('weight_kg') not in (None, '', 0):
             positive_number(row['weight_kg'], 'Sample weight')
     for row in items:
-        if not row.get('test_method') or not row.get('standard'):
-            raise ValueError('Every test item needs a method and one standard.')
+        if not (row.get('test_project') or row.get('test_method')) or not row.get('standard'):
+            raise ValueError('Every test item needs a project (or compatible method) and one standard.')
     pairs = set()
     assigned = set()
     for row in data.get('sample_assignments') or []:
@@ -108,8 +109,11 @@ def program_data(request, sample_names):
                 responsible_engineer=request.get('responsible_engineer'),
                 samples=[dict(sample=sample_names[r['sample_code']], sample_label=r['sample_code'])
                          for r in request['samples']],
-                items=[dict(item_code=r['item_code'], test_method=r['test_method'],
-                            standard=r['standard'], test_condition=r.get('test_condition'), status='Pending')
+                items=[dict(item_code=r['item_code'], test_project=r.get('test_project'),
+                            test_object=r.get('test_object'), test_method=r.get('test_method'),
+                            standard=r['standard'], test_condition=r.get('test_condition'), status='Pending',
+                            capability=r.get('capability'), source_request_item=r.get('name'),
+                            technical_configuration=deepcopy(r.get('technical_configuration')))
                        for r in request['items']],
                 sample_assignments=[dict(item_code=r['item_code'], sample=sample_names[r['sample_code']])
                                     for r in request['sample_assignments']])

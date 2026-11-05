@@ -29,6 +29,18 @@ def fingerprint(data, files):
             for field in ('quantity','weight_kg'):
                 if field in row and row[field] != '':
                     row[field] = float(row[field])
+    for stored, original in zip(snapshot['items'], data.get('items') or []):
+        if original.get('capability'):
+            configuration = original.get('technical_configuration')
+            if isinstance(configuration, str):
+                configuration = json.loads(configuration)
+            stored['technical_selection'] = {
+                'capability': original.get('capability'),
+                'configuration': configuration,
+                'source_quotation': original.get('source_quotation') or '',
+                'source_quotation_item': original.get('source_quotation_item') or '',
+                'quantity': float(original.get('requested_quantity') or 0),
+            }
     snapshot['attachments'] = sorted([{key: row.get(key) or '' for key in ('name','file_name','content_hash')} for row in files],key=lambda row:row['name'])
     return hashlib.sha256(json.dumps(snapshot,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str,allow_nan=False).encode()).hexdigest()
 

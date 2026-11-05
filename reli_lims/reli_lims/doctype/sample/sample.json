@@ -174,5 +174,7 @@
   "sort_order": "DESC",
   "states": [],
   "title_field": "product_name",
-  "track_changes": 1
+  "track_changes": 1,
+  "show_title_field_in_link": 1,
+  "search_fields": "product_name,model"
 }

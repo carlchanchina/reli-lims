@@ -1,0 +1,234 @@
+{
+  "actions": [],
+  "autoname": "format:CAP-{#####}",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "laboratory",
+    "test_project",
+    "test_object",
+    "test_standard",
+    "product_scope",
+    "capability_scope",
+    "limitation",
+    "accreditation_type",
+    "certificate_no",
+    "source",
+    "source_row",
+    "evidence",
+    "status",
+    "published",
+    "merchant_offer_id",
+    "wiki_page_id",
+    "remarks",
+    "cnas_scope_key",
+    "industry",
+    "project_parameter",
+    "clause",
+    "scope_effective_date",
+    "condition_schema",
+    "compatibility_section",
+    "test_method"
+  ],
+  "fields": [
+    {
+      "fieldname": "laboratory",
+      "fieldtype": "Link",
+      "label": "实验室",
+      "options": "Laboratory Profile",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "test_project",
+      "fieldtype": "Link",
+      "label": "检测项目",
+      "options": "Test Project",
+      "in_list_view": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "test_object",
+      "fieldtype": "Link",
+      "label": "检测对象",
+      "options": "Test Object",
+      "in_list_view": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "test_standard",
+      "fieldtype": "Link",
+      "label": "检测依据（标准/方法）",
+      "options": "Test Standard",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "product_scope",
+      "fieldtype": "Small Text",
+      "label": "适用产品/对象"
+    },
+    {
+      "fieldname": "capability_scope",
+      "fieldtype": "Small Text",
+      "label": "能力范围",
+      "reqd": 1
+    },
+    {
+      "fieldname": "limitation",
+      "fieldtype": "Small Text",
+      "label": "限制说明"
+    },
+    {
+      "fieldname": "accreditation_type",
+      "fieldtype": "Select",
+      "label": "认可类型",
+      "options": "CNAS\nCMA\n其他\n未认证",
+      "default": "未认证",
+      "reqd": 1
+    },
+    {
+      "fieldname": "certificate_no",
+      "fieldtype": "Data",
+      "label": "证书编号"
+    },
+    {
+      "fieldname": "source",
+      "fieldtype": "Link",
+      "label": "能力来源文件",
+      "options": "Capability Source"
+    },
+    {
+      "fieldname": "source_row",
+      "fieldtype": "Data",
+      "label": "来源行/位置"
+    },
+    {
+      "fieldname": "evidence",
+      "fieldtype": "Attach",
+      "label": "证据附件"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "状态",
+      "options": "待确认\n已确认\n已发布\n已停用",
+      "default": "待确认",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "published",
+      "fieldtype": "Check",
+      "label": "已发布",
+      "default": "0",
+      "read_only": 1
+    },
+    {
+      "fieldname": "merchant_offer_id",
+      "fieldtype": "Data",
+      "label": "Mercur Offer/Product ID",
+      "read_only": 1
+    },
+    {
+      "fieldname": "wiki_page_id",
+      "fieldtype": "Data",
+      "label": "Wiki Page ID",
+      "read_only": 1
+    },
+    {
+      "fieldname": "remarks",
+      "fieldtype": "Small Text",
+      "label": "备注"
+    },
+    {
+      "fieldname": "cnas_scope_key",
+      "fieldtype": "Data",
+      "label": "范围标识",
+      "unique": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "industry",
+      "fieldtype": "Data",
+      "label": "行业"
+    },
+    {
+      "fieldname": "project_parameter",
+      "fieldtype": "Data",
+      "label": "项目及参数"
+    },
+    {
+      "fieldname": "clause",
+      "fieldtype": "Small Text",
+      "label": "条款"
+    },
+    {
+      "fieldname": "scope_effective_date",
+      "fieldtype": "Date",
+      "label": "范围生效日"
+    },
+    {
+      "fieldname": "condition_schema",
+      "fieldtype": "JSON",
+      "label": "检测条件配置（本能力）"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "compatibility_section",
+      "fieldtype": "Section Break",
+      "label": "兼容数据",
+      "hidden": 1
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "label": "原检测项目（兼容）",
+      "options": "Test Method",
+      "description": "旧 Test Method 仅保留用于历史报价、委托与来源追溯；新业务使用统一检测项目。",
+      "hidden": 1,
+      "read_only": 1
+    }
+  ],
+  "module": "Reli LIMS",
+  "name": "Laboratory Capability",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {
+      "role": "Lab Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "delete": 1,
+      "report": 1,
+      "export": 1,
+      "print": 1,
+      "email": 1,
+      "share": 1
+    },
+    {
+      "role": "Lab Reviewer",
+      "read": 1,
+      "write": 1,
+      "report": 1,
+      "export": 1,
+      "print": 1
+    },
+    {
+      "role": "System Manager",
+      "create": 1,
+      "read": 1,
+      "write": 1,
+      "delete": 1,
+      "report": 1,
+      "export": 1,
+      "print": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "title_field": "project_parameter",
+  "track_changes": 1,
+  "show_title_field_in_link": 1,
+  "search_fields": "test_project,test_object,project_parameter,product_scope,industry"
+}

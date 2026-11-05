@@ -1,0 +1,100 @@
+{
+  "doctype": "Workspace",
+  "name": "Laboratory Capability Center",
+  "type": "Workspace",
+  "label": "实验室能力中心",
+  "title": "实验室能力中心",
+  "module": "Reli LIMS",
+  "icon": "branch",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 2,
+  "for_user": "",
+  "parent_page": "",
+  "roles": [
+    {
+      "role": "Lab Manager"
+    },
+    {
+      "role": "Lab Reviewer"
+    },
+    {
+      "role": "System Manager"
+    }
+  ],
+  "links": [
+    {
+      "type": "Card Break",
+      "label": "能力与字典"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Project",
+      "label": "检测项目"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Object",
+      "label": "检测对象"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Standard",
+      "label": "检测依据（标准/方法）"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Laboratory Profile",
+      "label": "实验室管理"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Capability Source",
+      "label": "能力来源"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Laboratory Capability",
+      "label": "全部能力明细"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Item",
+      "label": "服务商品"
+    }
+  ],
+  "shortcuts": [
+    {
+      "label": "筛选能力",
+      "type": "Page",
+      "link_to": "reli-capability-hub",
+      "color": "Blue"
+    },
+    {
+      "label": "新增检测项目",
+      "type": "DocType",
+      "link_to": "Test Project",
+      "doc_view": "New",
+      "color": "Green"
+    },
+    {
+      "label": "添加实验室能力",
+      "type": "DocType",
+      "link_to": "Laboratory Capability",
+      "doc_view": "New",
+      "color": "Orange"
+    }
+  ],
+  "charts": [],
+  "number_cards": [],
+  "quick_lists": [],
+  "custom_blocks": [],
+  "content": "[{\"id\": \"cap-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">实验室能力中心</span>\", \"col\": 12}}, {\"id\": \"cap-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"按项目、对象、依据与实验室查询能力，保留来源和限制范围。\", \"col\": 12}}, {\"id\": \"cap-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"筛选能力\", \"col\": 4}}, {\"id\": \"cap-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"新增检测项目\", \"col\": 4}}, {\"id\": \"cap-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"添加实验室能力\", \"col\": 4}}, {\"id\": \"cap-links\", \"type\": \"card\", \"data\": {\"card_name\": \"能力与字典\", \"col\": 12}}]"
+}

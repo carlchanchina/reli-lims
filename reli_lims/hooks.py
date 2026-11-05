@@ -14,6 +14,9 @@ fixtures = [
 app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
 app_home = "/desk/reli-lims/testing-center"
 
+app_include_js = ["business_relations.bundle.js"]
+app_include_css = ["workbench.bundle.css"]
+
 add_to_apps_screen = [
     {
         "name": app_name,
@@ -42,3 +45,14 @@ doctype_js = {dt: 'public/js/document_output.js'
 doc_events['File'] = {event: 'reli_lims.request_confirmation.file_changed' for event in ('after_insert','on_update','after_delete')}
 after_migrate.append('reli_lims.request_confirmation_setup.after_migrate')
 doc_events['File']['validate'] = 'reli_lims.request_confirmation.validate_file_visibility'
+
+after_migrate.append("reli_lims.capability_quotation.after_migrate")
+after_migrate.append("reli_lims.capability_catalog.after_migrate")
+after_migrate.append("reli_lims.patches.p161_legacy_dictionary_cleanup.after_migrate")
+after_migrate.append("reli_lims.workbench_navigation.after_migrate")
+doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
+doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}
+doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capability_request.js"]
+doc_events["Test Request"]["validate"] = "reli_lims.capability_request.validate"
+doctype_js["Item"] = "public/js/item_relations.js"
+jinja = {"methods": ["reli_lims.execution_records.print_context"]}

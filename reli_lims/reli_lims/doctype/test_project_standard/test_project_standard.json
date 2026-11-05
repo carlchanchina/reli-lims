@@ -1,0 +1,33 @@
+{
+  "actions": [],
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": ["test_standard", "basis_type"],
+  "fields": [
+    {
+      "fieldname": "test_standard",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "检测依据（标准/方法）",
+      "options": "Test Standard",
+      "reqd": 1
+    },
+    {
+      "fetch_from": "test_standard.basis_type",
+      "fieldname": "basis_type",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "依据类型",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "istable": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Project Standard",
+  "permissions": [],
+  "sort_field": "modified",
+  "sort_order": "DESC"
+}

@@ -52,16 +52,8 @@ def _upsert(doctype, name, values):
 
 
 def _setup_commercial_intake():
-    from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
-
-    fieldname = 'custom_reli_test_method'
-    field = frappe.get_meta('Item').get_field(fieldname)
-    if field and (field.fieldtype != 'Link' or field.options != 'Test Method'):
-        frappe.throw('Item.custom_reli_test_method must link to Test Method.')
-    create_custom_fields({'Item': [dict(
-        fieldname=fieldname, label='检测方法', fieldtype='Link',
-        options='Test Method', insert_after='item_group',
-    )]}, update=False)
+    from reli_lims.capability_catalog import ensure_custom_fields
+    ensure_custom_fields()
 
     for name, label, doctype in (
         ('Reli LIMS 商业报价草稿', '报价草稿', 'Quotation'),

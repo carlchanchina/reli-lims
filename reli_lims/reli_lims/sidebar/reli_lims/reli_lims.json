@@ -1,0 +1,149 @@
+{
+  "doctype": "Sidebar",
+  "name": "Reli LIMS",
+  "title": "Reli LIMS",
+  "module": "Reli LIMS",
+  "app": "reli_lims",
+  "header_icon": "lab",
+  "standard": 1,
+  "items": [
+    {
+      "type": "Link",
+      "label": "工作台首页",
+      "link_type": "Workspace",
+      "link_to": "Testing Center",
+      "icon": "home",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "商业接单中心",
+      "link_type": "Workspace",
+      "link_to": "Commercial Intake Center",
+      "icon": "briefcase",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测履约中心",
+      "link_type": "Workspace",
+      "link_to": "Testing Fulfillment Center",
+      "icon": "flask-conical",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "实验室能力中心",
+      "link_type": "Workspace",
+      "link_to": "Laboratory Capability Center",
+      "icon": "layers",
+      "is_default_module": 1
+    },
+    {
+      "type": "Section Break",
+      "label": "履约业务",
+      "collapsible": 0
+    },
+    {
+      "type": "Link",
+      "label": "检测委托单",
+      "link_type": "DocType",
+      "link_to": "Test Request",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "样品",
+      "link_type": "DocType",
+      "link_to": "Sample",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "试验方案",
+      "link_type": "DocType",
+      "link_to": "Test Program",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "试验记录",
+      "link_type": "Page",
+      "link_to": "reli-test-records",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测报告",
+      "link_type": "DocType",
+      "link_to": "Test Report",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Section Break",
+      "label": "能力字典",
+      "collapsible": 0
+    },
+    {
+      "type": "Link",
+      "label": "检测项目",
+      "link_type": "DocType",
+      "link_to": "Test Project",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测对象",
+      "link_type": "DocType",
+      "link_to": "Test Object",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "检测依据（标准/方法）",
+      "link_type": "DocType",
+      "link_to": "Test Standard",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "实验室管理",
+      "link_type": "DocType",
+      "link_to": "Laboratory Profile",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "能力来源",
+      "link_type": "DocType",
+      "link_to": "Capability Source",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "全部能力明细",
+      "link_type": "DocType",
+      "link_to": "Laboratory Capability",
+      "icon": "file",
+      "is_default_module": 1
+    },
+    {
+      "type": "Link",
+      "label": "服务商品",
+      "link_type": "DocType",
+      "link_to": "Item",
+      "icon": "file",
+      "is_default_module": 0
+    }
+  ]
+}

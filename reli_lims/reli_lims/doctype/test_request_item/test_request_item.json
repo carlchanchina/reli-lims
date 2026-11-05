@@ -3,12 +3,21 @@
   "doctype": "DocType",
   "field_order": [
     "item_code",
-    "test_method",
+    "test_project",
+    "test_object",
     "standard",
     "test_condition",
     "applicable_sample_codes",
     "select_samples",
-    "notes"
+    "notes",
+    "capability",
+    "technical_configuration",
+    "source_quotation",
+    "source_quotation_item",
+    "quoted_quantity",
+    "requested_quantity",
+    "quotation_difference",
+    "test_method"
   ],
   "fields": [
     {
@@ -20,18 +29,24 @@
       "hidden": 1
     },
     {
-      "fieldname": "test_method",
+      "fieldname": "test_project",
       "fieldtype": "Link",
       "in_list_view": 1,
       "label": "检测项目",
-      "options": "Test Method",
-      "reqd": 1
+      "options": "Test Project"
+    },
+    {
+      "fieldname": "test_object",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "检测对象",
+      "options": "Test Object"
     },
     {
       "fieldname": "standard",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "执行标准",
+      "label": "检测依据",
       "options": "Test Standard",
       "reqd": 1
     },
@@ -56,6 +71,57 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "备注"
+    },
+    {
+      "fieldname": "capability",
+      "fieldtype": "Link",
+      "label": "检测能力",
+      "read_only": 1,
+      "options": "Laboratory Capability"
+    },
+    {
+      "fieldname": "technical_configuration",
+      "fieldtype": "JSON",
+      "label": "检测条件快照",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_quotation",
+      "fieldtype": "Link",
+      "label": "来源报价",
+      "read_only": 1,
+      "options": "Quotation"
+    },
+    {
+      "fieldname": "source_quotation_item",
+      "fieldtype": "Data",
+      "label": "来源报价行",
+      "read_only": 1
+    },
+    {
+      "fieldname": "quoted_quantity",
+      "fieldtype": "Float",
+      "label": "报价数量",
+      "read_only": 1
+    },
+    {
+      "fieldname": "requested_quantity",
+      "fieldtype": "Float",
+      "label": "委托数量",
+      "read_only": 0
+    },
+    {
+      "fieldname": "quotation_difference",
+      "fieldtype": "Check",
+      "label": "与报价存在差异",
+      "read_only": 1
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "hidden": 1,
+      "label": "原检测项目（兼容）",
+      "options": "Test Method"
     }
   ],
   "istable": 1,

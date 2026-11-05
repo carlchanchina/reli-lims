@@ -1,0 +1,177 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "format:TPR-{#####}",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "project_name",
+    "normalized_name",
+    "category",
+    "classification_status",
+    "aliases",
+    "description",
+    "condition_template",
+    "active",
+    "standards_section",
+    "standards",
+    "objects_section",
+    "objects",
+    "relations_section",
+    "relations_html"
+  ],
+  "fields": [
+    {
+      "fieldname": "project_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "项目中文名称",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "normalized_name",
+      "fieldtype": "Data",
+      "hidden": 1,
+      "label": "归并键",
+      "read_only": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "category",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "项目分类"
+    },
+    {
+      "default": "已归类",
+      "fieldname": "classification_status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "归类状态",
+      "options": "已归类\n待分类",
+      "reqd": 1
+    },
+    {
+      "description": "每行一个别名；不会因名称相似自动合并项目。",
+      "fieldname": "aliases",
+      "fieldtype": "Small Text",
+      "label": "项目别名"
+    },
+    {
+      "fieldname": "description",
+      "fieldtype": "Small Text",
+      "label": "项目简介"
+    },
+    {
+      "description": "JSON 数组，每项包含 key、label、type（text/number/select），可含 required、options、default。未配置的能力使用此模板。",
+      "fieldname": "condition_template",
+      "fieldtype": "JSON",
+      "label": "可配置检测条件模板"
+    },
+    {
+      "default": "1",
+      "fieldname": "active",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "启用状态"
+    },
+    {
+      "fieldname": "standards_section",
+      "fieldtype": "Section Break",
+      "label": "适用检测依据（标准/方法）"
+    },
+    {
+      "fieldname": "standards",
+      "fieldtype": "Table",
+      "label": "检测依据",
+      "options": "Test Project Standard"
+    },
+    {
+      "fieldname": "objects_section",
+      "fieldtype": "Section Break",
+      "label": "适用检测对象"
+    },
+    {
+      "fieldname": "objects",
+      "fieldtype": "Table",
+      "label": "检测对象",
+      "options": "Test Project Object"
+    },
+    {
+      "fieldname": "relations_section",
+      "fieldtype": "Section Break",
+      "label": "关联实验室能力与服务商品"
+    },
+    {
+      "fieldname": "relations_html",
+      "fieldtype": "HTML"
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Project",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Engineer",
+      "share": 1
+    },
+    {
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Reviewer",
+      "share": 1
+    },
+    {
+      "read": 1,
+      "role": "Sales User"
+    },
+    {
+      "read": 1,
+      "role": "Sales Manager"
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "rows_threshold_for_grid_search": 20,
+  "search_fields": "project_name,category,aliases",
+  "show_title_field_in_link": 1,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "project_name",
+  "track_changes": 1
+}

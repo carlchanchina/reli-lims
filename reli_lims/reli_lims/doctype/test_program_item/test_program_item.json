@@ -7,7 +7,8 @@
   "engine": "InnoDB",
   "field_order": [
     "item_code",
-    "test_method",
+    "test_project",
+    "test_object",
     "standard",
     "applicable_sample_names",
     "select_samples",
@@ -15,6 +16,9 @@
     "asset",
     "workstation",
     "test_condition",
+    "technical_configuration",
+    "source_request_item",
+    "capability",
     "planned_start",
     "planned_end",
     "actual_start",
@@ -24,7 +28,8 @@
     "conclusion",
     "quality_inspection",
     "raw_data",
-    "notes"
+    "notes",
+    "test_method"
   ],
   "fields": [
     {
@@ -37,18 +42,23 @@
       "hidden": 1
     },
     {
-      "fieldname": "test_method",
+      "fieldname": "test_project",
       "fieldtype": "Link",
       "in_list_view": 1,
       "label": "检测项目",
-      "options": "Test Method",
-      "reqd": 1
+      "options": "Test Project"
+    },
+    {
+      "fieldname": "test_object",
+      "fieldtype": "Link",
+      "label": "检测对象",
+      "options": "Test Object"
     },
     {
       "fieldname": "standard",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "执行标准",
+      "label": "检测依据",
       "options": "Test Standard",
       "reqd": 1
     },
@@ -144,6 +154,33 @@
       "fieldname": "select_samples",
       "fieldtype": "Button",
       "label": "选择适用样品"
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "hidden": 1,
+      "label": "原检测项目（兼容）",
+      "options": "Test Method"
+    },
+    {
+      "fieldname": "capability",
+      "fieldtype": "Link",
+      "options": "Laboratory Capability",
+      "label": "受理能力",
+      "read_only": 1
+    },
+    {
+      "fieldname": "source_request_item",
+      "fieldtype": "Data",
+      "label": "来源委托行",
+      "read_only": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "technical_configuration",
+      "fieldtype": "JSON",
+      "label": "受理技术快照",
+      "read_only": 1
     }
   ],
   "grid_page_length": 50,

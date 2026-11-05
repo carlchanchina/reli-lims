@@ -12,7 +12,8 @@ from reli_lims.validation import field_values, require_role, validate_transition
 ITEM_TRANSITIONS = {'Pending': ('Ready',), 'Ready': ('Running',),
                     'Running': ('Completed',), 'Completed': ('Reviewed',), 'Reviewed': ()}
 LOCKED_STATES = ('Running', 'Completed', 'Reviewed')
-BASIS_FIELDS = ('item_code', 'test_method', 'standard', 'engineer', 'asset', 'workstation', 'test_condition')
+BASIS_FIELDS = ('item_code', 'test_project', 'test_object', 'test_method', 'standard',
+                'engineer', 'asset', 'workstation', 'test_condition')
 
 
 class TestProgram(Document):
@@ -52,8 +53,12 @@ class TestProgram(Document):
             if previous.project != self.project and any(row.status in LOCKED_STATES for row in previous.items):
                 frappe.throw(_('开始执行后不能更改所属项目。'))
         for row in self.items:
-            if not row.standard or not row.test_method or not assignments[row.item_code]:
-                frappe.throw(_('每个检测项目必须有检测方法、一个执行标准和至少一个适用样品。'))
+            from reli_lims.execution_records import validate_snapshot
+            validate_snapshot(self, row, old_items.get(row.name))
+            if not row.test_project and row.test_method:
+                row.test_project = frappe.db.get_value('Test Method', row.test_method, 'test_project')
+            if not row.standard or not (row.test_project or row.test_method) or not assignments[row.item_code]:
+                frappe.throw(_('每个检测项目必须有一个统一检测项目（或兼容方法）、一个检测依据和至少一个适用样品。'))
             row.applicable_sample_names = '、'.join(sorted(assignments[row.item_code]))
             old = old_items.get(row.name)
             if old and old.item_code != row.item_code:

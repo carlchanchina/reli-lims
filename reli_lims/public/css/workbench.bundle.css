@@ -1,0 +1,9 @@
+#page-Workspaces .layout-main:has(.custom-block-widget-box[data-reli-home="1"]) {
+    max-width: 1240px;
+    width: calc(100% - 32px);
+    margin-left: auto;
+    margin-right: auto;
+}
+.custom-block-widget-box[data-reli-home="1"] > .widget-head {
+    display: none;
+}

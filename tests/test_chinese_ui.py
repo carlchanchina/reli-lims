@@ -40,9 +40,11 @@ def test_workbench_links_remain_native_and_are_translated():
         assert shortcut['type'] == 'DocType'
         assert not re.search('[A-Za-z]', shortcut['label']) or shortcut['label'] in table
     blocks = json.loads(workspace['content'])
-    assert [block['data']['text'] for block in blocks if block['type'] == 'header'] == [
-        '<span class="h4">检测工作台</span>', '<span class="h4">主流程看板</span>', '<span class="h4">高频检测操作</span>',
-        '<span class="h4">客户与销售</span>', '<span class="h4">检测资源与字典</span>', '<span class="h4">财务入口</span>']
+    assert workspace['label'] == '工作台首页'
+    home = (ROOT / 'templates/workbench/home.html').read_text()
+    for label in ('商业接单中心', '检测履约中心', '实验室能力中心'):
+        assert label in home
+    assert 'href="#"' not in home
 
 
 def test_scope_errors_translate_and_preserve_sample_identifiers(monkeypatch):
