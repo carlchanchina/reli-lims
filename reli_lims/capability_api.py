@@ -54,6 +54,17 @@ def import_capability_source(source_name):
         if not method_name or not standard_name:
             skipped.append({"row": index, "reason": "无法匹配现有检测项目或检测标准"})
             continue
+        test_project = item.get("test_project") or frappe.db.get_value("Test Method", method_name, "test_project")
+        if test_project and not frappe.db.exists("Test Project", test_project):
+            test_project = frappe.db.get_value("Test Project", {"project_name": test_project}, "name")
+        if not test_project:
+            skipped.append({"row": index, "reason": "无法匹配统一检测项目"})
+            continue
+        test_object = item.get("test_object") or frappe.db.get_value(
+            "Test Object", {"object_name": item.get("product_scope")}, "name"
+        )
+        if test_object and not frappe.db.exists("Test Object", test_object):
+            test_object = frappe.db.get_value("Test Object", {"object_name": test_object}, "name")
 
         existing = frappe.db.exists(
             "Laboratory Capability",
@@ -71,6 +82,8 @@ def import_capability_source(source_name):
             {
                 "doctype": "Laboratory Capability",
                 "laboratory": source.laboratory,
+                "test_project": test_project,
+                "test_object": test_object,
                 "test_method": method_name,
                 "test_standard": standard_name,
                 "product_scope": item.get("product_scope"),
@@ -80,6 +93,7 @@ def import_capability_source(source_name):
                 "certificate_no": item.get("certificate_no") or source.certificate_no,
                 "source": source.name,
                 "source_row": str(item.get("source_row") or index),
+                "condition_schema": item.get("condition_schema"),
                 "status": "待确认",
                 "remarks": item.get("remarks"),
             }
@@ -134,6 +148,8 @@ def get_public_capability(name):
     return {
         "id": doc.name,
         "laboratory": doc.laboratory,
+        "test_project": doc.test_project,
+        "test_object": doc.test_object,
         "test_method": doc.test_method,
         "test_standard": doc.test_standard,
         "product_scope": doc.product_scope,

@@ -44,6 +44,7 @@ after_migrate.append('reli_lims.request_confirmation_setup.after_migrate')
 doc_events['File']['validate'] = 'reli_lims.request_confirmation.validate_file_visibility'
 
 after_migrate.append("reli_lims.capability_quotation.after_migrate")
+after_migrate.append("reli_lims.capability_catalog.after_migrate")
 doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
 doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}
 doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capability_request.js"]

@@ -11,6 +11,7 @@
     "title",
     "version",
     "full_name",
+    "basis_type",
     "status",
     "effective_date",
     "attachment",
@@ -43,6 +44,15 @@
       "fieldtype": "Data",
       "label": "完整名称",
       "read_only": 1
+    },
+    {
+      "default": "其他方法文件",
+      "fieldname": "basis_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "依据类型",
+      "options": "国家标准\n行业标准\n国际标准\n企业标准\n实验室方法\n其他方法文件",
+      "reqd": 1
     },
     {
       "default": "Draft",
@@ -115,5 +125,5 @@
   "title_field": "full_name",
   "track_changes": 1,
   "show_title_field_in_link": 1,
-  "search_fields": "standard_code,title,version,full_name"
+  "search_fields": "standard_code,title,version,full_name,basis_type"
 }

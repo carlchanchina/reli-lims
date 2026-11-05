@@ -14,7 +14,8 @@ frappe.provide("reli_lims.requests");
 
 reli_lims.requests.add_items = function (frm, items) {
     const [placeholder] = frm.doc.items || [];
-    if (frm.is_new() && frm.doc.items?.length === 1 && !placeholder.test_method && !placeholder.standard &&
+    if (frm.is_new() && frm.doc.items?.length === 1 && !placeholder.test_project && !placeholder.test_object &&
+        !placeholder.test_method && !placeholder.standard &&
         !placeholder.test_condition && !placeholder.notes && !placeholder.capability &&
         !(frm.doc.sample_assignments || []).some(pair => pair.item_code === placeholder.item_code)) {
         frm.clear_table("items");

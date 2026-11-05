@@ -1,0 +1,63 @@
+{
+  "actions": [],
+  "autoname": "format:OBJ-{#####}",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": ["object_name", "normalized_name", "category", "aliases", "active"],
+  "fields": [
+    {
+      "fieldname": "object_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "检测对象名称",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "normalized_name",
+      "fieldtype": "Data",
+      "hidden": 1,
+      "label": "归并键",
+      "read_only": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "category",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "对象分类"
+    },
+    {
+      "description": "每行一个别名；名称不会仅因相近而自动合并。",
+      "fieldname": "aliases",
+      "fieldtype": "Small Text",
+      "label": "别名"
+    },
+    {
+      "default": "1",
+      "fieldname": "active",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "启用状态"
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "module": "Reli LIMS",
+  "name": "Test Object",
+  "naming_rule": "Expression (old style)",
+  "permissions": [
+    {"create": 1, "delete": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Lab Manager", "write": 1},
+    {"export": 1, "print": 1, "read": 1, "report": 1, "role": "Lab Engineer"},
+    {"export": 1, "print": 1, "read": 1, "report": 1, "role": "Lab Reviewer"},
+    {"read": 1, "role": "Sales User"},
+    {"read": 1, "role": "Sales Manager"},
+    {"create": 1, "delete": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "write": 1}
+  ],
+  "search_fields": "object_name,category,aliases",
+  "show_title_field_in_link": 1,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "title_field": "object_name",
+  "track_changes": 1
+}

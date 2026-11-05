@@ -35,7 +35,7 @@ Object.assign(reli_lims.capabilities, {
 
     renderGrid(area, rows, {mode = "catalog", selected, actions} = {}) {
         const selecting = Boolean(selected);
-        const headers = ["检测对象 / 产品", "检测项目 / 参数", "标准", "方法", "检测条件", "限制范围", "实验室"];
+        const headers = ["检测对象", "检测项目", "检测依据（标准/方法）", "检测条件", "限制范围", "实验室"];
         if (mode === "quotation") headers.push("服务商品", "数量", "单位", "单价");
         if (mode === "request") headers.push("样品", "数量", "备注");
         if (selecting) headers.unshift("选择");
@@ -60,18 +60,25 @@ Object.assign(reli_lims.capabilities, {
             const template = this.parse(row.condition_schema);
             const condition = row.condition_text || (selecting || mode === "catalog"
                 ? (template || []).map(field => field.label).join("、") : "");
-            for (const field of ["product_scope", "project_label", "standard_label", "method_label",
-                "condition_text", "limitation", "laboratory_label"]) cell((field === "condition_text" ? condition : row[field]) || "—");
+            for (const field of ["test_object_label", "project_label", "standard_label",
+                "condition_text", "limitation", "laboratory_label"]) {
+                const value = field === "condition_text" ? condition : row[field];
+                cell(value || (field === "test_object_label" ? row.product_scope : "—"));
+            }
             if (mode === "quotation") ["item_name", "qty", "uom", "rate"].forEach(key => cell(row[key]));
             if (mode === "request") ["samples", "qty", "notes"].forEach(key => cell(row[key]));
             const detail = $("<details>").appendTo(cell(""));
             $("<summary>").text(__("查看详情")).appendTo(detail);
-            const info = [row.industry, row.project_parameter, row.method_code, row.clause, row.status, row.source_row]
+            const info = [row.industry, row.project_parameter, row.method_label ? __("兼容方法") + `: ${row.method_label}` : "",
+                row.method_code, row.clause, row.status, row.source_row]
                 .filter(Boolean).join(" · ");
             if (info) $("<p>").text(info).appendTo(detail);
             for (const [doctype, name, label] of [
+                ["Test Project", row.test_project, "查看检测项目"],
+                ["Test Object", row.test_object, "查看检测对象"],
                 ["Laboratory Capability", row.capability_id || (mode === "catalog" && row.name), "查看原始能力"],
                 ["Capability Source", row.source, "查看导入来源"],
+                ["Laboratory Profile", row.laboratory, "查看实验室"],
             ]) {
                 if (name) $("<button type='button' class='btn btn-default btn-xs'>").text(__(label))
                     .on("click", () => frappe.set_route("Form", doctype, name)).appendTo(detail);
@@ -109,7 +116,8 @@ reli_lims.capabilities.mount = async function (frm, mode) {
     $("<h5>").text(__("检测项目明细")).appendTo(wrapper);
     const rows = lines.map(line => {
         const config = this.parse(line[configurationField]);
-        const view = {...details[config.capability_id], ...config.snapshot};
+        const view = {...config.snapshot, ...details[config.capability_id],
+            condition_schema: config.snapshot?.condition_schema || details[config.capability_id]?.condition_schema};
         const assignments = (frm.doc.sample_assignments || []).filter(pair => pair.item_code === line.item_code);
         return {...view, line, config, liveDetails: details[config.capability_id], capability_id: config.capability_id,
             condition_text: this.conditionText(config.conditions, this.schema(view)),

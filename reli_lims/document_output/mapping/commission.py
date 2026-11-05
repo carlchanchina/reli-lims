@@ -9,7 +9,8 @@ def build_context(doc):
               ('报价单', doc.get('quotation')), ('销售订单', doc.get('sales_order'))]
     samples = [[r.get('sample_code'), r.get('product_name'), r.get('model'), r.get('serial_no'), r.get('quantity')]
                for r in doc.get('samples') or []]
-    rows = [[i, r.get('test_method_label') or r.get('test_method'), r.get('standard_label') or r.get('standard'), r.get('applicable_sample_codes'), r.get('test_condition')]
+    rows = [[i, r.get('test_project_label') or r.get('test_method_label') or r.get('test_method'),
+             r.get('standard_label') or r.get('standard'), r.get('applicable_sample_codes'), r.get('test_condition')]
             for i, r in enumerate(doc.get('items') or [], 1)]
     sections = [dict(title='委托样品', columns=['编号', '产品名称', '型号', '序列号', '数量'], rows=samples)]
     requirements = [('结果判定', doc.get('result_judgment')), ('判定依据', doc.get('judgment_basis')),

@@ -89,7 +89,7 @@ Add the requested samples first.,请先填写委托样品。,
 "Save the draft first, then attach private photos and select their sample code.",先保存草稿，再上传私有照片并选择所属样品编号。,
 Rows define the test sequence. Open a row and choose its applicable samples.,按行顺序安排检测，打开试验项目行即可选择适用样品。,
 Customer,委托方,Test Request
-Test Method,检测项目,Test Request Item
+Test Method,原检测项目（兼容）,Test Request Item
 Test Condition,测试条件及附加要求,Test Request Item
 Test Item Code,检测项目编号,Test Request Item
 Reli LIMS,检测工作台,
@@ -103,7 +103,9 @@ Test Program Sample,方案样品,
 Test Program Item Sample,项目样品分配,
 Test Report,检测报告,
 Test Reports,检测报告,
-Test Standard,检测标准,
+Test Standard,检测依据（标准/方法）,
+Test Project,检测项目,
+Test Object,检测对象,
 Test Request Item,委托检测项目,
 Test Request Sample,委托样品,
 Test Request Item Sample,委托项目样品分配,
@@ -334,16 +336,16 @@ Laboratory,实验室,
 Required,必需,
 Not Required,不需要,
 Customer,客户,
-Test Method,检测项目,
+Test Method,原检测项目（兼容）,
 Test Condition,测试条件及附加要求,
 Sidebar Menu,侧边栏菜单,
 Clear all filters,清除全部筛选,
 Add attachment,添加附件,
 Last Edited By You,由你最后编辑,
 Begin typing for results.,输入内容以搜索。,
-Test Method,检测项目
-Test Methods,检测项目
-Methods,检测项目
+Test Method,原检测项目（兼容）
+Test Methods,原检测项目（兼容）
+Methods,原检测项目（兼容）
 Test Program,试验方案
 Test Programs,试验方案
 Testing Center,检测工作台

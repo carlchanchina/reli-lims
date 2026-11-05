@@ -6,9 +6,18 @@ from reli_lims.capability_selection import build_configuration
 
 def to_request_item(config):
     snapshot = config["snapshot"]
+    capability = frappe.db.get_value(
+        "Laboratory Capability", config.get("capability_id"),
+        ["test_project", "test_object", "test_method", "test_standard"], as_dict=True,
+    ) or {}
+    test_project = snapshot.get("test_project") or capability.get("test_project")
+    test_object = snapshot.get("test_object") or capability.get("test_object")
+    test_method = snapshot.get("test_method") or capability.get("test_method")
+    test_standard = snapshot.get("test_standard") or capability.get("test_standard")
     labels = {field["key"]: field["label"] for field in snapshot.get("condition_schema", [])}
     return {
-        "test_method": snapshot["test_method"], "standard": snapshot["test_standard"],
+        "test_project": test_project, "test_object": test_object,
+        "test_method": test_method, "standard": test_standard,
         "test_condition": "；".join(f"{labels[key]}：{value}" if key in labels else f"{key}: {value}" for key, value in config["conditions"].items()),
         "capability": config["capability_id"], "technical_configuration": config,
     }
@@ -87,9 +96,17 @@ def validate(doc, method=None):
             row.quotation_difference = 0
         if row.test_method != config["snapshot"]["test_method"] or row.standard != config["snapshot"]["test_standard"]:
             frappe.throw("请通过能力选择器更改方法或标准，保留报价来源。")
+        capability = frappe.get_doc("Laboratory Capability", row.capability)
+        if not row.test_project:
+            row.test_project = capability.test_project
+        if not row.test_object:
+            row.test_object = capability.test_object
+        if row.test_project != capability.test_project:
+            frappe.throw("委托检测项目与所选实验室能力不一致，请重新选择能力。")
+        if row.test_object and capability.test_object and row.test_object != capability.test_object:
+            frappe.throw("委托检测对象与所选实验室能力不一致，请重新选择能力。")
         row.technical_configuration = config
         if doc.docstatus == 1:
-            capability = frappe.get_doc("Laboratory Capability", row.capability)
             if not capability.published or capability.status != "已发布":
                 frappe.throw("检测能力须审核发布后才能正式受理。")
 
@@ -100,6 +117,7 @@ def execution_items(request):
     doc.check_permission("read")
     if doc.docstatus != 1:
         frappe.throw("正式受理后才能读取履约条件。")
-    return [{"item_code": row.item_code, "configuration": frappe.parse_json(row.technical_configuration),
+    return [{"item_code": row.item_code, "test_project": row.test_project, "test_object": row.test_object,
+             "configuration": frappe.parse_json(row.technical_configuration),
              "samples": [link.sample_code for link in doc.sample_assignments if link.item_code == row.item_code]}
             for row in doc.items if row.capability]

@@ -5,7 +5,8 @@
   "engine": "InnoDB",
   "field_order": [
     "laboratory",
-    "test_method",
+    "test_project",
+    "test_object",
     "test_standard",
     "product_scope",
     "capability_scope",
@@ -25,7 +26,9 @@
     "project_parameter",
     "clause",
     "scope_effective_date",
-    "condition_schema"
+    "condition_schema",
+    "compatibility_section",
+    "test_method"
   ],
   "fields": [
     {
@@ -37,17 +40,25 @@
       "in_list_view": 1
     },
     {
-      "fieldname": "test_method",
+      "fieldname": "test_project",
       "fieldtype": "Link",
       "label": "检测项目",
-      "options": "Test Method",
-      "reqd": 1,
-      "in_list_view": 1
+      "options": "Test Project",
+      "in_list_view": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "test_object",
+      "fieldtype": "Link",
+      "label": "检测对象",
+      "options": "Test Object",
+      "in_list_view": 1,
+      "search_index": 1
     },
     {
       "fieldname": "test_standard",
       "fieldtype": "Link",
-      "label": "检测标准",
+      "label": "检测依据（标准/方法）",
       "options": "Test Standard",
       "reqd": 1,
       "in_list_view": 1
@@ -160,7 +171,20 @@
     {
       "fieldname": "condition_schema",
       "fieldtype": "JSON",
-      "label": "检测条件配置"
+      "label": "检测条件配置（本能力）"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "compatibility_section",
+      "fieldtype": "Section Break",
+      "label": "兼容数据"
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "label": "原检测项目（兼容）",
+      "options": "Test Method",
+      "description": "旧 Test Method 仅保留用于历史报价、委托与来源追溯；新业务使用统一检测项目。"
     }
   ],
   "module": "Reli LIMS",
@@ -203,5 +227,5 @@
   "title_field": "project_parameter",
   "track_changes": 1,
   "show_title_field_in_link": 1,
-  "search_fields": "project_parameter,product_scope,industry"
+  "search_fields": "test_project,test_object,project_parameter,product_scope,industry"
 }

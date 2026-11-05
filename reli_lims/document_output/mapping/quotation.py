@@ -1,10 +1,17 @@
 """ERPNext Quotation snapshot; monetary values come from ERPNext calculations."""
+import frappe
+
 from .common import context, plain, text
 from ..registry import TEMPLATES
 
 
 def service_display(row):
-    name = row.get('item_name') or row.get('item_code')
+    name = row.get('item_name')
+    if row.get('custom_reli_test_project'):
+        name = frappe.db.get_value(
+            'Test Project', row.get('custom_reli_test_project'), 'project_name'
+        ) or name
+    name = name or row.get('item_code')
     if not row.get('custom_reli_capability'):
         return name
     description = plain(row.get('description'))

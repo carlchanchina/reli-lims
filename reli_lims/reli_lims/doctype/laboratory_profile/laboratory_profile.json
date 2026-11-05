@@ -7,7 +7,7 @@
   "show_title_field_in_link": 1,
   "search_fields": "laboratory_name",
   "track_changes": 1,
-  "field_order": ["mercur_seller_id", "laboratory_name", "review_status", "draft_json", "published_json", "draft_revision", "published_revision", "submitted_at", "reviewed_at", "reviewed_by", "review_note"],
+  "field_order": ["mercur_seller_id", "laboratory_name", "review_status", "draft_json", "published_json", "draft_revision", "published_revision", "submitted_at", "reviewed_at", "reviewed_by", "review_note", "capability_section", "capability_overview"],
   "fields": [
     {"fieldname": "mercur_seller_id", "label": "Mercur Seller ID", "fieldtype": "Data", "reqd": 1, "unique": 1, "read_only": 1, "in_list_view": 1},
     {"fieldname": "laboratory_name", "label": "Laboratory Name", "fieldtype": "Data", "read_only": 1, "in_list_view": 1},
@@ -19,7 +19,9 @@
     {"fieldname": "submitted_at", "label": "Submitted At", "fieldtype": "Datetime", "read_only": 1},
     {"fieldname": "reviewed_at", "label": "Reviewed At", "fieldtype": "Datetime", "read_only": 1},
     {"fieldname": "reviewed_by", "label": "Reviewed By", "fieldtype": "Link", "options": "User", "read_only": 1},
-    {"fieldname": "review_note", "label": "Review Note", "fieldtype": "Small Text", "read_only": 1}
+    {"fieldname": "review_note", "label": "Review Note", "fieldtype": "Small Text", "read_only": 1},
+    {"fieldname": "capability_section", "label": "实验室能力、来源与服务商品", "fieldtype": "Section Break"},
+    {"fieldname": "capability_overview", "label": "实验室能力概览", "fieldtype": "HTML"}
   ],
   "permissions": [
     {"role": "Lab Manager", "read": 1, "report": 1},

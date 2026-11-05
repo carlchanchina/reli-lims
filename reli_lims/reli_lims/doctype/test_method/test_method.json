@@ -8,6 +8,7 @@
   "engine": "InnoDB",
   "field_order": [
     "method_name",
+    "test_project",
     "category",
     "default_standard",
     "default_workstation",
@@ -21,9 +22,15 @@
       "fieldname": "method_name",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "检测项目名称",
+      "label": "原检测项目名称（兼容）",
       "reqd": 1,
       "unique": 1
+    },
+    {
+      "fieldname": "test_project",
+      "fieldtype": "Link",
+      "label": "检测项目",
+      "options": "Test Project"
     },
     {
       "fieldname": "category",
@@ -112,5 +119,5 @@
   "title_field": "method_name",
   "track_changes": 1,
   "show_title_field_in_link": 1,
-  "search_fields": "method_name,category"
+  "search_fields": "method_name,category,test_project"
 }

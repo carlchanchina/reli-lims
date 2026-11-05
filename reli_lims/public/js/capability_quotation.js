@@ -44,7 +44,8 @@ frappe.ui.form.on("Quotation", {
                 doc.customer = message.customer;
                 doc.company = message.company;
                 if (message.quotation) doc.quotation = message.quotation;
-                doc.items = (doc.items || []).filter(row => row.test_method || row.standard || row.test_condition || row.notes);
+                doc.items = (doc.items || []).filter(row => row.test_project || row.test_method || row.test_object ||
+                    row.standard || row.test_condition || row.notes);
                 for (const [index, values] of message.items.entries()) {
                     Object.assign(frappe.model.add_child(doc, "Test Request Item", "items"), values,
                         { item_code: `CAP-${index + 1}` });

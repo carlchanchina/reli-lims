@@ -1,0 +1,14 @@
+{
+  "doctype": "Page",
+  "name": "reli-capability-hub",
+  "page_name": "reli-capability-hub",
+  "title": "实验室能力中心",
+  "module": "Reli LIMS",
+  "standard": "Yes",
+  "roles": [
+    {"role": "Lab Manager"},
+    {"role": "Lab Engineer"},
+    {"role": "Lab Reviewer"},
+    {"role": "System Manager"}
+  ]
+}

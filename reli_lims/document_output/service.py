@@ -19,7 +19,9 @@ def source_document(doctype: str, name: str, output_format: str = 'pdf'):
 def label_items(data):
     cache = {}
     for row in data.get('items') or []:
-        for field, doctype, display in (('test_method', 'Test Method', 'method_name'),
+        for field, doctype, display in (('test_project', 'Test Project', 'project_name'),
+                                         ('test_object', 'Test Object', 'object_name'),
+                                         ('test_method', 'Test Method', 'method_name'),
                                          ('standard', 'Test Standard', 'full_name')):
             name = row.get(field)
             if not name:

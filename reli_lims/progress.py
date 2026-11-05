@@ -45,7 +45,10 @@ def refresh_request(name):
     values = dict(business_stage=stage,
         overdue_status='超期' if overdue(stage, request.delivery_date, frappe.utils.today(), request.docstatus) else '',
         sample_summary='、'.join(row.product_name or '' for row in request.samples)[:140],
-        test_summary='、'.join(dict.fromkeys(frappe.db.get_value('Test Method', row.test_method, 'method_name') or row.test_method for row in request.items))[:140])
+        test_summary='、'.join(dict.fromkeys(
+            frappe.db.get_value('Test Project', row.test_project, 'project_name')
+            or frappe.db.get_value('Test Method', row.test_method, 'method_name') or row.test_method
+            for row in request.items))[:140])
     frappe.db.set_value('Test Request', name, values, update_modified=False)
 
 

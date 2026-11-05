@@ -16,7 +16,9 @@
     "structured_json",
     "import_status",
     "imported_at",
-    "remarks"
+    "remarks",
+    "capability_section",
+    "capability_overview"
   ],
   "fields": [
     {"fieldname": "laboratory", "fieldtype": "Link", "label": "实验室", "options": "Laboratory Profile", "reqd": 1, "in_list_view": 1},
@@ -31,7 +33,9 @@
     {"fieldname": "structured_json", "fieldtype": "JSON", "label": "审核后结构化结果", "reqd": 1, "description": "仅接收 wekona_documents 审核通过后的结构化能力结果。"},
     {"fieldname": "import_status", "fieldtype": "Select", "label": "导入状态", "options": "待导入\n已导入\n部分导入\n已撤销\n失败", "default": "待导入", "reqd": 1, "in_list_view": 1},
     {"fieldname": "imported_at", "fieldtype": "Datetime", "label": "导入时间", "read_only": 1},
-    {"fieldname": "remarks", "fieldtype": "Small Text", "label": "备注"}
+    {"fieldname": "remarks", "fieldtype": "Small Text", "label": "备注"},
+    {"fieldname": "capability_section", "fieldtype": "Section Break", "label": "结构化能力明细"},
+    {"fieldname": "capability_overview", "fieldtype": "HTML", "label": "能力概览"}
   ],
   "module": "Reli LIMS",
   "name": "Capability Source",

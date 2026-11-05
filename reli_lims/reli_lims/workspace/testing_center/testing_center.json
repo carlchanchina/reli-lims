@@ -45,14 +45,20 @@
     {
       "type": "Link",
       "link_type": "DocType",
-      "link_to": "Test Method",
+      "link_to": "Test Project",
       "label": "检测项目"
     },
     {
       "type": "Link",
       "link_type": "DocType",
+      "link_to": "Test Object",
+      "label": "检测对象"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
       "link_to": "Test Standard",
-      "label": "检测标准"
+      "label": "检测依据（标准/方法）"
     },
     {
       "type": "Link",

@@ -3,7 +3,8 @@
   "doctype": "DocType",
   "field_order": [
     "item_code",
-    "test_method",
+    "test_project",
+    "test_object",
     "standard",
     "test_condition",
     "applicable_sample_codes",
@@ -15,7 +16,8 @@
     "source_quotation_item",
     "quoted_quantity",
     "requested_quantity",
-    "quotation_difference"
+    "quotation_difference",
+    "test_method"
   ],
   "fields": [
     {
@@ -27,18 +29,24 @@
       "hidden": 1
     },
     {
-      "fieldname": "test_method",
+      "fieldname": "test_project",
       "fieldtype": "Link",
       "in_list_view": 1,
       "label": "检测项目",
-      "options": "Test Method",
-      "reqd": 1
+      "options": "Test Project"
+    },
+    {
+      "fieldname": "test_object",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "检测对象",
+      "options": "Test Object"
     },
     {
       "fieldname": "standard",
       "fieldtype": "Link",
       "in_list_view": 1,
-      "label": "执行标准",
+      "label": "检测依据",
       "options": "Test Standard",
       "reqd": 1
     },
@@ -107,6 +115,13 @@
       "fieldtype": "Check",
       "label": "与报价存在差异",
       "read_only": 1
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Link",
+      "hidden": 1,
+      "label": "原检测项目（兼容）",
+      "options": "Test Method"
     }
   ],
   "istable": 1,
