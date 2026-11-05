@@ -18,8 +18,10 @@ frappe.provide("reli_lims.relations");
 
     const apply_service_item_navigation = () => {
         if (!language().startsWith("zh")) return;
-        document.querySelectorAll("a.item-anchor[href]").forEach(anchor => {
-            if (!/\/desk\/(?:stock\/)?item$/.test(anchor.getAttribute("href") || "")) return;
+        document.querySelectorAll("a.item-anchor").forEach(anchor => {
+            const item_link = /\/desk\/(?:[^/]+\/)?item$/.test(anchor.getAttribute("href") || "");
+            const item_group = !anchor.hasAttribute("href") && anchor.querySelector('[item-icon="package"]');
+            if (!item_link && !item_group) return;
             const label = anchor.querySelector(".sidebar-item-label");
             if (label && ["选项", "Item"].includes(label.textContent.trim())) {
                 label.textContent = "服务商品";
@@ -35,9 +37,8 @@ frappe.provide("reli_lims.relations");
     apply_labels();
     document.addEventListener("DOMContentLoaded", () => {
         apply_labels();
-        const dock = document.getElementById("desk-dock");
-        if (dock && window.MutationObserver) {
-            new MutationObserver(apply_service_item_navigation).observe(dock, {
+        if (document.body && window.MutationObserver) {
+            new MutationObserver(apply_service_item_navigation).observe(document.body, {
                 childList: true,
                 subtree: true,
             });
