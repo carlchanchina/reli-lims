@@ -1,6 +1,23 @@
 frappe.provide("reli_lims.relations");
 
 (function () {
+    const language = String(frappe.boot?.lang || frappe.local?.lang || "").toLowerCase();
+    if (!language.startsWith("zh")) return;
+    const apply_service_item_labels = () => {
+        frappe._messages = frappe._messages || {};
+        Object.assign(frappe._messages, {
+            Item: "服务商品",
+            Items: "服务商品",
+            "Item Name": "服务商品名称",
+            "Item Code": "服务商品编码",
+            "Add Item": "添加服务商品",
+        });
+    };
+    apply_service_item_labels();
+    frappe.ready(apply_service_item_labels);
+})();
+
+(function () {
     const relations = reli_lims.relations;
     const page_size = 10;
 
