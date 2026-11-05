@@ -33,6 +33,13 @@ class OutputTests(unittest.TestCase):
         self.assertIn(['价税合计', '99 CNY'], ctx['fields'])
         self.assertNotIn('None', str(ctx))
 
+    def test_capability_quote_print_prefers_chinese_name_and_saved_conditions(self):
+        from reli_lims.document_output.mapping.quotation import build_context
+        ctx = build_context(dict(items=[dict(item_code='RELI-SVC-123', item_name='疲劳载荷试验',
+            custom_reli_capability='CAP-1', description='<p>保持时间（分钟）：15</p>')]))
+        self.assertEqual(ctx['rows'][0][1], '疲劳载荷试验\n保持时间（分钟）：15')
+        self.assertNotIn('RELI-SVC-123', str(ctx))
+
     def test_request_and_report_mapping_keep_samples_and_results(self):
         from reli_lims.document_output.mapping.commission import build_context
         from reli_lims.document_output.mapping.test_report import build_context as report_context

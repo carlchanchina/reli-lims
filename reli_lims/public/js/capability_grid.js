@@ -108,7 +108,7 @@ reli_lims.capabilities.mount = async function (frm, mode) {
         const config = this.parse(line[configurationField]);
         const view = {...details[config.capability_id], ...config.snapshot};
         const assignments = (frm.doc.sample_assignments || []).filter(pair => pair.item_code === line.item_code);
-        return {...view, line, config, capability_id: config.capability_id,
+        return {...view, line, config, liveDetails: details[config.capability_id], capability_id: config.capability_id,
             condition_text: this.conditionText(config.conditions, this.schema(view)),
             samples: assignments.map(pair => (frm.doc.samples || []).find(sample => sample.sample_code === pair.sample_code)
                 ?.product_name || __("未命名样品")).join("、"),
@@ -118,7 +118,7 @@ reli_lims.capabilities.mount = async function (frm, mode) {
     this.renderGrid(wrapper, rows, {mode, actions: (detail, row) => {
         if (frm.doc.docstatus !== 0 || !frm.perm?.[0]?.write) return;
         $("<button type='button' class='btn btn-default btn-xs'>").text(__("编辑检测条件"))
-            .on("click", () => this.edit(row, row.config.conditions, async conditions => {
+            .on("click", () => this.edit(row.liveDetails || row, row.config.conditions, async conditions => {
                 const {message} = await frappe.call("reli_lims.capability_selection.configure", {
                     name: row.capability_id, conditions, mode,
                 });
