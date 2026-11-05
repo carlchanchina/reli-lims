@@ -100,7 +100,7 @@ def _delete_link_metadata():
 
 def _drop_orphan_capability_column():
     if frappe.db.has_column("Laboratory Capability", "detection_project"):
-        frappe.db.sql("alter table `tabLaboratory Capability` drop column `detection_project`")
+        frappe.db.sql_ddl("alter table `tabLaboratory Capability` drop column `detection_project`")
 
 
 def execute():
