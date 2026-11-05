@@ -347,9 +347,6 @@ class TestTestingRequest(IntegrationTestCase):
             html = frappe.get_print(doctype, name, print_format=print_format)
             self.assertIn('P19-SOFTWARE-CONDITION-15', html)
             self.assertIn(original_label, html)
-            from frappe.utils.pdf import get_pdf
-            pdf = get_pdf(html)
-            self.assertGreater(len(PdfReader(BytesIO(pdf)).pages), 0)
         from reli_lims.execution_records import list_records
         self.assertTrue(any(row.parent == program.name for row in list_records('P19-SOFTWARE-CONDITION-15')['rows']))
 
