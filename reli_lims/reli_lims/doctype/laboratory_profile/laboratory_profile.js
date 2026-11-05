@@ -62,18 +62,18 @@ function render_capability_overview(frm) {
       .on("click", () => frappe.set_route("List", "Capability Source", {laboratory: frm.doc.name}))
       .appendTo(wrapper);
 
-    table(wrapper, __("检测能力"), ["检测对象", "检测项目", "检测依据", "审核状态", "来源行"], message.capabilities,
+    render_lab_capability_table(wrapper, __("检测能力"), ["检测对象", "检测项目", "检测依据", "审核状态", "来源行"], message.capabilities,
       row => [row.object_label || row.product_scope, row.project_label, row.standard_label, row.status, row.source_row],
       row => ["Laboratory Capability", row.name]);
-    table(wrapper, __("能力来源"), ["来源", "类型", "证书编号", "文档审核", "导入状态"], message.sources,
+    render_lab_capability_table(wrapper, __("能力来源"), ["来源", "类型", "证书编号", "文档审核", "导入状态"], message.sources,
       row => [row.name, row.source_type, row.certificate_no, row.documents_review_status, row.import_status],
       row => ["Capability Source", row.name]);
-    table(wrapper, __("服务商品"), ["服务名称", "Item 编码", "检测项目"], message.items,
+    render_lab_capability_table(wrapper, __("服务商品"), ["服务名称", "Item 编码", "检测项目"], message.items,
       row => [row.item_name, row.item_code, row.project_label], row => ["Item", row.name]);
   });
 }
 
-function table(wrapper, title, headers, rows, values, route) {
+function render_lab_capability_table(wrapper, title, headers, rows, values, route) {
   $("<h6 class='mt-3'>").text(`${title} · ${rows.length}`).appendTo(wrapper);
   if (!rows.length) {
     $("<p class='text-muted'>").text(__("暂无记录")).appendTo(wrapper);

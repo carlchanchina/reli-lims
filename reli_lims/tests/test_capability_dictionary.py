@@ -99,6 +99,11 @@ class TestCapabilityDictionary(IntegrationTestCase):
         from reli_lims.capability_quotation import service_item
         self.assertEqual(service_item(self.capability_one, item.name).name, item.name)
 
+        from reli_lims.capability_quotation import prepare_lines
+        lines = prepare_lines([{"capability_id": self.capability_one.name, "item_code": item.name}])
+        self.assertEqual(lines[0]["item_name"], self.project.project_name)
+        self.assertEqual(lines[0]["custom_reli_test_project"], self.project.name)
+
     def test_legacy_snapshot_backfills_unified_project_without_mutation(self):
         legacy = {
             "schema_version": 1, "capability_id": self.capability_one.name, "conditions": {},

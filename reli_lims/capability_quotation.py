@@ -64,6 +64,7 @@ def prepare_lines(selections):
         config = build_configuration(selection["capability_id"], selection.get("conditions", {}), "quotation")
         capability = frappe.get_doc("Laboratory Capability", config["capability_id"])
         item = service_item(capability, selection.get("item_code"))
+        project_label = frappe.db.get_value("Test Project", capability.test_project, "project_name")
         result.append({"item_code": item.name, "item_name": project_label, "uom": item.stock_uom,
                        "description": description(config), "qty": 1,
                        "custom_reli_capability": capability.name,
