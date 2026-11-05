@@ -57,6 +57,15 @@ Prefer these existing DocTypes:
 8. Add tests.
 9. Only then add read APIs for future portal use.
 
+## Carl 开发站部署纪律
+
+- 开发只在自己的独立 worktree 里做；Carl 开发站的运行目录
+  `~/pilot/benches/dev-bench/apps/reli_lims` 不是开发目录。
+- 部署唯一入口是 `tools/dev-site-deploy.sh`（详见 `docs/DEV_SITE_DEPLOY.md`）：
+  flock 串行、只接受远端提交、脏树拒绝、失败自动回滚。
+- 禁止在运行目录手工 `git checkout` / `git reset` / `bench migrate` / `bench build`。
+- 只允许操作 Carl 开发站，禁止操作 Carl-1 生产站。
+
 ## Coding constraints
 
 - Favor standard Frappe DocType JSON + small Python controllers.
