@@ -22,9 +22,8 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
         const body = $("<tbody>").appendTo(table);
         for (const row of message.rows) {
             const tr = $("<tr>").appendTo(body);
-            $("<a>").attr("href", `/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`)
+            $("<button type='button' class='btn btn-link p-0 text-left'>")
                 .text(row.program_title).on("click", event => {
-                    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
                     event.preventDefault();
                     event.stopPropagation();
                     window.location.assign(`/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`);
