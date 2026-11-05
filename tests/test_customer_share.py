@@ -1,4 +1,5 @@
 import json
+import base64
 import sys
 import types
 import unittest
@@ -45,6 +46,7 @@ def _install_frappe_stub():
     frappe.db = types.SimpleNamespace(exists=lambda *args: False)
     frappe.utils = types.SimpleNamespace(
         add_days=lambda value, days: value + timedelta(days=days),
+        add_to_date=lambda value, **kwargs: value + timedelta(**kwargs),
         cint=lambda value: int(value or 0),
         get_datetime=lambda value: value,
         now_datetime=lambda: datetime(2026, 11, 5, 12, 0, 0),
@@ -189,6 +191,43 @@ class ShareDiffTest(unittest.TestCase):
         after = {"contact_person": "", "delivery_date": "", "items": [],
                  "samples": [{"name": "r1", "product_name": "A"}]}
         self.assertTrue(any("行数" in item for item in customer_share.diff(before, after)))
+
+
+class AttachmentLimitTest(unittest.TestCase):
+    PNG = base64.b64encode(
+        bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"
+                      "0000000a49444154789c63000100000500010d0a2db40000000049454e44ae426082")
+    ).decode()
+
+    def test_valid_png_is_accepted(self):
+        content, extension = customer_share.decode_attachment(f"data:image/png;base64,{self.PNG}")
+        self.assertEqual(extension, "png")
+        self.assertTrue(content.startswith(b"\x89PNG"))
+
+    def test_oversize_attachment_is_rejected(self):
+        oversized = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"0" * (customer_share.MAX_ATTACHMENT_BYTES + 1)).decode()
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment(f"data:image/png;base64,{oversized}")
+
+    def test_disallowed_mime_is_rejected(self):
+        for mime in ("text/plain", "application/zip", "image/svg+xml", "application/octet-stream"):
+            with self.assertRaises(StubThrow):
+                customer_share.decode_attachment(f"data:{mime};base64,{self.PNG}")
+
+    def test_content_must_match_declared_type(self):
+        spoofed = base64.b64encode(b"<script>alert(1)</script>").decode()
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment(f"data:image/png;base64,{spoofed}")
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment(f"data:application/pdf;base64,{self.PNG}")
+
+    def test_empty_and_malformed_are_rejected(self):
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment("data:image/png;base64,")
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment("not-a-data-url")
+        with self.assertRaises(StubThrow):
+            customer_share.decode_attachment("data:image/png;base64,!!!!")
 
 
 class SubmissionGateTest(unittest.TestCase):

@@ -102,6 +102,11 @@ CLIENT_SCRIPT = r"""
 (function () {
   var key = new URLSearchParams(window.location.search).get('web_form_request_key');
   if (!key) return;
+  if (!window.__reliViewLogged) {
+    window.__reliViewLogged = true;
+    frappe.call({ method: 'reli_lims.customer_share.log_view', type: 'POST',
+                  args: { web_form_request_key: key } });
+  }
   var state = (frappe.reference_doc || {}).customer_confirmation_state || 'Draft';
   var locked = ['Customer Confirmed', 'Awaiting Lab Review', 'Lab Reviewed'].includes(state);
 

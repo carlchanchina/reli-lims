@@ -41,6 +41,17 @@ def label_items(data):
                 linked.apply_fieldlevel_read_permissions()
                 cache[key] = linked.as_dict().get(display) or name
             row[field + '_label'] = cache[key]
+    for row in data.get('samples') or []:
+        name = row.get('sample')
+        if not name:
+            continue
+        key = ('Sample', name)
+        if key not in cache:
+            sample = frappe.get_doc('Sample', name)
+            sample.check_permission('read')
+            cache[key] = sample.as_dict().get('product_name') or name
+        # 报告/方案要能认出货，而不是只给内部样品编号。
+        row['sample_label'] = f'{name} {cache[key]}' if cache[key] != name else name
     return data
 
 

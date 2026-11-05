@@ -3,12 +3,14 @@
 原生 Web Form（key_required）+ 原生 Web Form Request（key / expires_on / references）
 负责免登录访问、有效期与单据绑定；本模块只补充撤销、操作审计、状态机与字段保护。
 """
+import base64
+import binascii
 import json
 
 import frappe
 from frappe import _
 from frappe.rate_limiter import rate_limit
-from frappe.utils import add_days, cint, get_datetime, now_datetime
+from frappe.utils import add_days, add_to_date, cint, get_datetime, now_datetime
 
 WEB_FORM = "customer-request"
 EVENT_DOCTYPE = "Test Request Share Event"
@@ -264,6 +266,23 @@ def authorize(key, request_name=None):
     return share, bound[0]
 
 
+@frappe.whitelist(allow_guest=True, methods=["POST"])
+@rate_limit(key="web_form_request_key", limit=30, seconds=60)
+def log_view(web_form_request_key=None):
+    """客户打开链接的访问审计；同一链接 30 分钟内刷新不重复记录。"""
+    share, bound = authorize(web_form_request_key)
+    recent = frappe.get_all(
+        EVENT_DOCTYPE,
+        filters={"web_form_request": share.name, "event": "客户打开链接",
+                 "event_time": [">", add_to_date(now_datetime(), minutes=-30)]},
+        limit_page_length=1,
+    )
+    if recent:
+        return {"logged": False}
+    log_event(bound, "客户打开链接", "客户", share=share.name)
+    return {"logged": True}
+
+
 def _assert_customer_editable(doc):
     if doc.docstatus != 0:
         frappe.throw(_("该委托已正式受理，不能再修改。"))
@@ -341,6 +360,56 @@ def customer_scope_errors(data):
 
 CUSTOMER_ATTACH_FIELDS = ("customer_attachment",)
 
+# 客户上传是唯一由 Guest 触发的写文件入口，服务端必须自己兜住大小、类型与内容。
+MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024
+MAX_ATTACHMENTS_PER_REQUEST = 20
+CUSTOMER_ATTACHMENT_PREFIX = "客户附件-"
+ATTACHMENT_TYPES = {
+    "image/png": ("png", (b"\x89PNG\r\n\x1a\n",)),
+    "image/jpeg": ("jpg", (b"\xff\xd8\xff",)),
+    "image/webp": ("webp", (b"RIFF",)),
+    "application/pdf": ("pdf", (b"%PDF-",)),
+}
+
+
+def _attachment_error(message):
+    frappe.throw(_(message))
+
+
+def decode_attachment(value):
+    """校验并解码客户提交的 base64 附件，返回 (bytes, 扩展名)。
+
+    不信任浏览器给的文件名与 MIME：扩展名由服务端按 MIME 决定，内容必须匹配
+    文件头，大小不得超过 10MB，空文件直接拒绝。
+    """
+    header, _, encoded = value.partition(",")
+    if not header.startswith("data:") or ";base64" not in header or not encoded:
+        _attachment_error("附件格式无效，请重新上传图片或 PDF。")
+    mime = header[5:].split(";", 1)[0].strip().lower()
+    if mime not in ATTACHMENT_TYPES:
+        _attachment_error("附件只支持 PNG、JPG、WEBP 图片或 PDF 文件。")
+    try:
+        payload = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError):
+        _attachment_error("附件内容已损坏，请重新上传。")
+    if not payload:
+        _attachment_error("附件内容为空，请重新上传。")
+    if len(payload) > MAX_ATTACHMENT_BYTES:
+        _attachment_error("附件超过 10MB 上限，请压缩后重新上传。")
+    extension, signatures = ATTACHMENT_TYPES[mime]
+    if not any(payload.startswith(signature) for signature in signatures):
+        _attachment_error("附件内容与文件类型不符，请重新上传。")
+    if extension == "webp" and payload[8:12] != b"WEBP":
+        _attachment_error("附件内容与文件类型不符，请重新上传。")
+    return payload, extension
+
+
+def _customer_attachment_count(doc):
+    return cint(frappe.db.count("File", {
+        "attached_to_doctype": "Test Request", "attached_to_name": doc.name,
+        "file_name": ["like", f"{CUSTOMER_ATTACHMENT_PREFIX}%"],
+    }))
+
 
 def prepare_attachments(payload, doc):
     """把客户上传的 data URL 提前落盘为私有文件。
@@ -352,19 +421,16 @@ def prepare_attachments(payload, doc):
         value = payload.get(fieldname)
         if not isinstance(value, str) or "base64" not in value or "," not in value:
             continue
-        header, encoded = value.split(",", 1)
-        extension = "png"
-        for candidate in ("jpeg", "jpg", "pdf", "webp"):
-            if candidate in header:
-                extension = "jpg" if candidate == "jpeg" else candidate
-                break
-        filename = f"客户附件-{doc.name}-{now_datetime():%Y%m%d%H%M%S}.{extension}"
+        if _customer_attachment_count(doc) >= MAX_ATTACHMENTS_PER_REQUEST:
+            _attachment_error("本委托的客户附件数量已达上限，请联系实验室整理后再上传。")
+        content, extension = decode_attachment(value)
+        filename = f"{CUSTOMER_ATTACHMENT_PREFIX}{doc.name}-{now_datetime():%Y%m%d%H%M%S}.{extension}"
         from frappe.utils.file_manager import save_file
         previous = frappe.flags.get("ignore_permissions")
         frappe.flags.ignore_permissions = True
         try:
-            file_doc = save_file(filename, encoded, "Test Request", doc.name,
-                                 is_private=1, decode=True)
+            file_doc = save_file(filename, content, "Test Request", doc.name,
+                                 is_private=1, decode=False)
         finally:
             frappe.flags.ignore_permissions = previous
         payload[fieldname] = file_doc.file_url
@@ -397,7 +463,7 @@ def sanitize_payload(payload, doc):
 # ---------------------------------------------------------------- 保存与确认
 
 @frappe.whitelist(allow_guest=True, methods=["POST", "PUT"])
-@rate_limit(key="web_form", limit=10, seconds=60)
+@rate_limit(key="web_form_request_key", limit=10, seconds=60)
 def accept(web_form, data, web_form_request_key=None):
     """覆盖原生 accept：仅对本功能表单增加撤销/状态/审计/编号保护。"""
     from frappe.website.doctype.web_form import web_form as native
