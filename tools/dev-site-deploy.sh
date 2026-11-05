@@ -106,11 +106,19 @@ PY
 }
 
 health_check() {
-  local body
-  body="$(curl -fsS --max-time 15 -H "Host: $SITE" "http://127.0.0.1:8000/api/method/ping" || true)"
-  [[ "$body" == *pong* ]] || return 1
-  curl -fsS -o /dev/null --max-time 15 -H "Host: $SITE" "http://127.0.0.1:8000/login" || return 1
-  return 0
+  local body attempt
+  # 开发站开启 reload_python：切换提交后 runner 会重启，端口短暂不可用，必须重试。
+  for attempt in $(seq 1 45); do
+    body="$(curl -fsS --max-time 5 -H "Host: $SITE" "http://127.0.0.1:8000/api/method/ping" 2>/dev/null || true)"
+    if [[ "$body" == *pong* ]] \
+      && curl -fsS -o /dev/null --max-time 5 -H "Host: $SITE" "http://127.0.0.1:8000/login" 2>/dev/null; then
+      [[ "$attempt" -gt 1 ]] && log "服务在约 $((attempt * 2)) 秒后恢复"
+      return 0
+    fi
+    sleep 2
+  done
+  log "健康检查连续 90 秒未通过"
+  return 1
 }
 
 [[ -d "$APP_DIR" ]] || fail "找不到运行目录 $APP_DIR"
