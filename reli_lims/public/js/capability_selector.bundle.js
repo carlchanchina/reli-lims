@@ -9,7 +9,6 @@ reli_lims.capabilities.open = function ({ mode = "catalog", onSelect, source }) 
         ["object", "检测对象", "Test Object"],
         ["standard", "检测依据（标准/方法）", "Test Standard"],
         ["laboratory", "实验室", "Laboratory Profile"],
-        ["method", "兼容方法", "Test Method"],
     ];
     const fields = [
         { fieldtype: "Data", fieldname: "search", label: __("搜索"), onchange: refresh },

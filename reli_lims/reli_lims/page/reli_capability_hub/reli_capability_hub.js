@@ -6,7 +6,7 @@ frappe.pages["reli-capability-hub"].on_page_load = function (wrapper) {
 
     const open_capabilities = async () => {
         await frappe.require("capability_grid.bundle.js");
-        await frappe.require("/assets/reli_lims/js/capability_selector.js");
+        await frappe.require("capability_selector.bundle.js");
         return reli_lims.capabilities.open({mode: "catalog"});
     };
 

@@ -69,8 +69,7 @@ Object.assign(reli_lims.capabilities, {
             if (mode === "request") ["samples", "qty", "notes"].forEach(key => cell(row[key]));
             const detail = $("<details>").appendTo(cell(""));
             $("<summary>").text(__("查看详情")).appendTo(detail);
-            const info = [row.industry, row.project_parameter, row.method_label ? __("兼容方法") + `: ${row.method_label}` : "",
-                row.method_code, row.clause, row.status, row.source_row]
+            const info = [row.industry, row.project_parameter, row.clause, row.status, row.source_row]
                 .filter(Boolean).join(" · ");
             if (info) $("<p>").text(info).appendTo(detail);
             for (const [doctype, name, label] of [
