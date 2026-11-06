@@ -229,6 +229,6 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
             draft.insert()
         accept_quotation(self.quotation.name, "P4 software acceptance")
         self.quotation.reload()
-        copied = frappe.copy_doc(self.quotation)
+        copied = frappe.copy_doc(self.quotation, ignore_no_copy=False)
         self.assertFalse(copied.custom_reli_customer_accepted_at)
         self.assertFalse(copied.custom_reli_customer_accepted_by)

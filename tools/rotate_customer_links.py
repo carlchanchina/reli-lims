@@ -92,8 +92,11 @@ def main() -> int:
         still_usable = [row for row in still_usable if any(
             link.link_doctype == "Test Request" and link.link_name == args.request
             for link in frappe.get_doc("Web Form Request", row.name).references)]
-    print(f"已撤销 {revoked} 条；剩余未撤销 {len(remaining)} 条，其中仍可用 {len(still_usable)} 条"
-          f"（已过期但未标撤销的属正常）")
+    if args.request:
+        print(f"已撤销 {revoked} 条；指定委托 {args.request} 剩余可用 {len(still_usable)} 条")
+    else:
+        print(f"已撤销 {revoked} 条；剩余未撤销 {len(remaining)} 条，其中仍可用 {len(still_usable)} 条"
+              f"（已过期但未标撤销的属正常）")
     frappe.destroy()
     return 0 if not still_usable else 1
 
