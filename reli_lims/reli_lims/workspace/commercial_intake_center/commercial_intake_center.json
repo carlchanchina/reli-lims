@@ -56,6 +56,28 @@
       "link_type": "DocType",
       "link_to": "Sales Order",
       "label": "销售订单"
+    },
+    {
+      "type": "Card Break",
+      "label": "CRM 客户关系"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "CRM Organization",
+      "label": "客户组织"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "CRM Lead",
+      "label": "线索"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "CRM Deal",
+      "label": "商机"
     }
   ],
   "shortcuts": [
@@ -101,6 +123,34 @@
       "link_to": "Sales Order",
       "doc_view": "List",
       "color": "Grey"
+    },
+    {
+      "label": "客户组织",
+      "type": "DocType",
+      "link_to": "CRM Organization",
+      "doc_view": "List",
+      "color": "Blue"
+    },
+    {
+      "label": "联系人",
+      "type": "DocType",
+      "link_to": "Contact",
+      "doc_view": "List",
+      "color": "Blue"
+    },
+    {
+      "label": "线索",
+      "type": "DocType",
+      "link_to": "CRM Lead",
+      "doc_view": "List",
+      "color": "Blue"
+    },
+    {
+      "label": "商机",
+      "type": "DocType",
+      "link_to": "CRM Deal",
+      "doc_view": "List",
+      "color": "Blue"
     }
   ],
   "charts": [],
@@ -116,5 +166,5 @@
   ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"commercial-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">商业接单中心</span>\", \"col\": 12}}, {\"id\": \"commercial-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"询价 → 报价 → 客户接受 → 销售订单。提交订单后，检测服务行自动生成委托草稿，客户补充并确认，实验室审核后正式受理。\", \"col\": 12}}, {\"id\": \"commercial-count-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报价草稿\", \"col\": 6}}, {\"id\": \"commercial-count-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"委托草稿\", \"col\": 6}}, {\"id\": \"commercial-actions\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"commercial-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户与询价\", \"col\": 4}}, {\"id\": \"commercial-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"询价跟进\", \"col\": 4}}, {\"id\": \"commercial-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"报价单\", \"col\": 4}}, {\"id\": \"commercial-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户确认\", \"col\": 4}}, {\"id\": \"commercial-s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"生成委托\", \"col\": 4}}, {\"id\": \"commercial-s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"销售订单\", \"col\": 4}}, {\"id\": \"commercial-clients\", \"type\": \"card\", \"data\": {\"card_name\": \"客户与询价\", \"col\": 12}}]"
+  "content": "[{\"id\": \"commercial-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">商业接单中心</span>\", \"col\": 12}}, {\"id\": \"commercial-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"询价 → 报价 → 客户接受 → 销售订单。提交订单后，检测服务行自动生成委托草稿，客户补充并确认，实验室审核后正式受理。\", \"col\": 12}}, {\"id\": \"commercial-count-0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报价草稿\", \"col\": 6}}, {\"id\": \"commercial-count-1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"委托草稿\", \"col\": 6}}, {\"id\": \"commercial-actions\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">常用操作</span>\", \"col\": 12}}, {\"id\": \"commercial-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户与询价\", \"col\": 4}}, {\"id\": \"commercial-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"询价跟进\", \"col\": 4}}, {\"id\": \"commercial-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"报价单\", \"col\": 4}}, {\"id\": \"commercial-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户确认\", \"col\": 4}}, {\"id\": \"commercial-s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"生成委托\", \"col\": 4}}, {\"id\": \"commercial-s5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"销售订单\", \"col\": 4}}, {\"id\": \"commercial-clients\", \"type\": \"card\", \"data\": {\"card_name\": \"客户与询价\", \"col\": 12}}, {\"id\": \"commercial-crm-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">CRM 客户关系</span>\", \"col\": 12}}, {\"id\": \"commercial-crm-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户组织\", \"col\": 3}}, {\"id\": \"commercial-crm-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"联系人\", \"col\": 3}}, {\"id\": \"commercial-crm-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"线索\", \"col\": 3}}, {\"id\": \"commercial-crm-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"商机\", \"col\": 3}}, {\"id\": \"commercial-crm-card\", \"type\": \"card\", \"data\": {\"card_name\": \"CRM 客户关系\", \"col\": 12}}]"
 }
