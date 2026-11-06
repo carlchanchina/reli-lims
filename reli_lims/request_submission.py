@@ -28,9 +28,9 @@ def validate_submission(doc, stored):
     company=frappe.get_doc('Company',doc.company)
     if customer.get('disabled') or company.get('disabled'):
         frappe.throw('委托单位或公司已停用，不能正式受理。')
-    if not doc.get('quotation'):
-        frappe.throw('正式受理必须关联有效的原生客户报价。')
-    quotation=frappe.get_doc('Quotation',doc.quotation)
+    if not doc.get('quotation') and not doc.get('sales_order'):
+        frappe.throw('正式受理必须关联有效的原生客户报价或销售订单。')
+    quotation=frappe.get_doc('Quotation',doc.quotation) if doc.get('quotation') else {}
     if quotation.get('status') in ('Lost','Expired','Cancelled','Closed') or (quotation.get('valid_till') and str(quotation.valid_till)[:10]<frappe.utils.today()):
         frappe.throw('报价已失效，请内部复核商业来源。')
 

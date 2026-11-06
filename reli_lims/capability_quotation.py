@@ -38,7 +38,7 @@ def service_item(capability, item_code=None):
                 "doctype": "Item", "item_code": item_code,
                 "item_name": project_label,
                 "item_group": group, "stock_uom": uom, "is_stock_item": 0, "is_sales_item": 1,
-                "custom_reli_test_project": project,
+                "custom_reli_test_project": project, "custom_reli_business_type": "检测服务",
             }).insert()
     item = frappe.get_doc("Item", item_code)
     item.check_permission("read")

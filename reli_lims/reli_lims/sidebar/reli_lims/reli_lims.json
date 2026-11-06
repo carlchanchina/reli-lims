@@ -144,6 +144,14 @@
       "link_to": "Item",
       "icon": "file",
       "is_default_module": 0
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Asset",
+      "label": "实验设备",
+      "icon": "tool",
+      "is_default_module": 1
     }
   ]
 }

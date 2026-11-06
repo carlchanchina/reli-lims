@@ -1,0 +1,28 @@
+{
+  "doctype": "DocType",
+  "name": "Laboratory Equipment Scope",
+  "module": "Reli LIMS",
+  "istable": 1,
+  "field_order": [
+    "test_project",
+    "capability"
+  ],
+  "fields": [
+    {
+      "fieldname": "test_project",
+      "label": "检测项目",
+      "fieldtype": "Link",
+      "options": "Test Project",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "capability",
+      "label": "适用实验室能力",
+      "fieldtype": "Link",
+      "options": "Laboratory Capability",
+      "in_list_view": 1
+    }
+  ],
+  "permissions": []
+}

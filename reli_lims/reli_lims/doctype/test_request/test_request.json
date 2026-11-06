@@ -58,10 +58,16 @@
     "sample_summary",
     "test_summary",
     "responsible_engineer",
-    "overdue_status"
+    "overdue_status",
+    "order_scope_snapshot",
+    "order_difference"
   ],
   "fields": [
-    {"fieldname": "reli_details", "fieldtype": "HTML", "label": "检测项目明细"},
+    {
+      "fieldname": "reli_details",
+      "fieldtype": "HTML",
+      "label": "检测项目明细"
+    },
     {
       "fieldname": "basic",
       "fieldtype": "Section Break",
@@ -438,6 +444,20 @@
       "fieldname": "step_confirm",
       "fieldtype": "Tab Break",
       "label": "4 · 确认与提交"
+    },
+    {
+      "fieldname": "order_scope_snapshot",
+      "label": "订单来源快照",
+      "fieldtype": "JSON",
+      "read_only": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "order_difference",
+      "label": "订单差异提示",
+      "fieldtype": "Small Text",
+      "read_only": 1,
+      "allow_on_submit": 1
     }
   ],
   "is_submittable": 1,

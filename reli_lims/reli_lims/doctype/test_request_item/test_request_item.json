@@ -17,7 +17,9 @@
     "quoted_quantity",
     "requested_quantity",
     "quotation_difference",
-    "test_method"
+    "test_method",
+    "source_sales_order_item",
+    "service_item"
   ],
   "fields": [
     {
@@ -47,8 +49,7 @@
       "fieldtype": "Link",
       "in_list_view": 1,
       "label": "检测依据",
-      "options": "Test Standard",
-      "reqd": 1
+      "options": "Test Standard"
     },
     {
       "fieldname": "test_condition",
@@ -122,6 +123,19 @@
       "hidden": 1,
       "label": "原检测项目（兼容）",
       "options": "Test Method"
+    },
+    {
+      "fieldname": "source_sales_order_item",
+      "label": "来源销售订单行",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "service_item",
+      "label": "服务商品",
+      "fieldtype": "Link",
+      "options": "Item",
+      "read_only": 1
     }
   ],
   "istable": 1,

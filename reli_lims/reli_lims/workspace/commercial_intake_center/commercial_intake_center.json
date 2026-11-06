@@ -50,6 +50,12 @@
       "link_type": "DocType",
       "link_to": "Address",
       "label": "地址"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Sales Order",
+      "label": "销售订单"
     }
   ],
   "shortcuts": [
