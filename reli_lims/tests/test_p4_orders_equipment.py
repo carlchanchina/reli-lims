@@ -144,8 +144,8 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
             request.contact_email = "p4@example.invalid"
             request.customer_declaration_confirmed = 1
             request.append("samples", dict(sample_code="S1", product_name="软件验收样品", quantity=1))
-            request.append("sample_assignments", dict(item_code="T001", sample_code="S1"))
             request.save(ignore_permissions=True)
+        self.assertEqual(request.sample_assignments[0].sample_code, "S1")
         customer_confirm(share["key"])
         lab_review(request.name)
         request.reload().submit()

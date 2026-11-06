@@ -315,6 +315,10 @@ def prepare_customer_rows(doc):
                 row.set(fieldname, value.strip())
         if row.get("notes"):
             row.notes = row.notes.strip()
+    if doc.get("order_scope_snapshot") and len(doc.samples) == 1 and not doc.sample_assignments:
+        # One declared sample is unambiguous. Multiple samples need explicit lab allocation.
+        for row in doc.items:
+            doc.append("sample_assignments", {"item_code": row.item_code, "sample_code": doc.samples[0].sample_code})
 
 
 def fill_new_sample_codes(data, doc):
