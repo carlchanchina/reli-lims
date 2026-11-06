@@ -19,8 +19,8 @@ def field(name, label, kind, options=None, **kwargs):
 def after_migrate():
     fields = {"Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES,
                              insert_after="item_name", in_list_view=1)],
-              "Quotation Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1)],
-              "Sales Order Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1),
+              "Quotation Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1, in_list_view=1)],
+              "Sales Order Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1, in_list_view=1),
                   field("custom_reli_request", "检测委托单", "Link", "Test Request", read_only=1, allow_on_submit=1),
                   field("custom_reli_split_group", "委托拆分组", "Data", description="留空归入同一委托。按实验室或履约要求填写独立组名。")],
               "Sales Order": [field("custom_reli_generation_status", "检测委托生成状态", "Select", "\n无需委托\n待生成\n已生成\n生成失败\n需人工处理", read_only=1, allow_on_submit=1),
@@ -40,6 +40,15 @@ def after_migrate():
     ]
     for name, (label, kind, options) in TECHNICAL.items():
         fields["Sales Order Item"].append(field(name, label, kind, options, read_only=1))
+    for doctype, anchor, names in (
+        ("Sales Order", "customer", ["custom_reli_generation_status", "custom_reli_generation_error", "custom_reli_requests"]),
+        ("Quotation", "valid_till", ["custom_reli_delivery_date", "custom_reli_customer_accepted_by", "custom_reli_customer_accepted_at"]),
+        ("Asset", "asset_name", [f["fieldname"] for f in fields["Asset"]]),
+    ):
+        for name in names:
+            entry = next(f for f in fields[doctype] if f["fieldname"] == name)
+            entry["insert_after"] = anchor
+            anchor = name
     create_custom_fields(fields, update=True)
     # Only an explicit existing unified project establishes testing-service identity.
     frappe.db.sql("""update tabItem set custom_reli_business_type='检测服务'

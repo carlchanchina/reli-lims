@@ -1,5 +1,6 @@
 frappe.ui.form.on("Sales Order", {
     refresh(frm) {
+        frm.fields_dict.items.grid.update_docfield_property("item_code", "label", __("商品／服务"));
         if (frm.is_new()) return;
         if (frm.doc.docstatus === 1 && frappe.model.can_write("Sales Order")) {
             frm.add_custom_button(__("重试生成检测委托"), async () => {

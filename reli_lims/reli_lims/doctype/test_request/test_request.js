@@ -17,6 +17,8 @@ frappe.ui.form.on('Test Request', {
         }));
     },
     refresh(frm) {
+        if (frm.doc.sales_order) frm.add_custom_button(__("来源销售订单"), () => frappe.set_route("Form", "Sales Order", frm.doc.sales_order));
+        if (frm.doc.quotation) frm.add_custom_button(__("来源报价"), () => frappe.set_route("Form", "Quotation", frm.doc.quotation));
         frm.events.update_choices(frm);
         if (frm.doc.docstatus === 0 && !frm.is_new() &&
             frappe.user_roles.some(role => ['Lab Manager', 'Lab Engineer'].includes(role))) {
