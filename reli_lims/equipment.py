@@ -77,7 +77,7 @@ def available(test_project, capability=None, text=None, start=0):
     filters = {"name": ["in", selected], "docstatus": ["!=", 2],
         "custom_reli_equipment_status": "启用", "custom_reli_calibration_until": [">=", today()],
         "status": ["not in", ["Sold", "Scrapped", "In Maintenance", "Out of Order"]]}
-    or_filters = [[key, "like", f"%{str(text)[:100]}%"] for key in ("asset_name", "custom_reli_model", "custom_reli_serial_no")] if text else None
+    or_filters = [[key, "like", f"%{str(text)[:100]}%"] for key in ("name", "asset_name", "custom_reli_model", "custom_reli_serial_no")] if text else None
     rows = frappe.get_list("Asset", filters=filters, or_filters=or_filters,
         fields=["name", "asset_name", "custom_reli_model", "custom_reli_laboratory", "location", "custom_reli_calibration_until"],
         order_by="asset_name asc, name asc", start=max(0, int(start)), page_length=21)

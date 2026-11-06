@@ -181,6 +181,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         validate_execution(program)
         self.assertEqual(row.equipment_snapshot["asset_name"], asset.asset_name)
         self.assertEqual(available(self.project.name)["rows"][0].name, asset.name)
+        self.assertEqual(available(self.project.name, text=asset.name)["rows"][0].name, asset.name)
         row.equipment_snapshot = None
         asset.custom_reli_calibration_until = add_days(today(), -1)
         asset.save()
