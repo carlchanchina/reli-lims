@@ -12,7 +12,8 @@ TECHNICAL_FIELDS = ('customer','company','quotation','sales_order','execution_co
  'fixture_required','fixture_provider','method_choice_consent','subcontract_consent','customer_attachment')
 CHILD_FIELDS = {
  'samples': ('sample_code','customer_sample_code','product_name','model','serial_no','quantity','dimensions','weight_kg'),
- 'items': ('item_code','test_method','standard','test_condition'),
+ 'items': ('item_code','test_project','test_object','test_method','standard','test_condition',
+           'requested_quantity','source_sales_order_item','service_item'),
  'sample_assignments': ('item_code','sample_code'),
  'photos': ('sample_code','photo'),
 }

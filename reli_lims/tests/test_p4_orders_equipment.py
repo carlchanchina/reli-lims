@@ -123,7 +123,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
                 "source": "PRIVATE-SOURCE", "laboratory_cost": 999, "condition_schema": []}},
             description="PRIVATE-COST PRIVATE-SUPPLIER")
         context = build_context(data)
-        text = frappe.as_json(context)
+        text = str(context)
         for secret in ("PRIVATE-CAP", "PRIVATE-SOURCE", "PRIVATE-COST", "PRIVATE-SUPPLIER", "laboratory_cost"):
             self.assertNotIn(secret, text)
         self.assertIn("公开标准", text)
@@ -152,7 +152,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         self.assertEqual(program.items[0].test_project, self.project.name)
 
     def equipment(self):
-        laboratory = frappe.get_doc(doctype="Laboratory Profile", mercur_seller_id="p4_" + self.token,
+        laboratory = frappe.get_doc(doctype="Laboratory Profile", mercur_seller_id="sel_p4_" + self.token,
             laboratory_name="P4 软件验收实验室 " + self.token, review_status="Approved").insert()
         account = frappe.db.get_value("Account", {"company": self.company.name, "account_type": "Fixed Asset", "is_group": 0}, "name")
         category = frappe.get_doc(doctype="Asset Category", asset_category_name="P4 " + self.token,

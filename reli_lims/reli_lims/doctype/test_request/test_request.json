@@ -134,7 +134,6 @@
       "fieldtype": "Table",
       "label": "委托样品",
       "options": "Test Request Sample",
-      "reqd": 1,
       "description": "填写产品名称、型号、尺寸和重量；实验室样品编号在实际收样后生成。"
     },
     {
@@ -291,7 +290,6 @@
       "fieldtype": "Table",
       "label": "检测项目适用样品",
       "options": "Test Request Item Sample",
-      "reqd": 1,
       "hidden": 1
     },
     {
