@@ -62,7 +62,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         order.save()
         original = frappe.get_doc
         def fail_second(*args, **kwargs):
-            if args and isinstance(args[0], dict) and args[0].get("doctype") == "Test Request" and args[0]["title"].endswith("第二实验室"):
+            if args and isinstance(args[0], dict) and args[0].get("doctype") == "Test Request" and str(args[0].get("title") or "").endswith("第二实验室"):
                 raise RuntimeError("P4 injected failure")
             return original(*args, **kwargs)
         with patch("reli_lims.sales_order_testing.frappe.get_doc", side_effect=fail_second):
@@ -205,3 +205,15 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         row.equipment_snapshot = {"asset_name": "forged"}
         with self.assertRaises(frappe.ValidationError):
             validate_execution(program)
+
+    def test_partial_customer_payload_preserves_native_date_values(self):
+        import json
+        from frappe.website.doctype.web_form import web_form as native
+        from reli_lims.customer_share import accept, send_link
+        order = self.order()
+        request = self.request_for(order)
+        share = send_link(request.name)
+        with patch.object(native, "accept", return_value={"name": request.name}) as adapter:
+            accept("customer-request", {"name": request.name, "customer_shipping_details": "P4 software test"}, share["key"])
+        payload = json.loads(adapter.call_args.args[1])
+        self.assertEqual(payload["delivery_date"], str(request.delivery_date))

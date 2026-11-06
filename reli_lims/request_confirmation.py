@@ -12,8 +12,7 @@ TECHNICAL_FIELDS = ('customer','company','quotation','sales_order','execution_co
  'fixture_required','fixture_provider','method_choice_consent','subcontract_consent','customer_attachment')
 CHILD_FIELDS = {
  'samples': ('sample_code','customer_sample_code','product_name','model','serial_no','quantity','dimensions','weight_kg'),
- 'items': ('item_code','test_project','test_object','test_method','standard','test_condition',
-           'requested_quantity','source_sales_order_item','service_item'),
+ 'items': ('item_code','test_method','standard','test_condition'),
  'sample_assignments': ('item_code','sample_code'),
  'photos': ('sample_code','photo'),
 }
@@ -31,6 +30,14 @@ def fingerprint(data, files):
                 if field in row and row[field] != '':
                     row[field] = float(row[field])
     for stored, original in zip(snapshot['items'], data.get('items') or []):
+        if original.get('source_sales_order_item'):
+            stored['order_selection'] = {
+                'source_row': original['source_sales_order_item'],
+                'service_item': original.get('service_item') or '',
+                'quantity': float(original.get('requested_quantity') or 0),
+                'test_project': original.get('test_project') or '',
+                'test_object': original.get('test_object') or '',
+            }
         if original.get('capability'):
             configuration = original.get('technical_configuration')
             if isinstance(configuration, str):

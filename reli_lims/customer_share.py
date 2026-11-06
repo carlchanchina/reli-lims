@@ -494,7 +494,7 @@ def accept(web_form, data, web_form_request_key=None):
     payload = prepare_attachments(payload, doc)
 
     with customer_save():
-        result = native.accept(web_form, json.dumps(payload, ensure_ascii=False), web_form_request_key)
+        result = native.accept(web_form, frappe.as_json(payload), web_form_request_key)
 
     after = frappe.get_doc("Test Request", bound)
     changed = diff(before, snapshot(after))
