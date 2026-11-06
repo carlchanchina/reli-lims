@@ -150,3 +150,54 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         receive_samples(request.name, [dict(sample_code="S1", quantity=1, received_date=today(), received_by="Administrator")])
         program = frappe.get_doc("Test Program", make_test_program(request.name))
         self.assertEqual(program.items[0].test_project, self.project.name)
+
+    def equipment(self):
+        laboratory = frappe.get_doc(doctype="Laboratory Profile", mercur_seller_id="p4_" + self.token,
+            laboratory_name="P4 软件验收实验室 " + self.token, review_status="Approved").insert()
+        account = frappe.db.get_value("Account", {"company": self.company.name, "account_type": "Fixed Asset", "is_group": 0}, "name")
+        category = frappe.get_doc(doctype="Asset Category", asset_category_name="P4 " + self.token,
+            non_depreciable_category=1, accounts=[dict(company_name=self.company.name, fixed_asset_account=account)]).insert()
+        location = frappe.get_doc(doctype="Location", location_name="P4 实验室 " + self.token).insert()
+        item = frappe.get_doc(doctype="Item", item_code="P4-ASSET-" + self.token, item_name="P4 自用试验台",
+            item_group="All Item Groups", stock_uom="Nos", is_stock_item=0, is_fixed_asset=1,
+            asset_category=category.name).insert()
+        return frappe.get_doc(doctype="Asset", asset_name="P4 软件验收试验台", item_code=item.name,
+            company=self.company.name, asset_category=category.name, asset_type="Existing Asset", asset_owner="Company",
+            asset_quantity=1, purchase_date=today(), available_for_use_date=today(), location=location.name,
+            net_purchase_amount=1000, purchase_amount=1000, calculate_depreciation=0,
+            custom_reli_laboratory=laboratory.name, custom_reli_model="P4-MODEL", custom_reli_serial_no="P4-SERIAL",
+            custom_reli_equipment_status="启用", custom_reli_calibration_until=add_days(today(), 30),
+            custom_reli_scopes=[dict(test_project=self.project.name)]).insert()
+
+    def test_equipment_qualification_and_execution_snapshot(self):
+        from reli_lims.equipment import validate_execution, available
+        asset = self.equipment()
+        row = frappe._dict(name="new", test_project=self.project.name, asset=asset.name, status="Ready", equipment_snapshot=None)
+        program = frappe._dict(items=[row], get_doc_before_save=lambda: None)
+        validate_execution(program)
+        self.assertEqual(row.equipment_snapshot["asset_name"], asset.asset_name)
+        self.assertEqual(available(self.project.name)["rows"][0].name, asset.name)
+        row.equipment_snapshot = None
+        asset.custom_reli_calibration_until = add_days(today(), -1)
+        asset.save()
+        with self.assertRaises(frappe.ValidationError):
+            validate_execution(program)
+        asset.custom_reli_calibration_until = add_days(today(), 30)
+        asset.custom_reli_equipment_status = "维护"
+        asset.save()
+        with self.assertRaises(frappe.ValidationError):
+            validate_execution(program)
+        asset.custom_reli_equipment_status = "启用"
+        asset.save()
+        row.status = "Running"
+        validate_execution(program)
+        stored = frappe._dict(row.copy())
+        program.get_doc_before_save = lambda: frappe._dict(items=[stored])
+        asset.asset_name = "设备后来改名"
+        asset.save()
+        row.status = "Completed"
+        validate_execution(program)
+        self.assertEqual(row.equipment_snapshot["asset_name"], "P4 软件验收试验台")
+        row.equipment_snapshot = {"asset_name": "forged"}
+        with self.assertRaises(frappe.ValidationError):
+            validate_execution(program)
