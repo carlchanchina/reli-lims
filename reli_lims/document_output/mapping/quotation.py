@@ -45,3 +45,9 @@ def build_context(doc):
                   total=doc.get('grand_total') or 0, terms=plain(doc.get('terms')),
                   totals='；'.join(f'{label}：{value}' for label, value in fields[7:]))
     return result
+
+
+def customer_quotation_context(doc):
+    doc.check_permission('read')
+    doc.check_permission('print')
+    return build_context(doc.as_dict())

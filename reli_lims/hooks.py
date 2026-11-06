@@ -83,3 +83,5 @@ doctype_js["Sales Order"] = "public/js/sales_order_testing.js"
 doctype_js["Asset"] = "public/js/laboratory_equipment.js"
 
 doctype_js["Quotation"].append("public/js/quotation_acceptance.js")
+
+jinja["methods"].append("reli_lims.document_output.mapping.quotation.customer_quotation_context")

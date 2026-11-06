@@ -49,4 +49,6 @@ def after_migrate():
         custom = frappe.db.get_value("Custom Field", {"dt": "Quotation Item", "fieldname": name}, "name")
         if custom:
             frappe.db.set_value("Custom Field", custom, "print_hide", 1, update_modified=False)
+    from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+    make_property_setter("Quotation", None, "default_print_format", "Reli Customer Quotation", "Data", for_doctype=True)
     frappe.clear_cache()
