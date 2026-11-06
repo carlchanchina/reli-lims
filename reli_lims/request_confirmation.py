@@ -30,6 +30,14 @@ def fingerprint(data, files):
                 if field in row and row[field] != '':
                     row[field] = float(row[field])
     for stored, original in zip(snapshot['items'], data.get('items') or []):
+        if original.get('source_sales_order_item'):
+            stored['order_selection'] = {
+                'source_row': original['source_sales_order_item'],
+                'service_item': original.get('service_item') or '',
+                'quantity': float(original.get('requested_quantity') or 0),
+                'test_project': original.get('test_project') or '',
+                'test_object': original.get('test_object') or '',
+            }
         if original.get('capability'):
             configuration = original.get('technical_configuration')
             if isinstance(configuration, str):

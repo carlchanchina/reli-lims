@@ -315,6 +315,10 @@ def prepare_customer_rows(doc):
                 row.set(fieldname, value.strip())
         if row.get("notes"):
             row.notes = row.notes.strip()
+    if doc.get("order_scope_snapshot") and len(doc.samples) == 1 and not doc.sample_assignments:
+        # One declared sample is unambiguous. Multiple samples need explicit lab allocation.
+        for row in doc.items:
+            doc.append("sample_assignments", {"item_code": row.item_code, "sample_code": doc.samples[0].sample_code})
 
 
 def fill_new_sample_codes(data, doc):
@@ -490,7 +494,7 @@ def accept(web_form, data, web_form_request_key=None):
     payload = prepare_attachments(payload, doc)
 
     with customer_save():
-        result = native.accept(web_form, json.dumps(payload, ensure_ascii=False), web_form_request_key)
+        result = native.accept(web_form, frappe.as_json(payload), web_form_request_key)
 
     after = frappe.get_doc("Test Request", bound)
     changed = diff(before, snapshot(after))

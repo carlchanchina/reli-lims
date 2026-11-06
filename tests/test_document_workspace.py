@@ -15,7 +15,7 @@ class WorkspaceFinalTests(unittest.TestCase):
         capability = json.loads((ROOT / 'reli_lims/reli_lims/workspace/laboratory_capability_center/laboratory_capability_center.json').read_text())
         self.assertEqual({row.get('link_to') for row in capability['links'] if row['type'] == 'Link'},
                          {'Test Project', 'Test Object', 'Test Standard', 'Laboratory Profile',
-                          'Capability Source', 'Laboratory Capability', 'Item'})
+                          'Capability Source', 'Laboratory Capability', 'Item', 'Asset'})
 
     def test_hooks_attach_one_shared_output_ui_to_three_native_forms(self):
         import runpy

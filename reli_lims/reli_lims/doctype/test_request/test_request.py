@@ -34,7 +34,9 @@ class TestRequest(Document):
                 if errors:
                     frappe.throw(' '.join(errors))
             else:
-                validate_scope(self.as_dict())
+                from reli_lims.sales_order_testing import validate_order_draft
+                if not validate_order_draft(self):
+                    validate_scope(self.as_dict())
         except ValueError as exc:
             frappe.throw(scope_error_message(exc))
         previous = self.get_doc_before_save()

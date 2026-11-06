@@ -64,3 +64,28 @@ override_whitelisted_methods = {
     "frappe.website.doctype.web_form.web_form.accept": "reli_lims.customer_share.accept",
 }
 doc_events["Test Request"]["on_trash"] = "reli_lims.customer_share.prevent_linked_trash"
+
+# P4 extends ERPNext commercial documents and Asset without replacing their models.
+after_migrate.append("reli_lims.p4_setup.after_migrate")
+doc_events["Item"] = {"validate": "reli_lims.sales_order_testing.validate_item"}
+doc_events["Quotation"]["validate"] = ["reli_lims.sales_order_testing.validate_lines", "reli_lims.capability_quotation.validate"]
+doc_events["Sales Order"] = {
+    "validate": "reli_lims.sales_order_testing.validate_lines",
+    "on_submit": "reli_lims.sales_order_testing.on_submit",
+    "on_update_after_submit": "reli_lims.sales_order_testing.changed",
+    "before_cancel": "reli_lims.sales_order_testing.before_cancel",
+    "on_cancel": "reli_lims.sales_order_testing.changed",
+}
+doc_events["Test Request"]["validate"] = ["reli_lims.capability_request.validate", "reli_lims.sales_order_testing.validate_request_source"]
+doc_events["Asset"] = {"validate": "reli_lims.equipment.validate_asset"}
+doc_events["Test Program"]["validate"] = "reli_lims.equipment.validate_execution"
+doctype_js["Sales Order"] = "public/js/sales_order_testing.js"
+doctype_js["Asset"] = "public/js/laboratory_equipment.js"
+
+doctype_js["Quotation"].append("public/js/quotation_acceptance.js")
+
+jinja["methods"].append("reli_lims.document_output.mapping.quotation.customer_quotation_context")
+
+for dt in ("Sales Invoice", "Delivery Note"):
+    doc_events[dt] = {event: "reli_lims.sales_order_testing.commercial_return_changed" for event in ("on_submit", "on_cancel")}
+scheduler_events["daily"].append("reli_lims.sales_order_testing.reconcile_orders")

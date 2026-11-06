@@ -29,7 +29,8 @@
     "quality_inspection",
     "raw_data",
     "notes",
-    "test_method"
+    "test_method",
+    "equipment_snapshot"
   ],
   "fields": [
     {
@@ -180,6 +181,12 @@
       "fieldname": "technical_configuration",
       "fieldtype": "JSON",
       "label": "受理技术快照",
+      "read_only": 1
+    },
+    {
+      "fieldname": "equipment_snapshot",
+      "label": "执行设备状态快照",
+      "fieldtype": "JSON",
       "read_only": 1
     }
   ],

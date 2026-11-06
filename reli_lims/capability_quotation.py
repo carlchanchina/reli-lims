@@ -38,7 +38,7 @@ def service_item(capability, item_code=None):
                 "doctype": "Item", "item_code": item_code,
                 "item_name": project_label,
                 "item_group": group, "stock_uom": uom, "is_stock_item": 0, "is_sales_item": 1,
-                "custom_reli_test_project": project,
+                "custom_reli_test_project": project, "custom_reli_business_type": "检测服务",
             }).insert()
     item = frappe.get_doc("Item", item_code)
     item.check_permission("read")
@@ -49,6 +49,13 @@ def service_item(capability, item_code=None):
             frappe.throw("商品关联的检测能力或检测项目不一致。")
     if item.get("custom_reli_test_project") not in (None, "", project):
         frappe.throw("商品关联的统一检测项目不一致。")
+    if item.get("custom_reli_business_type") in ("普通服务", "实物商品"):
+        frappe.throw("所选商品已归类为普通服务或实物商品，请选择检测服务商品。")
+    if not item.get("custom_reli_test_project") or not item.get("custom_reli_business_type"):
+        item.check_permission("write")
+        item.custom_reli_test_project = project
+        item.custom_reli_business_type = "检测服务"
+        item.save()
     return item
 
 

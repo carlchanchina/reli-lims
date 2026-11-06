@@ -1,0 +1,15 @@
+✔ Desk lab review invokes a document method with the bound request (1.618958ms)
+✔ Desk customer link generation is bound to the request and link lookup uses its service API (0.925ms)
+✔ item-code choices preserve values while escaping dropdown HTML (2.601917ms)
+✔ three native forms share one saved-source dialog with default PDF and safe retry (3.35625ms)
+✔ removing an unstarted test cleans its hidden sample relation and preserves others (2.832167ms)
+✔ owned item status cells use the laboratory vocabulary without changing shared Select formatting (1.214125ms)
+✔ a late program lookup cannot overwrite a newer report selection (2.620917ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.194

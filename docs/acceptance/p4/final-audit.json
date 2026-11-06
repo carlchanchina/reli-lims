@@ -1,0 +1,63 @@
+{
+  "code": "97355becd61a5e4fe93c93189a1a270e875d87ea",
+  "documents": {
+    "quotation": "SAL-QTN-2026-00010",
+    "sales_order": "SAL-ORD-2026-00006",
+    "test_request": "REQ-01546",
+    "asset": "ACC-ASS-2026-00002",
+    "test_project": "TPR-01541",
+    "capability": "CAP-01545",
+    "test_object": "OBJ-01542",
+    "standard": "STD-01543",
+    "laboratory": "sel_p4_software_demo",
+    "quote_pdf": "/private/files/检测报价单-SAL-QTN-2026-000101429b4.pdf",
+    "program": "PRG-01548",
+    "sample": "SMP-01547"
+  },
+  "quotation_submitted": true,
+  "quotation_customer_accepted": true,
+  "order_submitted": true,
+  "order_types": [
+    "检测服务",
+    "普通服务",
+    "实物商品"
+  ],
+  "request_count": 1,
+  "request_service_lines": 1,
+  "request_submitted": true,
+  "request_customer_state": "Lab Reviewed",
+  "request_customer_fingerprint_current": true,
+  "order_request_line_link": true,
+  "snapshots_equal": true,
+  "equipment_link": true,
+  "equipment_snapshot": {
+    "asset": "ACC-ASS-2026-00002",
+    "asset_name": "P4 软件验收高温箱（虚构设备）",
+    "model": "P4-CHAMBER",
+    "serial_no": "P4-SOFTWARE-001",
+    "laboratory": "sel_p4_software_demo",
+    "location": "P4 软件验收设备区",
+    "state": "启用",
+    "asset_status": "Draft",
+    "calibration_until": "2027-11-06",
+    "parameters": "软件验收范围 0～150 ℃，仅用于界面与流程验证",
+    "captured_at": "2026-11-06 11:19:34.252706"
+  },
+  "program_status": "Running",
+  "counts": {
+    "Test Project": 120,
+    "Test Object": 44,
+    "Test Standard": 216,
+    "Laboratory Capability": 660,
+    "Asset": 2,
+    "Workstation": 0
+  },
+  "cnas_original_capabilities": 650,
+  "cnas_source_sha256": "fa716f04c0fc867f7a37d6c0716face1cc5195eb6e5c776c760c2af797531fd7",
+  "legacy_quotation_exists": "SAL-QTN-2026-00005",
+  "legacy_request_exists": "REQ-01150",
+  "allow_tests": false,
+  "legacy_confirmation_current": true,
+  "native_print_html_safe": true,
+  "asset_location": "P4 软件验收设备区"
+}

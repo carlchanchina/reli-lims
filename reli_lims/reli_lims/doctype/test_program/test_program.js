@@ -4,6 +4,13 @@ frappe.ui.form.on("Test Program", {
             const labels = {Pending: '待开始', Ready: '已就绪', Running: '试验中', Completed: '已完成', Reviewed: '已复核'};
             return labels[value] || frappe.utils.escape_html(value || '');
         };
+        frm.set_query("asset", "items", (doc, cdt, cdn) => {
+            const row = locals[cdt][cdn];
+            if (!row.test_project) return {};
+            return {query: "reli_lims.equipment.asset_query", filters: {
+                test_project: row.test_project, capability: row.capability,
+            }};
+        });
         frm.set_query("sample", "samples", () => ({ filters: { project: frm.doc.project } }));
         frm.set_query("sample", "sample_assignments", () => ({
             filters: { name: ["in", (frm.doc.samples || []).map(row => row.sample).filter(Boolean)] }

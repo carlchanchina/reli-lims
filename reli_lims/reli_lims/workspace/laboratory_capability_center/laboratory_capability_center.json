@@ -68,6 +68,12 @@
       "link_type": "DocType",
       "link_to": "Item",
       "label": "服务商品"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Asset",
+      "label": "实验设备"
     }
   ],
   "shortcuts": [

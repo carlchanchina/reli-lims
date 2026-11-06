@@ -17,7 +17,7 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
         host.empty();
         const table = $("<table class='table table-bordered table-hover'>").appendTo(host);
         const header = $("<tr>").appendTo($("<thead>").appendTo(table));
-        ["试验方案", "检测项目", "检测依据（标准/方法）", "试验条件", "状态", "结果", "结论"]
+        ["试验方案", "检测项目", "检测依据（标准/方法）", "试验条件", "使用设备", "状态", "结果", "结论"]
             .forEach(label => $("<th>").text(__(label)).appendTo(header));
         const body = $("<tbody>").appendTo(table);
         for (const row of message.rows) {
@@ -28,10 +28,10 @@ frappe.pages["reli-test-records"].on_page_load = function (wrapper) {
                     event.stopPropagation();
                     window.location.assign(`/desk/reli-lims/test-program/${encodeURIComponent(row.parent)}`);
                 }).appendTo($("<td>").appendTo(tr));
-            [row.project_label, row.standard_label, row.test_condition, __(row.status, null, "Test Program Item"), row.result, row.conclusion]
+            [row.project_label, row.standard_label, row.test_condition, row.equipment_label, __(row.status, null, "Test Program Item"), row.result, row.conclusion]
                 .forEach(value => $("<td>").text(value || "—").appendTo(tr));
         }
-        if (!message.rows.length) $("<td colspan='7'>").text(__("暂无匹配的试验记录"))
+        if (!message.rows.length) $("<td colspan='8'>").text(__("暂无匹配的试验记录"))
             .appendTo($("<tr>").appendTo(body));
         const pager = $("<div class='d-flex align-items-center gap-2'>").appendTo(host);
         $("<button class='btn btn-default btn-sm'>").text(__("上一页")).prop("disabled", start === 0)
