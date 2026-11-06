@@ -82,3 +82,11 @@ def available(test_project, capability=None, text=None, start=0):
         fields=["name", "asset_name", "custom_reli_model", "custom_reli_laboratory", "location", "custom_reli_calibration_until"],
         order_by="asset_name asc, name asc", start=max(0, int(start)), page_length=21)
     return {"rows": rows[:20], "has_more": len(rows) > 20}
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def asset_query(doctype, txt, searchfield, start, page_len, filters):
+    filters = frappe.parse_json(filters) if isinstance(filters, str) else filters
+    result = available(filters["test_project"], filters.get("capability"), txt, start)
+    return [[r.name, r.asset_name, r.custom_reli_model, r.custom_reli_laboratory] for r in result["rows"]]

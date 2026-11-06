@@ -35,7 +35,7 @@ def build_context(doc):
               ('税费', money('total_taxes_and_charges')), ('价税合计', money('grand_total'))]
     rows = [[i, service_display(r), r.get('uom'), r.get('rate'), r.get('qty'), r.get('amount')]
             for i, r in enumerate(doc.get('items') or [], 1)]
-    result = context('检测报价单', doc, fields, TEMPLATES['Quotation'].columns, rows,
+    result = context('检测报价单', doc, fields, ('序号', '商品／服务', '单位', '单价', '数量', '金额'), rows,
                      notice='已取消' if doc.get('docstatus') == 2 else ('草稿' if doc.get('docstatus', 0) == 0 else '报价单输出副本'))
     result.update(customer=text(doc.get('customer_name') or doc.get('party_name')),
                   contact=text(doc.get('contact_display')), address=plain(doc.get('address_display')),
@@ -43,7 +43,7 @@ def build_context(doc):
                   company=text(doc.get('company')), company_address=plain(doc.get('company_address_display')),
                   date=text(doc.get('transaction_date')), currency=currency,
                   total=doc.get('grand_total') or 0, terms=plain(doc.get('terms')),
-                  totals='；'.join(f'{label}：{value}' for label, value in fields[7:]))
+                  totals='；'.join(f'{label}：{value}' for label, value in fields[6:]))
     return result
 
 

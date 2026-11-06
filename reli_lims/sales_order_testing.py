@@ -109,6 +109,10 @@ def validate_request_source(doc, method=None):
             frappe.parse_json(doc.order_scope_snapshot) != frappe.parse_json(previous.order_scope_snapshot)):
         frappe.throw("订单来源和原始范围快照不能修改。")
     sourced = [r for r in doc.items if r.get("source_sales_order_item")]
+    if previous and previous.get("order_scope_snapshot"):
+        old_sources = {r.source_sales_order_item for r in previous.items}
+        if {r.source_sales_order_item for r in doc.items} != old_sources:
+            frappe.throw("订单生成的委托须保留原订单行，拆分请在订单提交前设置委托拆分组。")
     if not sourced and not doc.get("order_scope_snapshot"):
         return
     if not doc.sales_order:

@@ -52,6 +52,9 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         self.assertEqual(retry(order.name), [request.name])
         self.assertEqual(frappe.db.count("Test Request", {"sales_order": order.name}), 1)
         request.save()
+        request.items = []
+        with self.assertRaises(frappe.ValidationError):
+            request.save()
 
     def test_failure_rolls_back_all_groups_and_can_retry(self):
         order = self.order(submit=False, testing_count=2)
