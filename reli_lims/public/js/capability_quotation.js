@@ -35,15 +35,8 @@ frappe.ui.form.on("Quotation", {
     },
 });
 
-frappe.ui.form.on("Quotation", {
-    refresh(frm) {
-        if (frm.is_new() || frm.doc.docstatus !== 1) return;
-        frm.add_custom_button(__("创建销售订单"), () => frappe.model.open_mapped_doc({
-            method: "erpnext.selling.doctype.quotation.quotation.make_sales_order", frm,
-        }));
-    },
-});
-
+// 报价转订单只保留 ERPNext 原生「创建 → 销售订单」入口，不再叠加同义的定制按钮，
+// 避免两条路径产生不同的映射行为。
 frappe.ui.form.on("Quotation", {
     async refresh(frm) {
         await frappe.require("capability_grid.bundle.js");
