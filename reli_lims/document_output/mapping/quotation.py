@@ -1,4 +1,6 @@
 """ERPNext Quotation snapshot; monetary values come from ERPNext calculations."""
+import json
+
 import frappe
 
 from .common import context, plain, text
@@ -15,8 +17,10 @@ def service_display(row):
     if not row.get('custom_reli_capability'):
         return name
     from reli_lims.capability_quotation import description
-    config = frappe.parse_json(row.get('custom_reli_configuration'))
-    technical = plain(description(config)) if config else ''
+    config = row.get('custom_reli_configuration')
+    if isinstance(config, str):
+        config = json.loads(config)
+    technical = plain(description(config)) if config else plain(row.get('description'))
     return '\n'.join(filter(None, [text(name), technical]))
 
 
