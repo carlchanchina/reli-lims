@@ -1,5 +1,5 @@
 frappe.form.link_formatters.Item = ((original) => function (value, doc, ...args) {
-    if (doc?.doctype === "Quotation Item" && doc.item_name && doc.custom_reli_capability) return frappe.utils.escape_html(doc.item_name);
+    if (doc?.doctype === "Quotation Item" && doc.item_name) return frappe.utils.escape_html(doc.item_name);
     return original ? original.call(this, value, doc, ...args) : value;
 })(frappe.form.link_formatters.Item);
 
