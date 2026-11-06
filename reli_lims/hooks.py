@@ -85,3 +85,7 @@ doctype_js["Asset"] = "public/js/laboratory_equipment.js"
 doctype_js["Quotation"].append("public/js/quotation_acceptance.js")
 
 jinja["methods"].append("reli_lims.document_output.mapping.quotation.customer_quotation_context")
+
+for dt in ("Sales Invoice", "Delivery Note"):
+    doc_events[dt] = {event: "reli_lims.sales_order_testing.commercial_return_changed" for event in ("on_submit", "on_cancel")}
+scheduler_events["daily"].append("reli_lims.sales_order_testing.reconcile_orders")

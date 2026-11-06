@@ -67,7 +67,7 @@ def validate(doc, method=None):
     old_rows = {row.name: row for row in previous.items} if previous else {}
     for row in doc.items:
         if not row.capability:
-            if row.source_quotation or row.source_quotation_item or row.technical_configuration:
+            if row.technical_configuration or ((row.source_quotation or row.source_quotation_item) and not row.get("source_sales_order_item")):
                 frappe.throw("技术快照和报价来源须关联检测能力。")
             continue
         old = old_rows.get(row.name)

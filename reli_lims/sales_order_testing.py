@@ -125,6 +125,8 @@ def validate_request_source(doc, method=None):
         source = rows.get(row.source_sales_order_item)
         if not source or source.custom_reli_business_type != TESTING or row.service_item != source.item_code:
             frappe.throw("委托只能引用当前订单的检测服务行。")
+        if row.source_quotation != source.prevdoc_docname or row.source_quotation_item != source.quotation_item:
+            frappe.throw("委托报价来源必须与订单行一致。")
         if row.source_sales_order_item in seen:
             frappe.throw("同一订单行不能在委托内重复。")
         other = frappe.db.sql("""select i.parent from `tabTest Request Item` i
@@ -183,8 +185,8 @@ def generate(order):
                 test_project=row.custom_reli_test_project, test_object=row.custom_reli_test_object,
                 standard=row.custom_reli_test_standard)
             request.append("items", dict(values, item_code=f"T{i:03d}", service_item=row.item_code,
-                source_sales_order_item=row.name, source_quotation=row.prevdoc_docname if config else None,
-                source_quotation_item=row.quotation_item if config else None,
+                source_sales_order_item=row.name, source_quotation=row.prevdoc_docname,
+                source_quotation_item=row.quotation_item,
                 requested_quantity=row.qty))
         # Internal automation is bounded by a locked, submitted order and its testing lines.
         request.insert(ignore_permissions=True)
@@ -226,8 +228,13 @@ def retry(name):
 def requests(name):
     order = frappe.get_doc("Sales Order", name)
     order.check_permission("read")
-    return frappe.get_list("Test Request", filters={"sales_order": name},
-        fields=["name", "title", "docstatus", "business_stage", "order_difference"], page_length=100)
+    rows = frappe.get_list("Test Request", filters={"sales_order": name},
+        fields=["name", "title", "docstatus", "business_stage", "order_difference", "order_scope_snapshot"], page_length=100)
+    for row in rows:
+        original = frappe.parse_json(row.pop("order_scope_snapshot", None))
+        if original and scope_hash(original) != scope_hash(order_scope(order)):
+            row.order_difference = "订单范围或数量已变化，请人工核对委托。"
+    return rows
 
 
 def changed(doc, method=None):
@@ -265,3 +272,16 @@ def accept_quotation(name, customer_contact):
                       "custom_reli_customer_accepted_at": frappe.utils.now_datetime()})
         quote.add_comment("Info", "客户接受报价，登记人 " + frappe.session.user)
     return quote.name
+
+
+def commercial_return_changed(doc, method=None):
+    names = {row.get("sales_order") or row.get("against_sales_order") for row in doc.items}
+    for name in sorted(filter(None, names)):
+        if frappe.db.exists("Test Request", {"sales_order": name}):
+            changed(frappe.get_doc("Sales Order", name))
+
+
+def reconcile_orders():
+    names = frappe.get_all("Test Request", filters={"sales_order": ["is", "set"], "order_scope_snapshot": ["is", "set"]}, pluck="sales_order")
+    for name in sorted(set(names)):
+        changed(frappe.get_doc("Sales Order", name))

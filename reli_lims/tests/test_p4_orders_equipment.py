@@ -173,7 +173,8 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         from reli_lims.equipment import validate_execution, available
         asset = self.equipment()
         row = frappe._dict(name="new", test_project=self.project.name, asset=asset.name, status="Ready", equipment_snapshot=None)
-        program = frappe._dict(items=[row], get_doc_before_save=lambda: None)
+        from types import SimpleNamespace
+        program = SimpleNamespace(items=[row], get_doc_before_save=lambda: None)
         validate_execution(program)
         self.assertEqual(row.equipment_snapshot["asset_name"], asset.asset_name)
         self.assertEqual(available(self.project.name)["rows"][0].name, asset.name)
@@ -192,7 +193,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         row.status = "Running"
         validate_execution(program)
         stored = frappe._dict(row.copy())
-        program.get_doc_before_save = lambda: frappe._dict(items=[stored])
+        program.get_doc_before_save = lambda: SimpleNamespace(items=[stored])
         asset.asset_name = "设备后来改名"
         asset.save()
         row.status = "Completed"
