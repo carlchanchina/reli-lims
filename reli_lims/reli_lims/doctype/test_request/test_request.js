@@ -65,7 +65,7 @@ frappe.ui.form.on('Test Request', {
                 ],
                 primary_action_label: __('生成链接'),
                 primary_action(values) {
-                    frm.call({method: 'send_customer_fill_link', args: values}).then(response => {
+                    frm.call('send_customer_fill_link', values).then(response => {
                         dialog.hide();
                         const data = response.message || {};
                         frappe.msgprint({
@@ -83,7 +83,7 @@ frappe.ui.form.on('Test Request', {
         }, group);
 
         frm.add_custom_button(__('查看客户链接'), () => {
-            frm.call('list_links').then(response => {
+            frappe.call('reli_lims.customer_share.list_links', {name: frm.doc.name}).then(response => {
                 const rows = response.message || [];
                 if (!rows.length) { frappe.msgprint(__('尚未生成客户填写链接。')); return; }
                 const body = rows.map(row => `<tr>
@@ -118,12 +118,12 @@ frappe.ui.form.on('Test Request', {
                     fields: [{fieldname: 'note', fieldtype: 'Small Text', label: __('审核意见')}],
                     primary_action_label: __('通过并允许正式受理'),
                     primary_action(values) {
-                        frm.call({method: 'review_customer_fill', args: {approve: 1, note: values.note}})
+                        frm.call('review_customer_fill', {approve: 1, note: values.note})
                             .then(() => { dialog.hide(); frm.reload_doc(); });
                     },
                     secondary_action_label: __('退回客户补充'),
                     secondary_action() {
-                        frm.call({method: 'review_customer_fill', args: {approve: 0, note: dialog.get_value('note')}})
+                        frm.call('review_customer_fill', {approve: 0, note: dialog.get_value('note')})
                             .then(() => { dialog.hide(); frm.reload_doc(); });
                     },
                 });

@@ -214,6 +214,7 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         request = self.request_for(order)
         share = send_link(request.name)
         with patch.object(native, "accept", return_value={"name": request.name}) as adapter:
-            accept("customer-request", {"name": request.name, "customer_shipping_details": "P4 software test"}, share["key"])
+            accept("customer-request", {"name": request.name, "customer_shipping_details": "P4 software test",
+                "samples": [{"sample_code": "S1", "product_name": "P4 软件样品", "quantity": 1}]}, share["key"])
         payload = json.loads(adapter.call_args.args[1])
         self.assertEqual(payload["delivery_date"], str(request.delivery_date))
