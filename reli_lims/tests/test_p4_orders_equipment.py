@@ -219,3 +219,16 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
                 "samples": [{"sample_code": "S1", "product_name": "P4 软件样品", "quantity": 1}]}, share["key"])
         payload = json.loads(adapter.call_args.args[1])
         self.assertEqual(payload["delivery_date"], str(request.delivery_date))
+
+    def test_customer_acceptance_cannot_be_forged_or_inherited_by_copy(self):
+        from frappe.utils import now_datetime
+        draft = frappe.copy_doc(self.quotation)
+        draft.custom_reli_customer_accepted_at = now_datetime()
+        draft.custom_reli_customer_accepted_by = "forged"
+        with self.assertRaises(frappe.ValidationError):
+            draft.insert()
+        accept_quotation(self.quotation.name, "P4 software acceptance")
+        self.quotation.reload()
+        copied = frappe.copy_doc(self.quotation)
+        self.assertFalse(copied.custom_reli_customer_accepted_at)
+        self.assertFalse(copied.custom_reli_customer_accepted_by)

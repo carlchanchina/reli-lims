@@ -34,8 +34,8 @@ def after_migrate():
                   field("custom_reli_calibration_until", "校准／检定有效期", "Date"),
                   field("custom_reli_scopes", "可执行检测项目与能力", "Table", "Laboratory Equipment Scope")]}
     fields["Quotation"] = [
-        field("custom_reli_customer_accepted_by", "客户接受记录", "Data", read_only=1, allow_on_submit=1),
-        field("custom_reli_customer_accepted_at", "客户接受时间", "Datetime", read_only=1, allow_on_submit=1),
+        field("custom_reli_customer_accepted_by", "客户接受记录", "Data", read_only=1, allow_on_submit=1, no_copy=1),
+        field("custom_reli_customer_accepted_at", "客户接受时间", "Datetime", read_only=1, allow_on_submit=1, no_copy=1),
         field("custom_reli_delivery_date", "承诺交期", "Date"),
     ]
     for name, (label, kind, options) in TECHNICAL.items():

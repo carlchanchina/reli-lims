@@ -28,9 +28,9 @@ def validate_item(doc, method=None):
 
 def validate_lines(doc, method=None):
     previous = doc.get_doc_before_save()
-    if doc.doctype == "Quotation" and previous:
+    if doc.doctype == "Quotation":
         for key in ("custom_reli_customer_accepted_by", "custom_reli_customer_accepted_at"):
-            if str(doc.get(key) or "") != str(previous.get(key) or ""):
+            if str(doc.get(key) or "") != str((previous.get(key) if previous else None) or ""):
                 frappe.throw("客户接受记录须通过授权业务操作登记。")
     old = {row.name: row for row in previous.items} if previous else {}
     for row in doc.items:

@@ -35,6 +35,7 @@ def main() -> int:
     parser.add_argument("--site", default="carl")
     parser.add_argument("--sites-path", default=DEFAULT_SITES)
     parser.add_argument("--apps-path", default=DEFAULT_APPS)
+    parser.add_argument("--request", help="仅撤销指定检测委托的客户链接")
     parser.add_argument("--reason", default="安全轮换：密钥曾出现在验收材料中")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -65,6 +66,8 @@ def main() -> int:
         share = frappe.get_doc("Web Form Request", row.name)
         refs = [(link.link_doctype, link.link_name) for link in share.references]
         target = next((name for doctype, name in refs if doctype == "Test Request"), None)
+        if args.request and target != args.request:
+            continue
         print(f"  {row.name} -> {target or '未绑定委托'} | key {mask(row.key)}")
         if args.dry_run:
             continue
@@ -85,6 +88,10 @@ def main() -> int:
                                fields=["name", "expires_on"])
     still_usable = [row for row in remaining
                     if not row.expires_on or get_datetime(row.expires_on) > now]
+    if args.request:
+        still_usable = [row for row in still_usable if any(
+            link.link_doctype == "Test Request" and link.link_name == args.request
+            for link in frappe.get_doc("Web Form Request", row.name).references)]
     print(f"已撤销 {revoked} 条；剩余未撤销 {len(remaining)} 条，其中仍可用 {len(still_usable)} 条"
           f"（已过期但未标撤销的属正常）")
     frappe.destroy()
