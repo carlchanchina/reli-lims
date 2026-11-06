@@ -45,6 +45,8 @@ def main() -> int:
 
     import frappe
 
+    args.sites_path = os.path.abspath(args.sites_path)
+    os.chdir(args.sites_path)
     frappe.init(site=args.site, sites_path=args.sites_path)
     frappe.connect()
     frappe.set_user("Administrator")
