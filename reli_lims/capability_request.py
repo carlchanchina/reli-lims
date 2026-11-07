@@ -36,30 +36,59 @@ def prepare_items(selections):
 
 
 @frappe.whitelist()
-def quotation_items(name):
-    from reli_lims.commercial_access import quotation_detail
+def quotation_items(name, customer=None, company=None):
+    """把报价的**可履约检测服务行**转成委托行草稿。
+
+    支持 ERPNexT 原生客户报价与 Frappe CRM 创建的商机报价：CRM 报价的
+    ``party_name`` 是商机，必须经企业主档解析出唯一客户后才允许导入。
+    普通服务、实物商品、已全部下单或已全部转委托的行一律不返回。
+    """
+    from reli_lims.commercial_access import quotation_facts
+    from reli_lims.quotation_origin import fulfillable_lines, quotation_customer
 
     if not frappe.has_permission("Test Request", "create"):
         frappe.throw("没有创建委托权限。", frappe.PermissionError)
     # 实验室角色不持有 Quotation 的 DocPerm，改读有界投影：编号、客户、公司、
     # 行号、数量与技术快照；不返回价格与税额。
-    quote = quotation_detail(name)
+    quote = quotation_facts(name)
     if not quote:
         frappe.throw("报价单不存在。")
-    if quote["docstatus"] == 2 or quote["quotation_to"] != "Customer":
+    if quote.docstatus == 2:
         frappe.throw("请选择有效客户报价。")
-    if quote["docstatus"] == 0 and not (frappe.local.site == "carl" and frappe.conf.developer_mode):
+    if quote.quotation_to not in ("Customer", "CRM Deal"):
+        frappe.throw("请选择客户或 CRM 商机来源的报价。")
+    if quote.docstatus == 0 and not (frappe.local.site == "carl" and frappe.conf.developer_mode):
         frappe.throw("请先提交报价。")
+    resolved_customer = quotation_customer(name)
+    if not resolved_customer:
+        frappe.throw("无法从该报价解析出唯一客户。CRM 商机报价须先关联企业主档并建立客户身份。")
+    if not frappe.db.exists("Customer", resolved_customer):
+        frappe.throw("报价关联的客户不存在或已删除，请先核对客户主档。")
+    if customer and customer != resolved_customer:
+        frappe.throw("报价客户与当前委托客户不一致。")
+    if company and quote.company and company != quote.company:
+        frappe.throw("报价公司与当前委托公司不一致。")
     items = []
-    for row in quote["items"]:
+    for row in fulfillable_lines(name):
         configuration = frappe.parse_json(row.get("custom_reli_configuration"))
-        if not configuration:
+        if not isinstance(configuration, dict) or not configuration:
             continue
-        items.append(dict(to_request_item(configuration), source_quotation=quote["name"],
-                          source_quotation_item=row["name"], quoted_quantity=row["qty"],
-                          requested_quantity=row["qty"]))
-    return {"customer": quote["party_name"], "company": quote["company"],
-            "quotation": quote["name"] if quote["docstatus"] == 1 else None, "items": items}
+        items.append(dict(
+            to_request_item(configuration),
+            source_quotation=quote_name(name, quote),
+            source_quotation_item=row["name"],
+            quoted_quantity=row["qty"],
+            requested_quantity=row["remaining_qty"],
+        ))
+    if not items:
+        frappe.throw("该报价没有可履约的检测服务行：已全部下单或已转委托，或只剩普通服务与实物商品。")
+    return {"customer": resolved_customer, "company": quote.company,
+            "quotation": quote_name(name, quote), "items": items}
+
+
+def quote_name(name, quote):
+    """Draft quotations are only linkable in developer previews."""
+    return name if quote.docstatus == 1 else None
 
 
 def validate(doc, method=None):
@@ -78,6 +107,7 @@ def validate(doc, method=None):
             if not row.source_quotation or not row.source_quotation_item:
                 frappe.throw("请同时保留报价单和报价行来源。")
             from reli_lims.commercial_access import quotation_facts, quotation_line
+            from reli_lims.quotation_origin import validate_line_capacity
             from reli_lims.sales_order_testing import quotation_customer
             quote = quotation_facts(row.source_quotation)
             if not quote:
@@ -94,6 +124,10 @@ def validate(doc, method=None):
             if config != quoted and (not old or config != frappe.parse_json(old.technical_configuration)):
                 config = build_configuration(row.capability, config.get("conditions", {}), "request")
             row.quoted_quantity = original.qty
+            # 价格快照只在服务端落库，不进入实验室视角的报价投影。
+            row.quoted_rate = original.rate
+            # 同一报价行不能被多张委托重复履约。
+            validate_line_capacity(row, doc)
             row.quotation_difference = int(
                 config != quoted or row.test_method != quoted["snapshot"]["test_method"]
                 or row.standard != quoted["snapshot"]["test_standard"]

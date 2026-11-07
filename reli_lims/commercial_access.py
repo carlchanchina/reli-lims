@@ -27,12 +27,19 @@ def _like(txt):
     return f"%{(txt or '').strip()}%"
 
 
+def _filters(filters):
+    """Link 字段的 filters 从 HTTP 进来是 JSON 字符串，表单内调用是 dict。"""
+    if isinstance(filters, str):
+        return frappe.parse_json(filters) or {}
+    return filters or {}
+
+
 @frappe.whitelist()
 def customer_query(doctype, txt, searchfield, start, page_len, filters):
     """客户选择器：只返回编号与客户名称。"""
     _require_lab()
-    filters = filters or {}
-    company = filters.get("company") if isinstance(filters, dict) else None
+    filters = _filters(filters)
+    company = filters.get("company")
     conditions = {}
     if company:
         conditions["company"] = company
@@ -50,31 +57,66 @@ def customer_query(doctype, txt, searchfield, start, page_len, filters):
 
 @frappe.whitelist()
 def quotation_query(doctype, txt, searchfield, start, page_len, filters):
-    """报价选择器：只返回已提交、且属于该客户/公司的报价单编号与日期。"""
-    _require_lab()
-    filters = filters or {}
-    conditions = {"docstatus": 1, "quotation_to": "Customer"}
-    if filters.get("customer"):
-        conditions["party_name"] = filters["customer"]
-    if filters.get("company"):
-        conditions["company"] = filters["company"]
-    rows = frappe.get_all(
-        "Quotation",
-        filters=conditions,
-        or_filters=[["name", "like", _like(txt)]],
-        fields=["name", "transaction_date", "party_name"],
-        order_by="transaction_date desc",
-        limit_start=int(start or 0),
-        limit_page_length=int(page_len or 20),
+    """报价选择器：已提交、属于该客户/公司，且仍有可履约检测服务行。
+
+    客户来源既可以是原生 ``quotation_to = "Customer"``，也可以是 Frappe CRM
+    创建的 ``quotation_to = "CRM Deal"``。后者按企业主档解析出客户后再匹配，
+    绝不因为 ``quotation_to`` 是 CRM 商机就放行。
+    """
+    from reli_lims.quotation_origin import (
+        CRM_DEAL,
+        deal_names_for_customer,
+        fulfillable_exists_sql,
+        quotation_customer_map,
     )
-    return [[row.name, f"{row.name}｜{row.transaction_date}｜{row.party_name}"] for row in rows]
+
+    _require_lab()
+    filters = _filters(filters)
+    conditions = ["q.docstatus = 1", "q.quotation_to in ('Customer', 'CRM Deal')"]
+    params = {
+        "start": int(start or 0),
+        "page_len": int(page_len or 20),
+    }
+    if filters.get("company"):
+        conditions.append("q.company = %(company)s")
+        params["company"] = filters["company"]
+    if filters.get("customer"):
+        customer = filters["customer"]
+        params["customer"] = customer
+        deals = deal_names_for_customer(customer)
+        if deals:
+            params["deals"] = tuple(deals)
+            conditions.append(
+                "((q.quotation_to = 'Customer' and q.party_name = %(customer)s)"
+                f" or (q.quotation_to = '{CRM_DEAL}' and q.party_name in %(deals)s))"
+            )
+        else:
+            conditions.append("(q.quotation_to = 'Customer' and q.party_name = %(customer)s)")
+    if (txt or "").strip():
+        conditions.append("q.name like %(txt)s")
+        params["txt"] = _like(txt)
+    conditions.append(fulfillable_exists_sql("q"))
+    rows = frappe.db.sql(
+        f"""select q.name, q.transaction_date, q.quotation_to, q.party_name
+        from `tabQuotation` q
+        where {" and ".join(conditions)}
+        order by q.transaction_date desc, q.name desc
+        limit %(start)s, %(page_len)s""",
+        params,
+        as_dict=True,
+    )
+    customers = quotation_customer_map(rows)
+    return [
+        [row.name, f"{row.name}｜{row.transaction_date}｜{customers.get(row.name) or row.party_name}"]
+        for row in rows
+    ]
 
 
 @frappe.whitelist()
 def sales_order_query(doctype, txt, searchfield, start, page_len, filters):
     """销售订单选择器：只返回已提交、且属于该客户/公司的单据编号与日期。"""
     _require_lab()
-    filters = filters or {}
+    filters = _filters(filters)
     conditions = {"docstatus": 1}
     if filters.get("customer"):
         conditions["customer"] = filters["customer"]
@@ -125,9 +167,10 @@ def quotation_detail(name):
 
 
 def quotation_line(name):
-    """单条报价行：能力与技术快照。"""
+    """单条报价行：能力、技术快照与单价（仅服务端校验与快照使用）。"""
     return frappe.db.get_value("Quotation Item", name,
-                               ["parent", "qty", "custom_reli_capability", "custom_reli_configuration"],
+                               ["parent", "qty", "rate", "custom_reli_capability",
+                                "custom_reli_configuration"],
                                as_dict=True)
 
 
