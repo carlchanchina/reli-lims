@@ -7,7 +7,7 @@ FIELDS = [
  {'fieldname':'customer_shipping_details','label':'客户送样信息','fieldtype':'Small Text'},
  {'fieldname':'execution_company','label':'执行公司','fieldtype':'Link','options':'Company'},
  {'fieldname':'lab_intake_notes','label':'受理信息','fieldtype':'Small Text'},
- {'fieldname':'customer_confirmation_state','label':'客户确认状态','fieldtype':'Select','options':'Draft\nAwaiting Customer Confirmation\nCustomer Confirmed\nNeeds Reconfirmation\nAccepted','default':'Draft','read_only':1},
+ {'fieldname':'customer_confirmation_state','label':'客户确认状态','fieldtype':'Select','options':'Draft\nAwaiting Customer Confirmation\nCustomer Confirmed\nNeeds Reconfirmation\nAwaiting Lab Review\nLab Reviewed\nAccepted','default':'Draft','read_only':1},
  {'fieldname':'customer_confirmed_by','label':'客户确认人','fieldtype':'Data','read_only':1},
  {'fieldname':'customer_confirmed_at','label':'客户确认时间','fieldtype':'Datetime','read_only':1},
  {'fieldname':'customer_confirmation_fingerprint','label':'客户确认版本','fieldtype':'Data','read_only':1},

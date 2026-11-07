@@ -109,33 +109,35 @@ def import_capability_source(source_name):
 
 @frappe.whitelist(methods=["POST"])
 def confirm_capability(name):
+    """单条审核入口；内部走批量工作流，保证每条都有审核记录。"""
+    from reli_lims.capability_review import review
+
     _require_role("Lab Manager", "Lab Reviewer", "System Manager")
-    doc = frappe.get_doc("Laboratory Capability", name)
-    if doc.status not in {"待确认", "已确认"}:
-        frappe.throw(_("当前状态不能确认。"))
-    doc.status = "已确认"
-    doc.save()
-    return doc.name
+    result = review([name], "approve", note=_("单条审核通过"))
+    return result["done"][0] if result["done"] else name
 
 
 @frappe.whitelist(methods=["POST"])
 def publish_capability(name):
+    """单条发布入口；演示能力在单条操作里显式允许（界面可见、审计可查）。"""
+    from reli_lims.capability_review import publish
+
     _require_role("Lab Manager", "System Manager")
     doc = frappe.get_doc("Laboratory Capability", name)
-    if doc.status != "已确认":
-        frappe.throw(_("只有已确认的能力才能发布。"))
-    doc.status = "已发布"
-    doc.save()
-    return get_public_capability(doc.name)
+    result = publish([name], note=_("单条发布"), include_demo=bool(doc.get("demo_only")))
+    return get_public_capability(result["published"][0])
 
 
 @frappe.whitelist(methods=["POST"])
 def unpublish_capability(name):
+    from reli_lims.capability_review import _log
+
     _require_role("Lab Manager", "System Manager")
     doc = frappe.get_doc("Laboratory Capability", name)
     if doc.status != "已发布":
         frappe.throw(_("当前能力未发布。"))
     doc.status = "已确认"
+    _log(doc, "退回补充", "已发布", _("取消发布"))
     doc.save()
     return doc.name
 
@@ -157,6 +159,8 @@ def get_public_capability(name):
         "limitation": doc.limitation,
         "accreditation_type": doc.accreditation_type,
         "certificate_no": doc.certificate_no,
+        "demo_only": bool(doc.get("demo_only")),
+        "scope_effective_date": str(doc.get("scope_effective_date") or ""),
     }
 
 

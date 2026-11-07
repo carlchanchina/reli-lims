@@ -50,9 +50,17 @@ after_migrate.append("reli_lims.capability_quotation.after_migrate")
 after_migrate.append("reli_lims.capability_catalog.after_migrate")
 after_migrate.append("reli_lims.patches.p161_legacy_dictionary_cleanup.after_migrate")
 after_migrate.append("reli_lims.workbench_navigation.after_migrate")
+after_migrate.append("reli_lims.ui_terms.after_migrate")
 doctype_js["Quotation"] = ["public/js/document_output.js", "public/js/capability_quotation.js"]
 doc_events["Quotation"] = {"validate": "reli_lims.capability_quotation.validate"}
 doctype_js["Test Request"] = ["public/js/document_output.js", "public/js/capability_request.js"]
 doc_events["Test Request"]["validate"] = "reli_lims.capability_request.validate"
 doctype_js["Item"] = "public/js/item_relations.js"
 jinja = {"methods": ["reli_lims.execution_records.print_context"]}
+
+# 客户共同填写：复用原生 Web Form + Web Form Request，不引入新的表单系统。
+after_migrate.append("reli_lims.customer_share_setup.after_migrate")
+override_whitelisted_methods = {
+    "frappe.website.doctype.web_form.web_form.accept": "reli_lims.customer_share.accept",
+}
+doc_events["Test Request"]["on_trash"] = "reli_lims.customer_share.prevent_linked_trash"

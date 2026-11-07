@@ -387,6 +387,13 @@ Laboratory Capability,实验室能力
 Capability Source,能力来源
 Historical Preview,历史数据预览
 Reli CNAS Quotation,CNAS 检测报价单
+Awaiting Customer Confirmation,等待客户确认
+Customer Confirmed,客户已确认
+Needs Reconfirmation,需要重新确认
+Awaiting Lab Review,等待实验室审核
+Lab Reviewed,实验室已审核
+Accepted,已受理
+Client,客户
 Item,服务商品
 Items,服务商品
 Item Name,服务商品名称
@@ -395,3 +402,18 @@ Add Item,添加服务商品
 Testing Fulfillment Center,检测履约中心
 Reli Test Program,试验方案与记录
 Reli Testing Report,检测报告（含试验条件）
+CNAS,CNAS 认可
+CMA,CMA 资质认定
+PDF,PDF 文件
+Excel,Excel 文件
+Revoked,已撤销
+Mercur Offer/Product ID,Mercur 商品标识
+Wiki Page ID,Wiki 页面标识
+Test Project Object,检测项目对象
+Test Project Standard,检测项目标准
+Test Request Share Event,委托共享操作记录
+Capability Review Log,能力审核记录
+Review Log,审核记录
+Demo Only,演示能力（非认可）
+Blocked,被拦截
+Publishable,可发布

@@ -1,0 +1,135 @@
+{
+  "actions": [],
+  "autoname": "hash",
+  "creation": "2026-11-05 10:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "test_request",
+    "web_form_request",
+    "event",
+    "column_break_main",
+    "actor_type",
+    "actor",
+    "actor_ip",
+    "event_time",
+    "section_break_changes",
+    "changed_fields",
+    "detail"
+  ],
+  "fields": [
+    {
+      "fieldname": "test_request",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "检测委托申请",
+      "options": "Test Request",
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "web_form_request",
+      "fieldtype": "Link",
+      "label": "客户填写链接",
+      "options": "Web Form Request",
+      "read_only": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "event",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "操作",
+      "options": "发送客户填写链接\n撤销客户填写链接\n客户打开链接\n客户保存\n客户保存（需重新确认）\n客户确认提交\n实验室审核通过\n实验室退回补充",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_main",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "actor_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "操作者类型",
+      "options": "客户\n实验室\n系统",
+      "read_only": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "actor",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "操作者",
+      "read_only": 1
+    },
+    {
+      "fieldname": "actor_ip",
+      "fieldtype": "Data",
+      "label": "来源 IP",
+      "read_only": 1
+    },
+    {
+      "fieldname": "event_time",
+      "fieldtype": "Datetime",
+      "in_list_view": 1,
+      "label": "操作时间",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_changes",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "changed_fields",
+      "fieldtype": "Long Text",
+      "label": "重要字段变更",
+      "read_only": 1
+    },
+    {
+      "fieldname": "detail",
+      "fieldtype": "Small Text",
+      "label": "说明",
+      "read_only": 1
+    }
+  ],
+  "grid_page_length": 50,
+  "in_create": 1,
+  "links": [],
+  "modified": "2026-11-05 10:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Reli LIMS",
+  "name": "Test Request Share Event",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "email": 0,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Manager",
+      "share": 1,
+      "write": 0
+    },
+    {
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Engineer"
+    },
+    {
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Lab Reviewer"
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": []
+}

@@ -1,8 +1,8 @@
 """Native pre-submit guard; Project creation remains in the existing on_submit."""
-def confirmation_error(data, current, missing):
+def confirmation_error(data, current, missing, states=('Customer Confirmed', 'Lab Reviewed')):
     if data.get('docstatus') != 0:
         return '只能正式受理未提交的检测委托。'
-    if data.get('customer_confirmation_state') != 'Customer Confirmed':
+    if data.get('customer_confirmation_state') not in states:
         return '请先取得当前委托内容的客户确认。'
     if not data.get('customer_confirmed_by') or not data.get('customer_confirmed_at') or data.get('customer_confirmation_fingerprint') != current:
         return '客户确认已失效，请客户重新确认。'
@@ -16,8 +16,12 @@ def validate_submission(doc, stored):
     from reli_lims.request_commercial import validate_commercial_links
     # During native before_submit the in-memory docstatus is already 1;
     # the locked database row must still be Draft.
+    from reli_lims.customer_share import LEGACY_SUBMITTABLE_STATES, SUBMITTABLE_STATES, has_share
     data=doc.as_dict();data['docstatus']=stored.docstatus
-    error=confirmation_error(data,current_fingerprint(doc),confirmation_blockers(doc))
+    # 走客户共同填写的委托必须完成实验室审核；未启用该流程的历史委托保持原行为。
+    request_name = doc.get('name') if hasattr(doc, 'get') else getattr(doc, 'name', None)
+    states = SUBMITTABLE_STATES if request_name and has_share(request_name) else LEGACY_SUBMITTABLE_STATES
+    error=confirmation_error(data,current_fingerprint(doc),confirmation_blockers(doc),states)
     if error:frappe.throw(error)
     validate_commercial_links(doc)
     customer=frappe.get_doc('Customer',doc.customer)

@@ -9,12 +9,23 @@ from reli_lims.validation import require_role
 
 
 def create_project(request):
-    """Called only inside the native request submission transaction."""
-    frappe.get_doc('Customer', request.customer).check_permission('read')
-    frappe.get_doc('Company', request.company).check_permission('read')
+    """Called only inside the native request submission transaction.
+
+    履约项目是委托受理的系统副作用，不是操作人在编辑 Project：这里不要求
+    操作人对 Customer / Project 有 DocPerm（否则必须给实验室内勤叠加 Sales User
+    / Projects User，等于授予报价、销售订单等无关权限）。改为校验委托本身可读、
+    客户与公司真实存在，再以受控内部写入创建项目，并记录允许的角色。
+    """
+    require_role('Lab Manager', 'System Manager')
+    request.check_permission('read')
+    if not frappe.db.exists('Customer', request.customer):
+        frappe.throw(_('委托单引用的客户不存在，无法受理。'), frappe.ValidationError)
+    if not frappe.db.exists('Company', request.company):
+        frappe.throw(_('委托单引用的公司不存在，无法受理。'), frappe.ValidationError)
     project = frappe.get_doc(dict(doctype='Project',
         project_name=f'{request.name} - {request.title}', customer=request.customer,
-        company=request.company, expected_end_date=request.delivery_date, status='Open')).insert()
+        company=request.company, expected_end_date=request.delivery_date, status='Open')).insert(
+            ignore_permissions=True)
     return project.name
 
 
@@ -26,7 +37,9 @@ def _confirmed_request(name):
     request.reload()
     if request.docstatus != 1 or not request.project:
         frappe.throw(_('请先确认委托单，再登记收样或生成检测方案。'))
-    frappe.get_doc('Project', request.project).check_permission('read')
+    # 履约项目由受理自动创建，工程师只需确认它仍然存在，不需要 Project 的 DocPerm。
+    if not frappe.db.exists('Project', request.project):
+        frappe.throw(_('该委托关联的履约项目不存在，请联系内勤核对。'), frappe.ValidationError)
     return request
 
 

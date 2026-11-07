@@ -9,9 +9,12 @@ def build_context(doc, program):
               ('编制人', doc.get('engineer')), ('审核人', doc.get('reviewer')),
               ('总体结论', doc.get('overall_conclusion'))]
     pairs = program.get('sample_assignments') or []
+    sample_labels = {row.get('sample'): row.get('sample_label') or row.get('sample')
+                     for row in program.get('samples') or []}
     rows = [[i, r.get('test_project_label') or r.get('test_method_label') or r.get('test_method'),
              r.get('standard_label') or r.get('standard'),
-             ', '.join(p.get('sample') or '' for p in pairs if p.get('item_code') == r.get('item_code')),
+             ', '.join(sample_labels.get(p.get('sample'), p.get('sample') or '')
+                       for p in pairs if p.get('item_code') == r.get('item_code')),
              r.get('result'), r.get('conclusion')]
             for i, r in enumerate(program.get('items') or [], 1)]
     conditions = [[r.get('test_project_label') or r.get('test_method_label') or r.get('test_method'),

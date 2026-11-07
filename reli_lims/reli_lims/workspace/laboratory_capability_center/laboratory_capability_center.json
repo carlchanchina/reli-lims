@@ -8,7 +8,7 @@
   "icon": "branch",
   "public": 1,
   "is_hidden": 0,
-  "sequence_id": 2,
+  "sequence_id": 4,
   "for_user": "",
   "parent_page": "",
   "roles": [
@@ -72,7 +72,15 @@
   ],
   "shortcuts": [
     {
-      "label": "筛选能力",
+      "label": "待确认能力",
+      "type": "DocType",
+      "link_to": "Laboratory Capability",
+      "doc_view": "List",
+      "stats_filter": "{\"status\": \"待确认\"}",
+      "color": "Red"
+    },
+    {
+      "label": "能力审核台",
       "type": "Page",
       "link_to": "reli-capability-hub",
       "color": "Blue"

@@ -47,6 +47,27 @@ def test_workbench_links_remain_native_and_are_translated():
     assert 'href="#"' not in home
 
 
+def test_workspace_labels_are_chinese_unique_and_ordered():
+    docs = [json.loads(path.read_text()) for path in (ROOT / 'reli_lims/workspace').glob('*/*.json')]
+    labels = [doc['label'] for doc in docs]
+    assert len(docs) == 4, labels
+    assert len(set(labels)) == 4, f'重复工作区标签：{labels}'
+    assert set(labels) == {'工作台首页', '商业接单中心', '检测履约中心', '实验室能力中心'}
+    for label in labels:
+        assert not re.search('[A-Za-z]', label), f'侧边栏文案必须为中文：{label}'
+    sequences = [doc['sequence_id'] for doc in docs]
+    assert len(set(sequences)) == 4, f'工作区排序重复：{sequences}'
+
+
+def test_no_legacy_dictionary_references_remain():
+    legacy = ('Detection Project', 'Detection Object', 'Detection Standard')
+    offenders = []
+    for path in (ROOT / 'reli_lims/doctype').glob('*/*.json'):
+        text = path.read_text()
+        offenders.extend(f'{path.parent.name}:{term}' for term in legacy if f'"{term}"' in text)
+    assert not offenders, offenders
+
+
 def test_scope_errors_translate_and_preserve_sample_identifiers(monkeypatch):
     table = translations()
     monkeypatch.setitem(sys.modules, 'frappe', SimpleNamespace(_=lambda message, **kwargs: table.get(message, message)))

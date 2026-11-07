@@ -169,5 +169,6 @@
   "sort_field": "creation",
   "sort_order": "DESC",
   "states": [],
-  "track_changes": 1
+  "track_changes": 1,
+  "default_print_format": "Reli Testing Report"
 }

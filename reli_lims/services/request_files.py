@@ -14,7 +14,9 @@ def photo_file(request, url):
     if not name or PurePosixPath(url).suffix.lower() not in IMAGE_EXTENSIONS:
         frappe.throw(_('请将样品照片作为私有附件上传到本委托单。'))
     file = frappe.get_doc('File', name)
-    file.check_permission('read')
+    from reli_lims.customer_share import in_customer_save
+    if not in_customer_save():
+        file.check_permission('read')
     return file
 
 
