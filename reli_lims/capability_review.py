@@ -141,7 +141,7 @@ def _row(doc):
 def filter_options():
     """筛选下拉的数据源；只返回编号与展示名，供能力中心审核台使用。"""
     frappe.has_permission("Laboratory Capability", "read", throw=True)
-    laboratories = frappe.get_all("Laboratory Profile", fields=["name", "laboratory_name"],
+    laboratories = frappe.get_list("Laboratory Profile", fields=["name", "laboratory_name"],
                                   order_by="laboratory_name", limit_page_length=200)
     projects = frappe.get_all("Test Project", fields=["name", "project_name"],
                               order_by="project_name", limit_page_length=500)

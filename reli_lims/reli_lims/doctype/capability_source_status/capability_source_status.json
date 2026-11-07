@@ -1,0 +1,45 @@
+{
+  "doctype": "DocType",
+  "name": "Capability Source Status",
+  "module": "Reli LIMS",
+  "autoname": "format:CSTATUS-{############}",
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "field_order": [
+    "source",
+    "state",
+    "reason",
+    "actor"
+  ],
+  "fields": [
+    {
+      "fieldname": "source",
+      "fieldtype": "Link",
+      "label": "Source",
+      "options": "Capability Source"
+    },
+    {
+      "fieldname": "state",
+      "fieldtype": "Select",
+      "label": "State",
+      "options": "revoked\nsuperseded"
+    },
+    {
+      "fieldname": "reason",
+      "fieldtype": "Small Text",
+      "label": "Reason"
+    },
+    {
+      "fieldname": "actor",
+      "fieldtype": "Link",
+      "label": "Actor",
+      "options": "User"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    }
+  ]
+}

@@ -48,9 +48,16 @@ def import_capability_source(source_name):
         method_name = frappe.db.get_value("Test Method", {"method_name": method}, "name") or (
             method if frappe.db.exists("Test Method", method) else None
         )
-        standard_name = frappe.db.get_value("Test Standard", {"standard_code": standard}, "name") or (
-            standard if frappe.db.exists("Test Standard", standard) else None
-        )
+        standard_name = standard if frappe.db.exists("Test Standard", standard) else None
+        if not standard_name:
+            standard_filters = {"standard_code": standard}
+            if item.get("standard_version") or item.get("version"):
+                standard_filters["version"] = item.get("standard_version") or item.get("version")
+            matches = frappe.get_all("Test Standard", filters=standard_filters, pluck="name", limit_page_length=2)
+            if len(matches) > 1:
+                skipped.append({"row": index, "reason": "STANDARD_AMBIGUOUS"})
+                continue
+            standard_name = matches[0] if matches else None
         if not method_name or not standard_name:
             skipped.append({"row": index, "reason": "无法匹配现有检测项目或检测标准"})
             continue
@@ -136,6 +143,7 @@ def unpublish_capability(name):
     doc = frappe.get_doc("Laboratory Capability", name)
     if doc.status != "已发布":
         frappe.throw(_("当前能力未发布。"))
+    doc.check_permission("write")
     doc.status = "已确认"
     _log(doc, "退回补充", "已发布", _("取消发布"))
     doc.save()
@@ -173,3 +181,15 @@ def list_public_capabilities(laboratory=None):
     names = frappe.get_all("Laboratory Capability", filters=filters,
                            pluck="name", order_by="name", limit_page_length=100)
     return [get_public_capability(name) for name in names]
+
+
+@frappe.whitelist(methods=["GET"])
+def list_bridge_eligibility(cursor=None, limit=100):
+    from reli_lims.capability_eligibility import list_events
+    return list_events(cursor, limit)
+
+
+@frappe.whitelist(methods=["POST"])
+def get_bridge_eligibility(capability_ids):
+    from reli_lims.capability_eligibility import get_current
+    return get_current(capability_ids)
