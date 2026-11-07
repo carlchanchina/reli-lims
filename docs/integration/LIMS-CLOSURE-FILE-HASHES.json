@@ -1,0 +1,150 @@
+{
+  "base": "c79113e9f01c5dac8b55deae30acbe59804d4b9d",
+  "dev_head": "2579615a9cc2c2658c799cfbdafd3bdfc8afba8d",
+  "files": [
+    {
+      "path": "reli_lims/capability_api.py",
+      "sha256": "2f309ded2abf1abfacf2af4c59cb459aa138a049d8476ca8b3416971db7d8f9e",
+      "base_sha256": "860cad12f99f2e20932b88a2b773f6955e1a30e4c98bd567d572a037cab2e766",
+      "dev_sha256": "860cad12f99f2e20932b88a2b773f6955e1a30e4c98bd567d572a037cab2e766"
+    },
+    {
+      "path": "reli_lims/capability_eligibility.py",
+      "sha256": "d51831666394511241d43748e89112d35f1d5284b1c4e83f6848d80ebfc6162e",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/capability_review.py",
+      "sha256": "23816d93d06d5d3fbd7784172ace99338ec4d40b86834a199bcc33952476bb68",
+      "base_sha256": "aeae815d99326988554e893a1e141c3629017befc09cb092c7fc27970e1d7803",
+      "dev_sha256": "aeae815d99326988554e893a1e141c3629017befc09cb092c7fc27970e1d7803"
+    },
+    {
+      "path": "reli_lims/hooks.py",
+      "sha256": "93fa6ef2cfa54f74f232edcb8262c4132afd0fcfd6c53d34aa2d9fd0ca10fb59",
+      "base_sha256": "e9c55c4264dfaff8314e81c56399fc0496ba20e8d0a9213186a53a8f70bbab49",
+      "dev_sha256": "e9c55c4264dfaff8314e81c56399fc0496ba20e8d0a9213186a53a8f70bbab49"
+    },
+    {
+      "path": "reli_lims/integration_access.py",
+      "sha256": "209c039f7142278775fc71d31797e5bbf929d0a5410e39fad4d2117cf749f470",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/integration_setup.py",
+      "sha256": "1e9431f5e7dfc04e6e83cc7655dc49882a145756fa9df6a3f71802f19afd9f1d",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/portal_capabilities.py",
+      "sha256": "0c0cdede3d91cc7dbaa9a2dc426bb96e77774f84ac2aa9ed9c0a04dbac119002",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/portal_sales_order.py",
+      "sha256": "51080ba076e415e95217dc748a5b613fade64aae75a5f2485ba445b1f00a68af",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/quotation_origin.py",
+      "sha256": "b1e3a3a98d088e5cf6ce4ce96fbf8d48d7a20cf176208164d98551766c951dae",
+      "base_sha256": "bca0f0ab9b1c18bfd71a4b781a5fcd7bebb023722eb576e4b51777c4245c91f1",
+      "dev_sha256": "bca0f0ab9b1c18bfd71a4b781a5fcd7bebb023722eb576e4b51777c4245c91f1"
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_eligibility_event/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_eligibility_event/capability_eligibility_event.json",
+      "sha256": "c6d9028d4b2322843f7f9b3e74bf254547bc17f9de72f9bb2d8dcee18b429ea5",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_eligibility_event/capability_eligibility_event.py",
+      "sha256": "37cf7a5048017dc90f45173c3024a98cf365640fae5261815158c3a4c719e854",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_source_status/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_source_status/capability_source_status.json",
+      "sha256": "5da34ebb1b7adb5929b02d855f3b374b163a7c2218c37c8410f3eb960a130b63",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_source_status/capability_source_status.py",
+      "sha256": "0b68616b39fbb2ef14835b3dd1e8cbd82c75b3b864d351e539a0e1cc16e9329a",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_upload/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_upload/capability_upload.json",
+      "sha256": "af63f47fd1b71941869565b8d0a855891bf88c1c587231566f8c37cba4ad39d1",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/capability_upload/capability_upload.py",
+      "sha256": "39766cbbe5975d253bc74183cd48d18e09797225d00a130fda74f90e3dec258a",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/quotation_portal_acceptance/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/quotation_portal_acceptance/quotation_portal_acceptance.json",
+      "sha256": "8a6781d044cac1f286db49978c167e69e223bb2006957a2309b61f4546435e5f",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/reli_lims/doctype/quotation_portal_acceptance/quotation_portal_acceptance.py",
+      "sha256": "0bf2653f70e06a90598f4616c8779adef0dbd3902bc4e3fd9676ed7b7c575f33",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "reli_lims/sales_order_testing.py",
+      "sha256": "0e7afcb22fa173cfb07bfc397c23dcf03324137bc379e39fe381bdbb97a0d301",
+      "base_sha256": "7787f650cba08e836f04d742d4f6e3ab4e4ab94b3516cade5bdf870d20c30d50",
+      "dev_sha256": "7787f650cba08e836f04d742d4f6e3ab4e4ab94b3516cade5bdf870d20c30d50"
+    },
+    {
+      "path": "tests/test_four_repo_closure.py",
+      "sha256": "078659e3f3514d82d2ea61d3bf2840e8c4eca421d06df0102d90efbc4ff4008a",
+      "base_sha256": null,
+      "dev_sha256": null
+    },
+    {
+      "path": "tests/test_request_commercial.py",
+      "sha256": "34bb6fdf3268a0756b73d922a085e171c103db6a7000548888df9b162fdf4816",
+      "base_sha256": "30ee04809db871294c802648d341eea7a653e786f786e3b4d9a8e366d7cd3980",
+      "dev_sha256": "30ee04809db871294c802648d341eea7a653e786f786e3b4d9a8e366d7cd3980"
+    }
+  ]
+}

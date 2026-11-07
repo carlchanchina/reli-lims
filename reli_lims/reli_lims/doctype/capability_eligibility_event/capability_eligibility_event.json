@@ -1,0 +1,43 @@
+{
+  "doctype": "DocType",
+  "name": "Capability Eligibility Event",
+  "module": "Reli LIMS",
+  "autoname": "format:ELIG-{############}",
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "field_order": [
+    "capability",
+    "revision",
+    "payload_hash",
+    "snapshot"
+  ],
+  "fields": [
+    {
+      "fieldname": "capability",
+      "fieldtype": "Link",
+      "label": "Capability",
+      "options": "Laboratory Capability"
+    },
+    {
+      "fieldname": "revision",
+      "fieldtype": "Int",
+      "label": "Revision"
+    },
+    {
+      "fieldname": "payload_hash",
+      "fieldtype": "Data",
+      "label": "Payload Hash"
+    },
+    {
+      "fieldname": "snapshot",
+      "fieldtype": "JSON",
+      "label": "Snapshot"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    }
+  ]
+}

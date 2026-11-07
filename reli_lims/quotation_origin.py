@@ -13,6 +13,7 @@ stay behind the commercial boundary except for the explicit rate snapshot that
 the request line keeps for fulfillment.
 """
 import frappe
+import math
 from frappe import _
 from frappe.utils import flt
 
@@ -251,27 +252,56 @@ def fulfillable_exists_sql(alias="q"):
     )"""
 
 
-def validate_line_capacity(row, doc):
-    """Server-side guard: a quotation line cannot be fulfilled beyond its quantity."""
-    if not row.get("source_quotation_item") or row.get("source_sales_order_item"):
+def lock_quotation_lines(names):
+    """Both fulfillment paths acquire the same parent and row locks in order."""
+    names = sorted(set(filter(None, names)))
+    if not names:
         return
-    source = frappe.db.get_value(
-        "Quotation Item",
-        row.source_quotation_item,
-        ["parent", "qty"],
-        as_dict=True,
+    placeholders = ",".join(["%s"] * len(names))
+    parents = frappe.db.sql(
+        f"SELECT DISTINCT parent FROM `tabQuotation Item` WHERE name IN ({placeholders}) ORDER BY parent",
+        names, pluck=True,
     )
+    for parent in parents:
+        frappe.db.sql("SELECT name FROM `tabQuotation` WHERE name=%s FOR UPDATE", parent)
+    for name in names:
+        frappe.db.sql("SELECT name FROM `tabQuotation Item` WHERE name=%s FOR UPDATE", name)
+
+
+def validate_order_capacity(doc):
+    rows = [row for row in doc.items if row.get("quotation_item")]
+    lock_quotation_lines([row.quotation_item for row in rows])
+    proposed = {}
+    for row in rows:
+        proposed[row.quotation_item] = proposed.get(row.quotation_item, 0) + flt(row.qty)
+    for name, quantity in proposed.items():
+        source = frappe.db.get_value("Quotation Item", name, ["qty", "parent"], as_dict=True)
+        if not source:
+            frappe.throw(_("报价行来源无效。"))
+        ordered = flt(frappe.db.sql(
+            """select coalesce(sum(i.qty), 0) from `tabSales Order Item` i
+            join `tabSales Order` so on so.name=i.parent
+            where i.quotation_item=%s and so.docstatus<2 and so.name!=%s""",
+            (name, doc.name or "\0"),
+        )[0][0])
+        if not math.isfinite(quantity) or quantity < 0 or ordered + requested_quantity(name) + quantity > flt(source.qty) + 1e-6:
+            frappe.throw("CAPACITY_CONFLICT")
+
+
+def validate_line_capacity(row, doc):
+    """Validate the entire direct-request allocation under the shared source lock."""
+    if not row.get("source_quotation_item") or row.get("source_sales_order_item") or doc.docstatus == 2:
+        return
+    direct = [item for item in doc.items if item.get("source_quotation_item")
+              and not item.get("source_sales_order_item")]
+    lock_quotation_lines([item.source_quotation_item for item in direct])
+    source = frappe.db.get_value("Quotation Item", row.source_quotation_item,
+                                ["parent", "qty"], as_dict=True)
     if not source or source.parent != row.source_quotation:
         frappe.throw(_("报价行来源无效。"))
-    ordered = ordered_quantity(row.source_quotation_item)
-    if ordered >= flt(source.qty):
-        frappe.throw(_("该报价行已转销售订单，请从销售订单生成委托。"))
-    requested = requested_quantity(row.source_quotation_item, exclude_request=doc.get("name") or "")
-    if requested + flt(row.requested_quantity) > flt(source.qty) + 1e-6:
-        frappe.throw(
-            _("报价行 {0} 累计委托数量 {1} 超过报价数量 {2}。").format(
-                row.source_quotation_item,
-                flt(requested + flt(row.requested_quantity)),
-                flt(source.qty),
-            )
-        )
+    quantity = sum(flt(item.requested_quantity) for item in direct
+                   if item.source_quotation_item == row.source_quotation_item)
+    used = ordered_quantity(row.source_quotation_item) + requested_quantity(
+        row.source_quotation_item, exclude_request=doc.get("name") or "")
+    if not math.isfinite(quantity) or quantity < 0 or used + quantity > flt(source.qty) + 1e-6:
+        frappe.throw("CAPACITY_CONFLICT")

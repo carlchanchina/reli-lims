@@ -27,6 +27,9 @@ def validate_item(doc, method=None):
 
 
 def validate_lines(doc, method=None):
+    if doc.doctype == "Sales Order" and doc.docstatus != 2:
+        from reli_lims.quotation_origin import validate_order_capacity
+        validate_order_capacity(doc)
     previous = doc.get_doc_before_save()
     if doc.doctype == "Quotation":
         for key in ("custom_reli_customer_accepted_by", "custom_reli_customer_accepted_at"):
@@ -345,6 +348,12 @@ def before_cancel(doc, method=None):
 def accept_quotation(name, customer_contact):
     quote = frappe.get_doc("Quotation", name, for_update=True)
     quote.check_permission("write")
+    return record_customer_acceptance(quote, customer_contact)
+
+
+def record_customer_acceptance(quote, customer_contact):
+    """Internal business operation. Callers establish document write or Bridge scope."""
+    name = quote.name
     customer = quotation_customer(name)
     if (quote.docstatus != 1 or quote.quotation_to not in ("Customer", "CRM Deal") or not customer
             or quote.status in ("Lost", "Cancelled", "Expired", "Closed")):

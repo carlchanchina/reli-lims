@@ -1,0 +1,57 @@
+{
+  "doctype": "DocType",
+  "name": "Quotation Portal Acceptance",
+  "module": "Reli LIMS",
+  "autoname": "hash",
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "field_order": [
+    "quotation",
+    "actor_id",
+    "customer",
+    "company",
+    "accepted_by",
+    "accepted_at"
+  ],
+  "fields": [
+    {
+      "fieldname": "quotation",
+      "fieldtype": "Link",
+      "label": "Quotation",
+      "options": "Quotation"
+    },
+    {
+      "fieldname": "actor_id",
+      "fieldtype": "Data",
+      "label": "Actor Id"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer"
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company"
+    },
+    {
+      "fieldname": "accepted_by",
+      "fieldtype": "Data",
+      "label": "Accepted By"
+    },
+    {
+      "fieldname": "accepted_at",
+      "fieldtype": "Datetime",
+      "label": "Accepted At"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "doctype": "DocType",
+  "name": "Capability Upload",
+  "module": "Reli LIMS",
+  "autoname": "hash",
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "field_order": [
+    "request_key",
+    "request_id",
+    "source_instance",
+    "organization_id",
+    "actor_id",
+    "laboratory",
+    "payload_hash",
+    "content_hash",
+    "parser_version",
+    "dedupe_key",
+    "previous_request",
+    "document",
+    "source",
+    "status",
+    "revision",
+    "error_code",
+    "parse_run",
+    "reused_request"
+  ],
+  "fields": [
+    {
+      "fieldname": "request_key",
+      "fieldtype": "Data",
+      "label": "Request Key",
+      "unique": 1,
+      "reqd": 1
+    },
+    {
+      "fieldname": "request_id",
+      "fieldtype": "Data",
+      "label": "Request Id"
+    },
+    {
+      "fieldname": "source_instance",
+      "fieldtype": "Data",
+      "label": "Source Instance"
+    },
+    {
+      "fieldname": "organization_id",
+      "fieldtype": "Data",
+      "label": "Organization Id"
+    },
+    {
+      "fieldname": "actor_id",
+      "fieldtype": "Data",
+      "label": "Actor Id"
+    },
+    {
+      "fieldname": "laboratory",
+      "fieldtype": "Link",
+      "label": "Laboratory",
+      "options": "Laboratory Profile"
+    },
+    {
+      "fieldname": "payload_hash",
+      "fieldtype": "Data",
+      "label": "Payload Hash"
+    },
+    {
+      "fieldname": "content_hash",
+      "fieldtype": "Data",
+      "label": "Content Hash"
+    },
+    {
+      "fieldname": "parser_version",
+      "fieldtype": "Data",
+      "label": "Parser Version"
+    },
+    {
+      "fieldname": "dedupe_key",
+      "fieldtype": "Data",
+      "label": "Dedupe Key"
+    },
+    {
+      "fieldname": "previous_request",
+      "fieldtype": "Link",
+      "label": "Previous Request",
+      "options": "Capability Upload"
+    },
+    {
+      "fieldname": "document",
+      "fieldtype": "Data",
+      "label": "Document"
+    },
+    {
+      "fieldname": "source",
+      "fieldtype": "Link",
+      "label": "Source",
+      "options": "Capability Source"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Data",
+      "label": "Status"
+    },
+    {
+      "fieldname": "revision",
+      "fieldtype": "Int",
+      "label": "Revision"
+    },
+    {
+      "fieldname": "error_code",
+      "fieldtype": "Data",
+      "label": "Error Code"
+    },
+    {
+      "fieldname": "parse_run",
+      "label": "Parse Run",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "reused_request",
+      "label": "Reused Request",
+      "fieldtype": "Link",
+      "options": "Capability Upload"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1
+    }
+  ]
+}

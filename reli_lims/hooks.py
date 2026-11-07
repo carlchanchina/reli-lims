@@ -90,3 +90,43 @@ jinja["methods"].append("reli_lims.document_output.mapping.quotation.customer_qu
 for dt in ("Sales Invoice", "Delivery Note"):
     doc_events[dt] = {event: "reli_lims.sales_order_testing.commercial_return_changed" for event in ("on_submit", "on_cancel")}
 scheduler_events["daily"].append("reli_lims.sales_order_testing.reconcile_orders")
+
+# Four-repo closure: append-only qualification evidence and laboratory isolation.
+permission_query_conditions = {"Laboratory Capability": "reli_lims.integration_access.capability_query"}
+has_permission = {
+    "Laboratory Capability": "reli_lims.integration_access.capability_permission",
+    "Incoming Document": "reli_lims.integration_access.document_permission",
+}
+for dt in ("Laboratory Capability", "Test Standard", "Laboratory Profile", "Capability Source", "Test Project"):
+    doc_events.setdefault(dt, {})["on_update"] = "reli_lims.capability_eligibility.changed"
+scheduler_events.setdefault("hourly", []).append("reli_lims.capability_eligibility.refresh_all")
+
+permission_query_conditions["Capability Source"] = "reli_lims.integration_access.source_query"
+has_permission.update({
+    "Capability Source": "reli_lims.integration_access.source_permission",
+    "Capability Upload": "reli_lims.integration_access.upload_permission",
+    "Document Processing Run": "reli_lims.integration_access.document_run_permission",
+    "Document Extraction": "reli_lims.integration_access.document_run_permission",
+    "Document Template": "reli_lims.integration_access.document_config_permission",
+    "Document Schema": "reli_lims.integration_access.document_config_permission",
+    "Document AI Provider": "reli_lims.integration_access.document_config_permission",
+})
+
+# Dedicated role DocPerms are narrowed by the document hooks above.
+after_migrate.append("reli_lims.integration_setup.after_migrate")
+has_permission["Laboratory Profile"] = "reli_lims.integration_access.profile_permission"
+permission_query_conditions.update({
+    "Laboratory Profile": "reli_lims.integration_access.profile_query",
+    "Incoming Document": "reli_lims.integration_access.document_query",
+    "Document Processing Run": "reli_lims.integration_access.run_query",
+    "Document Extraction": "reli_lims.integration_access.run_query",
+    "Document Template": "reli_lims.integration_access.config_query",
+    "Document Schema": "reli_lims.integration_access.config_query",
+    "Document AI Provider": "reli_lims.integration_access.config_query",
+})
+
+has_permission["Item"] = "reli_lims.integration_access.item_permission"
+permission_query_conditions["Item"] = "reli_lims.integration_access.config_query"
+
+has_permission["Document Approved Version"] = "reli_lims.integration_access.approved_version_permission"
+permission_query_conditions["Document Approved Version"] = "reli_lims.integration_access.approved_version_query"

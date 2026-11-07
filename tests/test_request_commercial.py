@@ -41,7 +41,10 @@ class CommercialTests(unittest.TestCase):
         self.f.get_doc = Mock(side_effect=AssertionError('不应读取整张商业单据'))
         share_stub = types.ModuleType('reli_lims.customer_share')
         share_stub.in_customer_save = lambda: False
+        sales_stub = types.ModuleType('reli_lims.sales_order_testing')
+        sales_stub.quotation_customer = lambda name: self.quotation.get('party_name') if self.quotation.get('quotation_to') == 'Customer' else None
         self.patcher = patch.dict(sys.modules, {'frappe': self.f,
+                                                'reli_lims.sales_order_testing': sales_stub,
                                                 'reli_lims.customer_share': share_stub})
         self.patcher.start()
         self.addCleanup(self.patcher.stop)
