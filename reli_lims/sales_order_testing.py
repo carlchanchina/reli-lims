@@ -51,13 +51,18 @@ def validate_lines(doc, method=None):
                 frappe.throw("来源报价行与订单商品不一致。")
             quote = frappe.db.get_value("Quotation", source.parent,
                 ["party_name", "company", "docstatus"], as_dict=True)
-            if not quote or quote.docstatus != 1 or quote.party_name != doc.customer or quote.company != doc.company:
+            expected_customer = quotation_customer(source.parent)
+            if (not quote or quote.docstatus != 1 or not expected_customer
+                    or expected_customer != doc.customer or quote.company != doc.company):
                 frappe.throw("来源报价必须已提交且客户、公司一致。")
             if doc.docstatus == 1 and not frappe.db.get_value("Quotation", source.parent, "custom_reli_customer_accepted_at"):
                 frappe.throw("请先记录来源报价的客户接受结果，再提交销售订单。")
             if not stored or stored.quotation_item != row.quotation_item:
                 for key in TECHNICAL:
                     row.set(key, source.get(key))
+            # 原生 make_sales_order 只复制同名字段；若上游把快照字段漏掉，这里必须报错而不是静默丢技术条件。
+            if source.get("custom_reli_configuration") and not row.get("custom_reli_configuration"):
+                frappe.throw("订单行丢失来源报价的技术条件快照，请重新从报价创建订单。")
         if not row.get("custom_reli_test_project"):
             row.custom_reli_test_project = item.custom_reli_test_project
         if row.custom_reli_test_project != item.custom_reli_test_project:
@@ -75,6 +80,63 @@ def validate_lines(doc, method=None):
             row.custom_reli_request = None
     if doc.doctype == "Sales Order" and not doc.docstatus:
         doc.custom_reli_generation_status = "待生成" if any(r.custom_reli_business_type == TESTING for r in doc.items) else "无需委托"
+
+
+def quotation_customer(name):
+    """Resolve the ERPNext customer behind a quotation, including CRM-origin ones.
+
+    Frappe CRM creates quotations with ``quotation_to = "CRM Deal"``, so
+    ``party_name`` is a deal and ``Quotation.customer`` does not exist. The
+    customer still has to be the single deduplicated record of the enterprise,
+    which is what the China enterprise link provides.
+    """
+    quote = frappe.db.get_value("Quotation", name, ["quotation_to", "party_name"], as_dict=True)
+    if not quote:
+        return None
+    if quote.quotation_to == "Customer":
+        return quote.party_name
+    if quote.quotation_to != "CRM Deal":
+        return None
+    organization = frappe.db.get_value("CRM Deal", quote.party_name, "organization")
+    if organization:
+        profile = frappe.db.get_value("CRM Organization", organization, "custom_cn_enterprise_profile")
+        if profile and frappe.db.exists("DocType", "China Enterprise Link"):
+            linked = frappe.db.get_value(
+                "China Enterprise Link",
+                {"enterprise_profile": profile, "reference_doctype": "Customer"},
+                "reference_name",
+            )
+            if linked:
+                return linked
+    return frappe.db.get_value("Customer", {"crm_deal": quote.party_name})
+
+
+@frappe.whitelist()
+def resolve_quotation_customer(name):
+    """Used by the native Sales Order form to prefill the mapped customer."""
+    return quotation_customer(name)
+
+
+def inherit_quotation_terms(doc, method=None):
+    """Carry the promised delivery date from source quotations into the native order.
+
+    ERPNext's ``make_sales_order`` only copies same-named fields, and a Quotation has no
+    ``delivery_date``, so 承诺交期 would silently disappear on every native conversion.
+    """
+    if doc.doctype != "Sales Order" or doc.docstatus:
+        return
+    sources = sorted({row.prevdoc_docname for row in doc.items if row.prevdoc_docname})
+    if not sources:
+        return
+    promised = [date for date in (
+        frappe.db.get_value("Quotation", name, "custom_reli_delivery_date") for name in sources
+    ) if date]
+    if promised and not doc.delivery_date:
+        doc.delivery_date = min(promised)
+    if doc.delivery_date:
+        for row in doc.items:
+            if not row.delivery_date:
+                row.delivery_date = doc.delivery_date
 
 
 def order_scope(order):
@@ -220,6 +282,40 @@ def on_submit(doc, method=None):
 
 
 @frappe.whitelist(methods=["POST"])
+def prepare_lines(selections):
+    """直接开单：把选中的检测能力转成销售订单行，等价于报价单的“选择检测服务”。"""
+    from reli_lims.capability_quotation import description, service_item
+    from reli_lims.capability_selection import build_configuration
+
+    if not (frappe.has_permission("Sales Order", "create") or frappe.has_permission("Sales Order", "write")):
+        frappe.throw("没有销售订单权限。", frappe.PermissionError)
+    selections = frappe.parse_json(selections)
+    if not isinstance(selections, list) or not 1 <= len(selections) <= 30:
+        frappe.throw("请一次选择 1 至 30 条能力。")
+    result = []
+    for selection in selections:
+        config = build_configuration(selection["capability_id"], selection.get("conditions", {}), "sales_order")
+        capability = frappe.get_doc("Laboratory Capability", config["capability_id"])
+        item = service_item(capability, selection.get("item_code"))
+        project = capability.test_project
+        result.append({
+            "item_code": item.name,
+            "item_name": frappe.db.get_value("Test Project", project, "project_name"),
+            "uom": item.stock_uom,
+            "description": description(config),
+            "qty": 1,
+            "conversion_factor": 1,
+            "custom_reli_business_type": TESTING,
+            "custom_reli_capability": capability.name,
+            "custom_reli_test_project": project,
+            "custom_reli_test_object": capability.test_object,
+            "custom_reli_test_standard": capability.test_standard,
+            "custom_reli_configuration": config,
+        })
+    return result
+
+
+@frappe.whitelist(methods=["POST"])
 def retry(name):
     order = frappe.get_doc("Sales Order", name, for_update=True)
     order.check_permission("write")
@@ -265,7 +361,9 @@ def before_cancel(doc, method=None):
 def accept_quotation(name, customer_contact):
     quote = frappe.get_doc("Quotation", name, for_update=True)
     quote.check_permission("write")
-    if quote.docstatus != 1 or quote.quotation_to != "Customer" or quote.status in ("Lost", "Cancelled", "Expired", "Closed"):
+    customer = quotation_customer(name)
+    if (quote.docstatus != 1 or quote.quotation_to not in ("Customer", "CRM Deal") or not customer
+            or quote.status in ("Lost", "Cancelled", "Expired", "Closed")):
         frappe.throw("请先提交有效客户报价。")
     if quote.valid_till and str(quote.valid_till) < today():
         frappe.throw("报价已过有效期。")

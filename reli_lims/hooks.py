@@ -70,6 +70,7 @@ after_migrate.append("reli_lims.p4_setup.after_migrate")
 doc_events["Item"] = {"validate": "reli_lims.sales_order_testing.validate_item"}
 doc_events["Quotation"]["validate"] = ["reli_lims.sales_order_testing.validate_lines", "reli_lims.capability_quotation.validate"]
 doc_events["Sales Order"] = {
+    "before_validate": "reli_lims.sales_order_testing.inherit_quotation_terms",
     "validate": "reli_lims.sales_order_testing.validate_lines",
     "on_submit": "reli_lims.sales_order_testing.on_submit",
     "on_update_after_submit": "reli_lims.sales_order_testing.changed",

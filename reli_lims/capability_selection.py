@@ -24,9 +24,9 @@ def is_dev_preview():
 
 
 def eligibility(mode):
-    if mode not in {"quotation", "request", "execution", "catalog"}:
+    if mode not in {"quotation", "sales_order", "request", "execution", "catalog"}:
         frappe.throw("未知的能力选择模式。")
-    if mode == "catalog" or (mode in {"quotation", "request"} and is_dev_preview()):
+    if mode == "catalog" or (mode in {"quotation", "sales_order", "request"} and is_dev_preview()):
         return {"status": ["!=", "已停用"]}
     return {"status": "已发布", "published": 1}
 
@@ -136,7 +136,7 @@ def configure(name, conditions, mode):
 
 
 def build_configuration(name, conditions, mode):
-    if mode not in {"catalog", "quotation", "request"}:
+    if mode not in {"catalog", "quotation", "sales_order", "request"}:
         frappe.throw("履约条件须从已确认委托读取。")
     capability = frappe.get_doc("Laboratory Capability", name)
     capability.check_permission("read")

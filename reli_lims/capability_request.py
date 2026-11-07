@@ -78,10 +78,14 @@ def validate(doc, method=None):
             if not row.source_quotation or not row.source_quotation_item:
                 frappe.throw("请同时保留报价单和报价行来源。")
             from reli_lims.commercial_access import quotation_facts, quotation_line
+            from reli_lims.sales_order_testing import quotation_customer
             quote = quotation_facts(row.source_quotation)
             if not quote:
                 frappe.throw("来源报价不存在。")
-            if quote.docstatus == 2 or quote.party_name != doc.customer or quote.company != doc.company:
+            # CRM 来源报价的 party_name 是商机，客户需按企业主档解析。
+            expected_customer = quotation_customer(row.source_quotation)
+            if (quote.docstatus == 2 or not expected_customer
+                    or expected_customer != doc.customer or quote.company != doc.company):
                 frappe.throw("来源报价与委托客户或公司不一致。")
             original = quotation_line(row.source_quotation_item)
             if not original or original.parent != row.source_quotation or not original.custom_reli_capability:

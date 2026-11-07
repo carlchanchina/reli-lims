@@ -118,8 +118,82 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         self.assertEqual(len(request.items), 1)
         self.assertEqual(order.items[0].quotation_item, quote.items[0].name)
 
+    def capability_lines(self, *, delivery_in_days=12, rate=100):
+        """真实能力 → 报价行，供原生 make_sales_order 映射回归使用。"""
+        from reli_lims.capability_selection import build_configuration
+        from reli_lims.capability_quotation import prepare_lines
+
+        token = uuid.uuid4().hex[:8]
+        laboratory = frappe.get_doc(doctype="Laboratory Profile", mercur_seller_id=f"sel_map_{token}",
+            laboratory_name=f"映射验收实验室 {token}", review_status="Approved").insert()
+        capability = frappe.get_doc(doctype="Laboratory Capability", laboratory=laboratory.name,
+            test_project=self.project.name, test_method=self.method.name, test_standard=self.standard.name,
+            capability_scope="MAPPING TEST ONLY", condition_schema=frappe.as_json([
+                dict(key="hold_minutes", label="保持时间（分钟）", type="number")])).insert()
+        for status in ("已确认", "已发布"):
+            capability.status = status
+            capability.save()
+        config = build_configuration(capability.name, {"hold_minutes": 30}, "quotation")
+        lines = prepare_lines([dict(capability_id=capability.name,
+            conditions=config["conditions"], item_code=self.testing.name)])
+        lines[0]["rate"] = rate
+        quote = frappe.get_doc(doctype="Quotation", quotation_to="Customer", party_name=self.customer.name,
+            company=self.company.name, transaction_date=today(), valid_till=add_days(today(), 30),
+            currency="USD", selling_price_list="Standard Selling",
+            custom_reli_delivery_date=add_days(today(), delivery_in_days), items=lines).insert().submit()
+        return capability, config, quote
+
+    def test_native_order_mapping_preserves_technical_scope_and_promised_date(self):
+        """ERPNext 原生 make_sales_order 必须完整保留检测技术条件与承诺交期。"""
+        from erpnext.selling.doctype.quotation.quotation import make_sales_order
+
+        capability, config, quote = self.capability_lines()
+        accept_quotation(quote.name, "P4 mapping acceptance")
+        order = make_sales_order(quote.name)
+
+        self.assertEqual(len(order.items), 1)
+        row = order.items[0]
+        self.assertEqual(row.quotation_item, quote.items[0].name)
+        self.assertEqual(row.prevdoc_docname, quote.name)
+        self.assertEqual(row.custom_reli_capability, capability.name)
+        self.assertEqual(row.custom_reli_test_project, self.project.name)
+        self.assertEqual(row.custom_reli_test_standard, self.standard.name)
+        self.assertEqual(row.custom_reli_test_object, capability.test_object)
+        self.assertEqual(frappe.parse_json(row.custom_reli_configuration), config)
+        self.assertEqual(row.custom_reli_business_type, "检测服务")
+        self.assertEqual(row.qty, 1)
+        self.assertEqual(row.rate, 100)
+
+        order.insert()
+        # 承诺交期只能通过本应用的映射补齐：Quotation 没有 delivery_date 同名字段。
+        self.assertEqual(str(order.delivery_date), str(add_days(today(), 12)))
+        self.assertEqual(str(order.items[0].delivery_date), str(add_days(today(), 12)))
+
+        order.submit()
+        request = self.request_for(order)
+        self.assertEqual(request.quotation, quote.name)
+        self.assertEqual(len(request.items), 1)
+        self.assertEqual(frappe.parse_json(request.order_scope_snapshot)["items"][0]["custom_reli_capability"],
+                         capability.name)
+
+    def test_native_order_mapping_repairs_dropped_technical_snapshot(self):
+        """上游漏传技术字段时，订单保存必须从来源报价行回填，而不是静默丢失。"""
+        from erpnext.selling.doctype.quotation.quotation import make_sales_order
+
+        _capability, config, quote = self.capability_lines()
+        accept_quotation(quote.name, "P4 mapping acceptance")
+        order = make_sales_order(quote.name)
+        order.items[0].custom_reli_configuration = None
+        order.items[0].custom_reli_test_standard = None
+        order.insert()
+        stored = frappe.get_doc("Sales Order", order.name).items[0]
+        self.assertEqual(frappe.parse_json(stored.custom_reli_configuration), config)
+        self.assertEqual(stored.custom_reli_test_standard, self.standard.name)
+        self.assertEqual(stored.custom_reli_capability, quote.items[0].custom_reli_capability)
+
     def test_customer_print_projection_omits_internal_metadata(self):
         from reli_lims.document_output.mapping.quotation import build_context
+
         data = self.quotation.as_dict()
         data["items"][0].update(custom_reli_capability="PRIVATE-CAP", custom_reli_configuration={
             "conditions": {"duration": 15}, "snapshot": {"project_label": "中文项目", "standard_label": "公开标准",

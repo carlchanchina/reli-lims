@@ -13,12 +13,15 @@ def validate_commercial_links(request):
     quotation = request.get('quotation')
     sales_order = request.get('sales_order')
     if quotation:
+        from reli_lims.sales_order_testing import quotation_customer
         doc = quotation_facts(quotation)
         if not doc:
             frappe.throw(_('报价单不存在。'))
-        if doc.docstatus != 1 or doc.quotation_to != 'Customer':
+        # Frappe CRM 生成的报价单 quotation_to = "CRM Deal"，客户由企业主档解析。
+        if doc.docstatus != 1 or doc.quotation_to not in ('Customer', 'CRM Deal'):
             frappe.throw(_('请选择已提交且面向客户的报价单。'))
-        if doc.party_name != request.customer or doc.company != request.company:
+        expected_customer = quotation_customer(quotation)
+        if not expected_customer or expected_customer != request.customer or doc.company != request.company:
             frappe.throw(_('报价单与委托单位或公司不一致。'))
     if sales_order:
         doc = sales_order_facts(sales_order)

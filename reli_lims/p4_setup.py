@@ -19,13 +19,17 @@ def field(name, label, kind, options=None, **kwargs):
 def after_migrate():
     fields = {"Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES,
                              insert_after="item_name", in_list_view=1)],
-              "Quotation Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1, in_list_view=1)],
-              "Sales Order Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1, in_list_view=1),
+              # 报价单商品行不再单列显示业务分类：由商品自动带出，仅供后端判断是否检测服务。
+              "Quotation Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1,
+                                       in_list_view=0, fetch_from="item_code.custom_reli_business_type")],
+              "Sales Order Item": [field("custom_reli_business_type", "业务分类", "Select", TYPES, read_only=1,
+                                         in_list_view=0, fetch_from="item_code.custom_reli_business_type"),
                   field("custom_reli_request", "检测委托单", "Link", "Test Request", read_only=1, allow_on_submit=1),
                   field("custom_reli_split_group", "委托拆分组", "Data", description="留空归入同一委托。按实验室或履约要求填写独立组名。")],
               "Sales Order": [field("custom_reli_generation_status", "检测委托生成状态", "Select", "\n无需委托\n待生成\n已生成\n生成失败\n需人工处理", read_only=1, allow_on_submit=1),
                   field("custom_reli_generation_error", "生成错误或订单差异", "Small Text", read_only=1, allow_on_submit=1),
-                  field("custom_reli_requests", "检测委托关联", "HTML")],
+                  field("custom_reli_requests", "检测委托关联", "HTML"),
+                  field("custom_reli_details", "检测项目明细", "HTML", insert_after="items")],
               "Asset": [field("custom_reli_laboratory", "所属实验室", "Link", "Laboratory Profile"),
                   field("custom_reli_model", "设备型号", "Data"),
                   field("custom_reli_serial_no", "设备序列号", "Data"),
@@ -60,4 +64,6 @@ def after_migrate():
             frappe.db.set_value("Custom Field", custom, "print_hide", 1, update_modified=False)
     from frappe.custom.doctype.property_setter.property_setter import make_property_setter
     make_property_setter("Quotation", None, "default_print_format", "Reli Customer Quotation", "Data", for_doctype=True)
+    # 销售订单行不再单列显示交付日期，统一用表头交期；行级交期仍保留在展开明细里。
+    make_property_setter("Sales Order Item", "delivery_date", "in_list_view", "0", "Check")
     frappe.clear_cache()
