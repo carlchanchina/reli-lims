@@ -41,8 +41,12 @@ reli_lims.requests.add_items = function (frm, items) {
 };
 
 reli_lims.requests.import_quote = async function (frm, name) {
-    const { message } = await frappe.call("reli_lims.capability_request.quotation_items", { name });
-    if (!message.items.length) return frappe.msgprint(__("这张报价没有检测条件快照。"));
+    // 实验室角色没有 Quotation 读权限，服务端按有界投影返回可履约的检测服务行；
+    // 客户由服务端按企业主档解析（CRM 商机报价的 party_name 不是客户）。
+    const { message } = await frappe.call("reli_lims.capability_request.quotation_items", {
+        name, customer: frm.doc.customer || null, company: frm.doc.company || null,
+    });
+    if (!message.items.length) return frappe.msgprint(__("这张报价没有可履约的检测服务行。"));
     if ((frm.doc.customer && frm.doc.customer !== message.customer) ||
         (frm.doc.company && frm.doc.company !== message.company)) {
         return frappe.msgprint(__("报价客户或公司与当前委托不一致。"));
@@ -70,7 +74,13 @@ frappe.ui.form.on("Test Request", {
             });
         });
         frm.add_custom_button(__("从报价导入项目"), () => frappe.prompt(
-            [{ fieldtype: "Link", options: "Quotation", fieldname: "quotation", label: __("报价"), reqd: 1 }],
+            [{
+                fieldtype: "Link", options: "Quotation", fieldname: "quotation", label: __("报价"), reqd: 1,
+                get_query: () => ({
+                    query: "reli_lims.commercial_access.quotation_query",
+                    filters: { customer: frm.doc.customer, company: frm.doc.company },
+                }),
+            }],
             values => reli_lims.requests.import_quote(frm, values.quotation),
             __("从报价导入项目"),
         ));

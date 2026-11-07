@@ -15,6 +15,7 @@
     "source_quotation",
     "source_quotation_item",
     "quoted_quantity",
+    "quoted_rate",
     "requested_quantity",
     "quotation_difference",
     "test_method",
@@ -104,6 +105,13 @@
       "fieldtype": "Float",
       "label": "报价数量",
       "read_only": 1
+    },
+    {
+      "fieldname": "quoted_rate",
+      "fieldtype": "Currency",
+      "label": "报价单价（快照）",
+      "read_only": 1,
+      "description": "来源报价行单价快照，仅服务端写入，用于履约与差异核对。"
     },
     {
       "fieldname": "requested_quantity",

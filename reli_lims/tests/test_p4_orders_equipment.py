@@ -118,8 +118,8 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         self.assertEqual(len(request.items), 1)
         self.assertEqual(order.items[0].quotation_item, quote.items[0].name)
 
-    def capability_lines(self, *, delivery_in_days=12, rate=100):
-        """真实能力 → 报价行，供原生 make_sales_order 映射回归使用。"""
+    def capability_quote_lines(self, *, delivery_in_days=12, rate=100):
+        """真实能力 → 报价行草稿，供报价来源与原生映射回归共用。"""
         from reli_lims.capability_selection import build_configuration
         from reli_lims.capability_quotation import prepare_lines
 
@@ -137,11 +137,16 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         lines = prepare_lines([dict(capability_id=capability.name,
             conditions=config["conditions"], item_code=self.testing.name)])
         lines[0]["rate"] = rate
+        return capability, config, lines
+
+    def capability_lines(self, *, delivery_in_days=12, rate=100):
+        """真实能力 → 报价单，供原生 make_sales_order 映射回归使用。"""
+        _capability, config, lines = self.capability_quote_lines(delivery_in_days=delivery_in_days, rate=rate)
         quote = frappe.get_doc(doctype="Quotation", quotation_to="Customer", party_name=self.customer.name,
             company=self.company.name, transaction_date=today(), valid_till=add_days(today(), 30),
             currency="USD", selling_price_list="Standard Selling",
             custom_reli_delivery_date=add_days(today(), delivery_in_days), items=lines).insert().submit()
-        return capability, config, quote
+        return _capability, config, quote
 
     def test_native_order_mapping_preserves_technical_scope_and_promised_date(self):
         """ERPNext 原生 make_sales_order 必须完整保留检测技术条件与承诺交期。"""

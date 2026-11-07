@@ -88,9 +88,60 @@ bench --site carl run-tests --module reli_lims.tests.test_p4_orders_equipment
 
 ## 5. 仍待处理
 
-- 「从报价单创建委托」的报价选择器（`capability_request.quotation_items` /
-  `commercial_access.quotation_query`）仍只收 `quotation_to = "Customer"`。这是实验室侧
-  手工建单入口，CRM 来源走订单自动生成，暂不放开；若要放开需同时决定实验室是否可见商机编号。
+- ~~「从报价单创建委托」的报价选择器（`capability_request.quotation_items` /
+  `commercial_access.quotation_query`）仍只收 `quotation_to = "Customer"`。~~ **已在第 6 节收口**：
+  CRM 商机来源报价经企业主档解析出唯一客户后可被实验室选中，商机编号不出现在标签里。
 - 销售用户仍持有 ERPNext 原生 `Customer` 的 create 权限，理论上可绕过企业主档查重直接建客户。
   建议下一轮用角色收敛或强制走 `ensure_customer`。
 - 报价单 `custom_reli_delivery_date` 目前是普通字段，未做「客户接受后才锁定期限」的约束。
+
+## 6. 报价来源与可履约边界（第二轮）
+
+第一轮遗留的「实验室手工建委托只能选到原生客户报价」在本轮收口。核心是把散落在
+4 处的客户解析收敛成一个模块，并给报价行加上**可履约数量**约束。
+
+### 6.1 新增 `reli_lims/quotation_origin.py`
+
+| 函数 | 职责 |
+|---|---|
+| `quotation_customer(name)` | 报价 → 唯一客户。原生报价直接返回 `party_name`；CRM 商机报价按 `CRM Deal → CRM Organization → China Enterprise Profile → China Enterprise Link(is_active=1) → Customer` 解析，解析不出返回 `None` |
+| `deal_customers(deals)` | 批量版，固定 3 条 SQL，避免选择器里 N+1 |
+| `deal_names_for_customer(customer)` | 反查：某客户名下有哪些商机（供选择器过滤） |
+| `fulfillable_lines(quotation)` | 报价行 → 仍可履约的**检测服务**行：过滤普通服务/实物商品，扣掉已下单（`Sales Order Item`，`docstatus<2`）与已转委托（`Test Request Item`，非订单来源）的数量 |
+| `validate_line_capacity(row, doc)` | 服务端守卫：累计委托数量不得超过报价行数量 |
+| `fulfillable_exists_sql(alias)` | 与 `fulfillable_lines` 等价的 SQL 谓词，供选择器在库侧过滤 |
+
+`sales_order_testing.quotation_customer` 改为转调本模块，保持旧调用点（4 处）不变。
+
+### 6.2 行为变化
+
+1. `capability_request.quotation_items` 接受 `quotation_to ∈ {Customer, CRM Deal}`，
+   但**必须解析出唯一客户**才放行；解析失败抛「无法从该报价解析出唯一客户」。
+   新增可选参数 `customer` / `company`，与当前委托不一致时直接拒绝（防串单）。
+2. 只返回可履约检测行，`requested_quantity` 取**剩余数量**而非报价数量；
+   全部行都已下单/已转委托时抛「该报价没有可履约的检测服务行」。
+3. 选择器标签用解析后的客户名，不暴露商机编号。
+4. 委托行新增 `quoted_rate`（币种快照字段，`read_only`，仅服务端写入）。
+5. `_filters()` 兼容 HTTP 传入的 JSON 字符串——此前 Link 字段从 HTTP 调进来时
+   `filters` 是字符串，`filters.get()` 会静默失配，商户/公司条件实际不生效。
+
+### 6.3 部署注意
+
+`test_request_item.json` 新增 `quoted_rate` 字段，合并后需
+`bench --site <site> migrate` 才会建列；未迁移时 `validate` 写该字段会报
+`Unknown column`。
+
+### 6.4 回归
+
+```
+bench --site carl run-tests --module reli_lims.tests.test_quotation_origin
+bench --site carl run-tests --module reli_lims.tests.test_p4_orders_equipment
+```
+
+- `test_quotation_origin`：5 项全 PASS（2026-11-07，`carl` 开发站，25.06s）
+  - 原生客户报价只导入可履约检测行
+  - CRM 商机报价解析出客户且可被选中、且不出现在其它客户的选择器里
+  - 商机未关联企业主档时拒绝导入
+  - 价格快照落库 + 超量委托被拦截
+  - 已转订单的行从选择器消失
+- `test_p4_orders_equipment`：28 项全 PASS（246.51s），无回归。

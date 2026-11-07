@@ -87,28 +87,12 @@ def quotation_customer(name):
 
     Frappe CRM creates quotations with ``quotation_to = "CRM Deal"``, so
     ``party_name`` is a deal and ``Quotation.customer`` does not exist. The
-    customer still has to be the single deduplicated record of the enterprise,
-    which is what the China enterprise link provides.
+    resolution itself lives in :mod:`reli_lims.quotation_origin` so the lab
+    intake, the sales order and the request validation share one answer.
     """
-    quote = frappe.db.get_value("Quotation", name, ["quotation_to", "party_name"], as_dict=True)
-    if not quote:
-        return None
-    if quote.quotation_to == "Customer":
-        return quote.party_name
-    if quote.quotation_to != "CRM Deal":
-        return None
-    organization = frappe.db.get_value("CRM Deal", quote.party_name, "organization")
-    if organization:
-        profile = frappe.db.get_value("CRM Organization", organization, "custom_cn_enterprise_profile")
-        if profile and frappe.db.exists("DocType", "China Enterprise Link"):
-            linked = frappe.db.get_value(
-                "China Enterprise Link",
-                {"enterprise_profile": profile, "reference_doctype": "Customer"},
-                "reference_name",
-            )
-            if linked:
-                return linked
-    return frappe.db.get_value("Customer", {"crm_deal": quote.party_name})
+    from reli_lims.quotation_origin import quotation_customer as resolve
+
+    return resolve(name)
 
 
 @frappe.whitelist()
