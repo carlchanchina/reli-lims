@@ -135,16 +135,13 @@ def configure(name, conditions, mode):
     return build_configuration(name, frappe.parse_json(conditions), mode)
 
 
-def build_configuration(name, conditions, mode):
-    if mode not in {"catalog", "quotation", "sales_order", "request"}:
-        frappe.throw("履约条件须从已确认委托读取。")
-    capability = frappe.get_doc("Laboratory Capability", name)
-    capability.check_permission("read")
-    if mode != "catalog" and not is_dev_preview() and (
-        capability.status != "已发布" or not capability.published
-    ):
-        frappe.throw("能力尚未发布。")
-    schema = effective_schema(capability.as_dict())
+def normalize_conditions(schema, conditions):
+    """Validate operator-entered conditions against a schema and return stored values.
+
+    Shared by :func:`build_configuration` (first selection) and quotation validation
+    (later edits), so a frozen snapshot keeps the same rules without re-reading the
+    live capability.
+    """
     if not isinstance(conditions, dict) or set(conditions) - {field["key"] for field in schema}:
         frappe.throw("检测条件不符合能力或项目模板。")
     normalized = {}
@@ -164,8 +161,27 @@ def build_configuration(name, conditions, mode):
         elif field["type"] == "text" and (not isinstance(value, str) or len(value) > 2000):
             frappe.throw("检测条件文本须为 2000 字以内。")
         normalized[key] = value
+    return normalized
+
+
+def build_configuration(name, conditions, mode, freeze=False):
+    if mode not in {"catalog", "quotation", "sales_order", "request"}:
+        frappe.throw("履约条件须从已确认委托读取。")
+    capability = frappe.get_doc("Laboratory Capability", name)
+    capability.check_permission("read")
+    if mode != "catalog" and not is_dev_preview() and (
+        capability.status != "已发布" or not capability.published
+    ):
+        frappe.throw("能力尚未发布。")
+    schema = effective_schema(capability.as_dict())
+    normalized = normalize_conditions(schema, conditions)
     snapshot = {field: capability.get(field) for field in FIELDS if field != "condition_schema"}
     snapshot.update(labels(capability.as_dict()))
     snapshot.update(source=capability.source, source_row=capability.source_row, condition_schema=schema)
-    return {"schema_version": 1, "capability_id": name, "conditions": normalized,
-            "snapshot": json.loads(frappe.as_json(snapshot))}
+    config = {"schema_version": 1, "capability_id": name, "conditions": normalized,
+              "snapshot": json.loads(frappe.as_json(snapshot))}
+    if freeze:
+        # Provenance markers only; they never change what the customer sees.
+        config["snapshot_at"] = frappe.utils.now()
+        config["capability_modified"] = str(capability.modified or "")
+    return config

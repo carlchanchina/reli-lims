@@ -164,7 +164,8 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         self.assertEqual(row.custom_reli_test_project, self.project.name)
         self.assertEqual(row.custom_reli_test_standard, self.standard.name)
         self.assertEqual(row.custom_reli_test_object, capability.test_object)
-        self.assertEqual(frappe.parse_json(row.custom_reli_configuration), config)
+        self.assertEqual(test_test_request._snapshot_payload(row.custom_reli_configuration),
+                         test_test_request._snapshot_payload(config))
         self.assertEqual(row.custom_reli_business_type, "检测服务")
         self.assertEqual(row.qty, 1)
         self.assertEqual(row.rate, 100)
@@ -192,7 +193,8 @@ class TestP4OrdersEquipment(test_test_request.TestTestingRequest):
         order.items[0].custom_reli_test_standard = None
         order.insert()
         stored = frappe.get_doc("Sales Order", order.name).items[0]
-        self.assertEqual(frappe.parse_json(stored.custom_reli_configuration), config)
+        self.assertEqual(test_test_request._snapshot_payload(stored.custom_reli_configuration),
+                         test_test_request._snapshot_payload(config))
         self.assertEqual(stored.custom_reli_test_standard, self.standard.name)
         self.assertEqual(stored.custom_reli_capability, quote.items[0].custom_reli_capability)
 
