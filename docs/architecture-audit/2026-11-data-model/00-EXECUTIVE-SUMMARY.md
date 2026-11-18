@@ -13,7 +13,7 @@
 
 1. **没有 Service Offering / Service Specification。** 在四个仓库全文检索 `service offering|service_offering|service specification|service_specification` 结果为零。`docs/` 里有类似规划的叙述，但没有任何 DocType、表、字段或接口对应它们。凡本报告中标 `PROPOSED` 的实体均**尚未实现**。
 
-2. **现行商品模型是 A 案：一个 Test Project ↔ 一个 ERPNext Item，硬 1:1。** 依据 `reli_lims/capability_quotation.py:14-59`：按 `custom_reli_test_project` 查已有 Item 复用，找不到才用 `RELI-SVC-<sha256(project)>` 新建；项目不一致直接 `throw("商品关联的统一检测项目不一致")`。开发站实测 120 个 Test Project 中 9 个有商品，9:9 一一对应，无一对多。
+2. **现行商品模型是 A 案，但“1:1”是三层不同的事实，不能混为一谈。** （a）**数据库层**：`Item.custom_reli_test_project` 是普通 Link 字段，`unique=0`、非必填，`tabItem` 上**连普通索引都没有**（`SHOW INDEX` 无该列），因此**不存在任何数据库唯一性约束**；（b）**代码层**：`capability_quotation.service_item()`（`reli_lims/capability_quotation.py:14-59`）按项目查已有商品、`order_by="name asc" limit 1` 只取第一条复用，找不到才建 `RELI-SVC-<sha256(project)[:16]>`，且传入的 `item_code` 若项目不一致直接 `throw("商品关联的统一检测项目不一致")`（`:50-51`）——这是**代码路径上的偏好**，不是约束；（c）**数据层**：开发站 9 个检测服务商品落在 9 个不同项目（`count(*)=9, count(distinct project)=9`，`having count>1` 为空），只是**当前现象**，随时可以被手工建第二个商品打破。
 
 3. **能力的归并发生在 Capability → Test Project 这一层，而不是 Project → Item。** Test Project 的 `normalized_name`（`test_project.py:43`）+ `aliases`（`test_project.py:51-69`）是归并键；开发站 660 条 Laboratory Capability 已全部归入 120 个 Test Project，单个项目最多挂 55 条能力、51 条标准、30 个对象。
 

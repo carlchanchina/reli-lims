@@ -24,7 +24,7 @@
 
 | 关系 | 现状 | 建议 |
 |---|---|---|
-| `Item → Test Project` | 单值 Link（硬 1:1） | 改为 `Item → Service Specification → Test Project`；Item 不再直挂项目 |
+| `Item → Test Project` | 单值 Link，无唯一约束、无索引 | 改为 `Item → Service Specification → Test Project`；Item 不再直挂项目 |
 | `Test Project → 标准/对象` | 子表（无实验室） | 子表加实验室维度，或保留子表 + 新增"实验室范围视图" |
 | `Laboratory Capability → Item` | 能力行被 Item 反向单值引用 | 由 Specification 承接，Item 通过发布映射关联 |
 | `Quotation Item → 字典` | 活引用（validate 时覆写） | 写入时冻结 |
@@ -38,7 +38,7 @@
 - 条件：+85℃/85%RH、+125℃ 干热、不同箱体（1m³ 与 8m³）；
 - 实验室：苏州实验室（只做电子件，8m³ 箱体）；盐城实验室（做整车件，不做涂层）。
 
-### A 案：一个项目 = 一个 Item（现状）
+### A 案：一个项目 = 一个 Item（现状默认，非数据库约束）
 
 - 优点：简单、与 ERPNext 天然契合、报价快；每项目一个价目表条目。
 - 缺点（在本案例中全部暴露）：

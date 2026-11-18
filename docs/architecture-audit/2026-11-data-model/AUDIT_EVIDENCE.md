@@ -34,7 +34,9 @@
 | 上传壳 | `capability Upload` 字段：`request_key`/`content_hash`/`dedupe_key`/`previous_request`/`reused_request`/`revision`/`parser_version` |
 | 解析在外部服务 | `ntbln/apps/web/src/lib/testing/testing-model.ts:4`（"只描述解析服务（cnas-workbench）返回的结构，不新增业务对象"）；`:228-231` `parser_version` / `mineru_enabled` |
 | 660→120 的实际数据 | 开发站 SQL：`Laboratory Capability` 660、`Test Project` 120（`classification_status=已归类` 120）、单项目最多 55 能力/51 标准/30 对象 |
-| 商品实况 | 开发站：`custom_reli_business_type=检测服务` 的 Item 9 条，全部 1:1 对应不同项目，`having count>1` 为空 |
+| 商品实况 | 开发站：`custom_reli_business_type=检测服务` 的 Item 9 条，`count(*)=9 / count(distinct project)=9`，`group by project having count>1` 为空 |
+| **无唯一性约束** | `Custom Field(Item.custom_reli_test_project)`：`fieldtype=Link, unique=0, reqd=0`；`SHOW INDEX FROM tabItem` 中无任何 `custom_reli_*` 列索引（连普通索引都没有） |
+| 代码层偏好而非约束 | `capability_quotation.py:22-27` 复用查询 `limit 1`；`:50-51` 仅当显式传入的 item_code 项目不一致时 throw；同项目建第二个 Item 无任何校验拦截 |
 
 ## E4 · 报价与价格
 

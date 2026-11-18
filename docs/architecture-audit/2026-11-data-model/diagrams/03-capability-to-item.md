@@ -34,4 +34,4 @@ graph LR
   CAP -->|"custom_reli_capability"| QI
 ```
 
-现状：`Test Project` 与 `Item` 之间是单值 Link（`Item.custom_reli_test_project`），代码在项目不一致时 throw；规格层未实现。
+现状：`Test Project` 与 `Item` 之间是单值 Link（`Item.custom_reli_test_project`），**数据库无唯一约束、也无索引**（`unique=0`，`SHOW INDEX` 无该列）；`service_item()` 用 `limit 1` 默认复用第一条，显式传入但项目不一致时才 throw——即“默认一对一，非强制一对一”。规格层未实现。
