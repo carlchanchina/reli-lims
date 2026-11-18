@@ -18,6 +18,17 @@ FIELDS = ["name", "test_project", "test_object", "laboratory", "test_method", "t
           "limitation", "scope_effective_date", "condition_schema", "status"]
 DEFAULT_CONDITION = [{"key": "original_text", "type": "text", "label": "检测条件原文"}]
 
+# Snapshot members that describe the technical fact sold to the customer.
+# Editing any of them after the line exists would rewrite history, so they are
+# guarded by :func:`snapshot_changes` and may only move together with an
+# explicit, audited confirmation.
+PROTECTED_SNAPSHOT_FIELDS = (
+    "name", "test_project", "test_object", "test_standard", "test_method",
+    "laboratory", "limitation", "capability_scope", "product_scope",
+    "project_label", "standard_label", "laboratory_label",
+    "source", "source_row", "condition_schema",
+)
+
 
 def is_dev_preview():
     return frappe.local.site == "carl" and bool(frappe.conf.developer_mode)
@@ -142,6 +153,9 @@ def normalize_conditions(schema, conditions):
     (later edits), so a frozen snapshot keeps the same rules without re-reading the
     live capability.
     """
+    # An absent schema is NOT a licence for arbitrary keys: legacy capabilities
+    # without a template may only carry the historical free-text condition.
+    schema = schema or DEFAULT_CONDITION
     if not isinstance(conditions, dict) or set(conditions) - {field["key"] for field in schema}:
         frappe.throw("检测条件不符合能力或项目模板。")
     normalized = {}
@@ -162,6 +176,38 @@ def normalize_conditions(schema, conditions):
             frappe.throw("检测条件文本须为 2000 字以内。")
         normalized[key] = value
     return normalized
+
+
+def snapshot_changes(old_config, new_config):
+    """Protected snapshot members that differ between two stored configurations."""
+    old = (old_config or {}).get("snapshot") or {}
+    new = (new_config or {}).get("snapshot") or {}
+    if not old:
+        return []
+    if not new:
+        return ["snapshot"]
+    return [
+        field for field in PROTECTED_SNAPSHOT_FIELDS
+        if (old.get(field) or None) != (new.get(field) or None)
+    ]
+
+
+def assert_snapshot_immutable(old_config, new_config, row=None):
+    """Reject silent edits of a frozen technical snapshot.
+
+    Operators may edit conditions; they may not rewrite the identity, limitation,
+    standard, object or provenance of a line that has already been saved. The only
+    sanctioned write path is :func:`reli_lims.capability_quotation.confirm_legacy_snapshot`,
+    which sets ``row.flags.allow_snapshot_change`` and records who confirmed it.
+    """
+    if row is not None and getattr(row, "flags", None) and row.flags.get("allow_snapshot_change"):
+        return
+    changed = snapshot_changes(old_config, new_config)
+    if changed:
+        frappe.throw(
+            "检测技术快照不可修改：" + "、".join(changed)
+            + "。如需修正历史快照，请走人工确认流程。"
+        )
 
 
 def build_configuration(name, conditions, mode, freeze=False):

@@ -152,18 +152,105 @@ class TestQuotationSnapshotFreeze(IntegrationTestCase):
         with self.assertRaises(frappe.ValidationError):
             quote.submit()
 
-    # --- repair path is explicit and one-off ------------------------------
-    def test_legacy_row_without_snapshot_is_repaired_once(self):
-        legacy = {
-            "schema_version": 1, "capability_id": self.capability.name, "conditions": {},
-        }
-        legacy_line = dict(
+    # --- legacy rows: never fabricate history ------------------------------
+    def legacy_quote(self):
+        legacy = {"schema_version": 1, "capability_id": self.capability.name, "conditions": {}}
+        line = dict(
             item_code=self.item.name, qty=1, rate=100,
             custom_reli_capability=self.capability.name,
             custom_reli_configuration=json.dumps(legacy),
         )
-        quote = self.quotation([legacy_line])
+        return self.quotation([line])
+
+    def test_legacy_row_is_marked_pending_instead_of_invented(self):
+        quote = self.legacy_quote()
         stored = frappe.parse_json(quote.items[0].custom_reli_configuration)
-        self.assertEqual(stored.get("snapshot_repair"), 1)
+        self.assertEqual(stored.get("snapshot_state"), "pending_manual_confirmation")
+        self.assertNotIn("snapshot", stored)
+        self.assertNotIn("snapshot_repair", stored)
+        # Identity columns must stay empty rather than be guessed from the live capability.
+        self.assertFalse(quote.items[0].custom_reli_test_project)
+        with self.assertRaises(frappe.ValidationError):
+            quote.submit()
+
+    def test_legacy_row_can_be_confirmed_by_a_human(self):
+        from reli_lims.capability_quotation import confirm_legacy_snapshot
+        quote = self.legacy_quote()
+        result = confirm_legacy_snapshot(
+            quote.name, quote.items[0].name, self.project.name, self.object.name,
+            self.standard.name, note="核对原始合同",
+        )
+        quote.reload()
+        stored = frappe.parse_json(quote.items[0].custom_reli_configuration)
+        self.assertEqual(stored["snapshot_state"] if "snapshot_state" in stored else None, None)
+        self.assertEqual(stored["snapshot_source"], "manual_confirmation")
         self.assertEqual(stored["snapshot"]["test_project"], self.project.name)
+        self.assertEqual(stored["snapshot"]["test_object"], self.object.name)
+        self.assertEqual(stored["confirmed_by"], result["confirmed_by"])
+        self.assertTrue(stored.get("live_capability_modified") is not None)
         self.assertEqual(quote.items[0].custom_reli_test_project, self.project.name)
+        quote.submit()
+
+    def test_order_row_restores_snapshot_from_its_quotation_line(self):
+        from reli_lims.capability_quotation import _restore_from_upstream
+        quote = self.quotation(self.lines())
+        restored = _restore_from_upstream(
+            frappe._dict(quotation_item=quote.items[0].name), {"schema_version": 1})
+        self.assertIsNotNone(restored)
+        self.assertEqual(restored["snapshot_restored_from"], quote.items[0].name)
+        self.assertEqual(restored["snapshot"]["test_project"], self.project.name)
+        self.assertIsNone(_restore_from_upstream(frappe._dict(), {"schema_version": 1}))
+
+    # --- empty frozen schema is not a wildcard ----------------------------
+    def test_empty_schema_accepts_only_the_hist_original_text(self):
+        capability = frappe.get_doc(dict(
+            doctype="Laboratory Capability", laboratory=self.laboratory.name,
+            test_project=self.project.name, test_object=self.object.name,
+            test_standard=self.standard.name, capability_scope="NO TEMPLATE",
+        )).insert()
+        for status in ("已确认", "已发布"):
+            capability.status = status
+            capability.save()
+        from reli_lims.capability_selection import build_configuration
+        config = build_configuration(capability.name, {"original_text": "按协议 30min"}, "quotation", freeze=True)
+        config["snapshot"]["condition_schema"] = []
+        line = dict(
+            item_code=self.item.name, qty=1, rate=100,
+            custom_reli_capability=capability.name,
+            custom_reli_test_project=self.project.name,
+            custom_reli_test_object=self.object.name,
+            custom_reli_test_standard=self.standard.name,
+            custom_reli_configuration=json.dumps(config),
+        )
+        quote = self.quotation([line])
+
+        edited = frappe.parse_json(quote.items[0].custom_reli_configuration)
+        edited["conditions"] = {"original_text": "按协议 45min"}
+        quote.items[0].custom_reli_configuration = json.dumps(edited)
+        quote.save()
+        self.assertEqual(frappe.parse_json(quote.items[0].custom_reli_configuration)["conditions"],
+                         {"original_text": "按协议 45min"})
+
+        invalid = frappe.parse_json(quote.items[0].custom_reli_configuration)
+        invalid["conditions"] = {"hold_minutes": 30}
+        quote.items[0].custom_reli_configuration = json.dumps(invalid)
+        with self.assertRaises(frappe.ValidationError):
+            quote.save()
+
+    # --- the snapshot itself is immutable --------------------------------
+    def test_snapshot_member_edit_is_rejected(self):
+        quote = self.quotation(self.lines())
+        config = frappe.parse_json(quote.items[0].custom_reli_configuration)
+        config["snapshot"]["test_project"] = self.project_b.name
+        config["snapshot"]["limitation"] = "改写后的限制"
+        quote.items[0].custom_reli_configuration = json.dumps(config)
+        with self.assertRaises(frappe.ValidationError):
+            quote.save()
+
+    def test_snapshot_removal_is_rejected(self):
+        quote = self.quotation(self.lines())
+        config = frappe.parse_json(quote.items[0].custom_reli_configuration)
+        config.pop("snapshot")
+        quote.items[0].custom_reli_configuration = json.dumps(config)
+        with self.assertRaises(frappe.ValidationError):
+            quote.save()

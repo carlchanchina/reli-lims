@@ -292,11 +292,15 @@ class TestTestingRequest(IntegrationTestCase):
         quotation.reload()
         quotation.save()
         self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(config))
+        # Stage 1: a saved line may not adopt a freshly rebuilt live snapshot.
         updated = build_configuration(capability.name, config['conditions'], 'quotation')
         quotation.items[0].custom_reli_configuration = updated
-        quotation.save()
-        self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(updated))
-        config = updated
+        with self.assertRaises(frappe.ValidationError):
+            quotation.save()
+        quotation.reload()
+        self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(config))
+        # Downstream documents inherit the frozen line, not a fresh live rebuild.
+        config = frappe.parse_json(quotation.items[0].custom_reli_configuration)
         quotation.submit()
         self.quotation = quotation
         request = self.request()

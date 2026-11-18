@@ -6,6 +6,7 @@ import json
 import frappe
 from frappe.utils import today, flt
 
+from reli_lims.capability_selection import assert_snapshot_immutable
 from reli_lims.p4_setup import TECHNICAL
 
 TESTING = "检测服务"
@@ -70,12 +71,23 @@ def validate_lines(doc, method=None):
             if source.get("custom_reli_configuration") and not row.get("custom_reli_configuration"):
                 frappe.throw("订单行丢失来源报价的技术条件快照，请重新从报价创建订单。")
         snapshot = (frappe.parse_json(row.get("custom_reli_configuration")) or {}).get("snapshot") or {}
-        expected_project = snapshot.get("test_project") or item.custom_reli_test_project
-        if not row.get("custom_reli_test_project"):
-            row.custom_reli_test_project = expected_project
-        if expected_project and row.custom_reli_test_project != expected_project:
-            frappe.throw("检测服务商品与检测项目不一致。")
+        # A frozen snapshot always wins. A brand-new order line may still derive
+        # its project from the service Item (direct order without capability);
+        # an existing line may never be re-classified from the master.
+        expected_project = snapshot.get("test_project")
+        if not expected_project and doc.doctype == "Sales Order" and stored is None:
+            expected_project = item.custom_reli_test_project
+        if expected_project:
+            if not row.get("custom_reli_test_project"):
+                row.custom_reli_test_project = expected_project
+            if row.custom_reli_test_project != expected_project:
+                frappe.throw("检测服务商品与检测项目不一致。")
         config = frappe.parse_json(row.get("custom_reli_configuration"))
+        if stored is not None and stored.get("custom_reli_configuration"):
+            # A mapped order line may not silently rewrite the snapshot it inherited.
+            assert_snapshot_immutable(
+                frappe.parse_json(stored.custom_reli_configuration), config, row,
+            )
         # Legacy rows without a snapshot are repaired by capability_quotation.validate afterwards.
         if config and (config.get("snapshot") or {}):
             snapshot = config["snapshot"]
