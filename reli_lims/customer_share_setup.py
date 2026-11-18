@@ -216,7 +216,14 @@ def _ensure_web_form():
     if frappe.db.exists("Web Form", WEB_FORM):
         doc = frappe.get_doc("Web Form", WEB_FORM)
     else:
-        doc = frappe.new_doc("Web Form")
+        # 老站点上该表单曾按标题命名，先对齐到固定名再复用，避免校验报 missing。
+        legacy = frappe.db.exists("Web Form", {"route": WEB_FORM})
+        if legacy and legacy != WEB_FORM:
+            frappe.rename_doc("Web Form", legacy, WEB_FORM, force=True)
+        if frappe.db.exists("Web Form", WEB_FORM):
+            doc = frappe.get_doc("Web Form", WEB_FORM)
+        else:
+            doc = frappe.new_doc("Web Form")
         doc.name = WEB_FORM
         doc.route = WEB_FORM
         doc.title = WEB_FORM_TITLE
@@ -255,7 +262,7 @@ def _ensure_web_form():
         doc.append("web_form_fields", data)
     doc.flags.ignore_permissions = True
     if doc.is_new():
-        doc.insert(ignore_permissions=True)
+        doc.insert(ignore_permissions=True, set_name=WEB_FORM)
     else:
         doc.save(ignore_permissions=True)
     return doc.name
