@@ -86,3 +86,33 @@
 - 不把 `Laboratory Capability` 拆成"能力 + 条件"两张表（条件已经是 JSON schema，拆开只会增加写入路径）。
 - 不把 ERPNext `Quotation/Sales Order` 替换成自定义单据。
 - 不在迁移期删除 `Test Method`（旧委托/旧方案仍有 `test_method` 引用）。
+
+## 6.7 用真实数据校验 A/B 两案（阶段 0 结果）
+
+| 校验点 | 真实数据 | 对 A 案的影响 | 对 B 案的影响 |
+|---|---|---|---|
+| 一个项目的规格多样性 | 74 个多能力项目中 72 个标准 ≥2、43 个限制文本 ≥2 | A 案只能给一个价，无法区分 | B 案可直接承载 |
+| 典型项目 | 高温试验 `TPR-01355`：35 标准 / 21 对象 / 20 种限制，箱体口径 `≤+140°C` 与 `≤+150°C` 并存 | 一个 `rate` 表达不了 | 规格按"箱体+温度+标准"切分 |
+| 项目是否已有规格容器 | `Test Project.condition_template` 已是数组，但 **118/120 为 `[]`**，仅 2 个有内容 | — | **结构可复用，数据需回填** |
+| 条件 schema | **仅 3/660** 能力有 `condition_schema` | 报价条件几乎无法校验 | 回填后才能做条件化规格 |
+| 价格载体 | `Item Price` 仅 4 条；`standard_rate` 9 条全 0 | 价格未体系化 | 可复用 `Item Price` + `Pricing Rule` 的 item/条件维度 |
+| 跨实验室 | `TPR-01365`、`TPR-01374` 并集不可被单实验室覆盖 | 无实验室维度 → 可售范围虚高 | 规格可加 `laboratory_scope` |
+| 真实使用度 | 报价行仅覆盖 5 个项目，全部演示客户；高温试验 0 报价 | A 案未被真实验证 | B 案可在低风险项目试点 |
+
+**结论（修正推荐）**：**不需要先建 `Service Specification` DocType**。依据真实数据：
+1. `condition_template` 已是数组字段，可直接承载多规格（`spec_key / object_scope / standard_scope / conditions / equipment`）；
+2. `Quotation Item.custom_reli_configuration` 已能保存规格快照；
+3. 价格可复用 ERPNext `Item Price` / `Pricing Rule`，按 item + 规格属性计价；
+4. 真正缺的是**数据**（118/120 模板为空、657/660 无 schema）与**实验室维度**，不是表。
+
+因此推荐顺序改为：**先回填规格模板（零 DDL）→ 用现有字段跑通"一项目多规格报价" → 只有验证出表达瓶颈，才建 Specification DocType。** 这与阶段 0 数据现实一致，也符合"不预设新增表"的要求。
+
+### 五类概念的边界（不得互相替代）
+
+| 概念 | 载体 | 不是什么 |
+|---|---|---|
+| 技术条件 | `custom_reli_configuration.conditions`（键值来自 `condition_schema`） | 不是商品，不可直接售卖 |
+| 设备能力 | `EquipmentSnapshot`（方案行）/ 能力的 `limitation` 文本 | 不是价格因子（除非显式建模） |
+| 计价参数 | `Item Price` / `Pricing Rule` 的 item、qty、日期、客户组 | 不是技术条件本身 |
+| 商业商品 | `Item`（可售单元 + 税 + UOM） | 不是能力的同义词 |
+| 客户报价快照 | `Quotation Item`（配置 JSON + 价格 + 三列字典） | 不是活引用 |

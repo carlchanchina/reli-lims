@@ -25,4 +25,6 @@ flowchart TD
   U --> V["Test Report"]
 ```
 
+**阶段 0 实测**：660 条能力中 `published=1` 仅 **8** 条，且全部属于演示项目（TPR-01440/TPR-01541）；`condition_schema` 仅 3 条有内容 → 流程的后半段（发布→目录→按条件报价）实际上尚未跑通。
+
 关键幂等键：`Capability Upload.request_key`、`Capability Source.documents_source_id`、`Laboratory Capability.cnas_scope_key`、`Mercur Sync Event.idempotency_key`。

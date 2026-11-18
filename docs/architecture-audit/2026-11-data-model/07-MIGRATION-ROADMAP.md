@@ -2,7 +2,7 @@
 
 原则：**先让现有数据可信，再谈新实体**。每一阶段都可以独立回滚，且不触碰 ERPNext 核心。
 
-## 阶段 0（只读改善，1 周，零 DDL）
+## 阶段 0（只读改善，零 DDL）— 已完成，结果见 `08-PHASE0-DATA-AUDIT.md`
 
 | 动作 | 产出 | 风险 |
 |---|---|---|
@@ -12,13 +12,21 @@
 
 验收：能用一张报表回答"某实验室到底能做哪些对象/标准"。
 
-## 阶段 1（冻结快照，2 周，改 validate 逻辑）
+## 阶段 1（最小改造，约 1 周，不动 DocType）
 
-1. `Quotation Item.custom_reli_test_*` 改为写入时写死，validate 不再覆盖（`capability_quotation.py:111-115`）。
-2. 在 `Test Request Item` 增加同样的冻结语义（已部分存在于 `technical_configuration`，补齐三列）。
-3. 加一条迁移校验：历史报价行的三列与 config 快照不一致的，列清单（不自动改）。
+最小改造清单（按优先级，全部是既有函数内的小改，不新增 DocType、不改表结构）：
 
-验收：修改某个能力行的项目/对象/标准，历史报价与委托的单据字段保持不变。
+1. **冻结三列**（必做，1 处）：`capability_quotation.validate` 中 `:111-115` 的覆写改为"仅当行内为空时回填"，已写入的值不再覆盖。同时给 `custom_reli_configuration` 增加 `snapshot_at` 与 `capability_modified` 时间戳，便于追溯。
+2. **写入即快照**（必做）：`prepare_lines` 生成行时一次性写全三列 + 配置 + `item_name`，`validate` 只校验不重写。
+3. **脏数据隔离**（低成本）：给 `Test Project` 加 `demo_only`（Check，默认 0），把 `TPR-01440`/`TPR-01541` 标出，目录与统计过滤；`TPR-01353` 名称拆分/别名修正在字典层处理。
+4. **跨实验室提示**（只读逻辑）：能力中心在项目详情里显示"本项目由 N 个实验室并集构成，无单一实验室覆盖全部标准"，仅提示，不阻断。
+5. **孤儿商品补溯源**：`publish`/保存时若 `custom_reli_service_capability` 为空，写入推算出来的首个能力并记 `source_inferred=1`。
+6. **索引**（可选，DDL，需单独批准）：`tabItem(custom_reli_test_project)` 普通索引。当前表小，不紧急。
+7. **回归检查**：把 `tools/a2_audit.py` 的漂移查询做成只读巡检项，纳入日常脚本（不自动修数据）。
+
+验收：改一条能力的项目/对象/标准，历史报价与委托单据字段**不变**；`data/quotation_drift.csv` 复跑仍为 0 行。
+
+不做的事：不建 `Service Specification`、不拆 `Test Method`、不动 ERPNext 字段、不批量改历史单据。
 
 ## 阶段 2（规格模板，3-4 周，仍不建表）
 

@@ -13,7 +13,10 @@
 | `05-COMMERCIAL-FLOW.md` | Item/报价/价格/快照/订单/委托逐问逐答 |
 | `06-TARGET-DATA-MODEL.md` | 目标模型、A/B 商品模型对比、归属划分 |
 | `07-MIGRATION-ROADMAP.md` | 五阶段改造与"不要动"清单 |
+| `08-PHASE0-DATA-AUDIT.md` | 阶段 0 只读数据审计：660→120 实测、覆盖矩阵、跨实验室错配、高温试验案例、报价漂移基线、异常清单 |
+| `data/` | 审计原始导出：`coverage_matrix.csv`（120 行）、`project_variance.csv`（74 行）、`quotation_drift.csv`（漂移基线） |
+| `tools/a2_audit.py` | 只读复跑脚本（不写数据、不 migrate） |
 | `AUDIT_EVIDENCE.md` | 每条结论对应的文件/函数/行号与证据不足项 |
-| `diagrams/` | 6 张 Mermaid 图（总体架构、ER、能力→商品、三中心、解析流程、交易履约时序） |
+| `diagrams/` | 7 张 Mermaid 图（总体架构、ER、能力→商品、三中心、解析流程、交易履约时序、阶段 0 数据现实） |
 
 图表说明：`Service Specification` / `Service Offering` 均标注 `PROPOSED`（代码中不存在）。

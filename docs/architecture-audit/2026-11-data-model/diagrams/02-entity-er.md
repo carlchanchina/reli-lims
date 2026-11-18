@@ -1,7 +1,8 @@
-# 图 2 · 四仓库核心数据实体 ER
+# 图 2 · 四仓库核心数据实体 ER（标注开发站真实数量）
 
 ```mermaid
 erDiagram
+  %% 真实数量：Capability 660 / Test Project 120 / Item 9 / Quotation 35 / Item Price 4
   LaboratoryProfile ||--o{ CapabilitySource : "来源批次"
   CapabilitySource ||--o{ LaboratoryCapability : "导入"
   CapabilityUpload ||--o| CapabilitySource : "幂等请求"
