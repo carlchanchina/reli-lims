@@ -3,6 +3,14 @@ import uuid
 
 import frappe
 from frappe.tests import IntegrationTestCase
+
+
+def _snapshot_payload(value):
+    """Technical configuration without the volatile freeze provenance stamps."""
+    data = frappe.parse_json(value) if isinstance(value, str) else dict(value or {})
+    for key in ("snapshot_at", "capability_modified", "snapshot_repair"):
+        data.pop(key, None)
+    return data
 from frappe.utils import add_days, now_datetime, today
 
 from reli_lims.services.test_request import make_test_program, receive_samples
@@ -283,12 +291,16 @@ class TestTestingRequest(IntegrationTestCase):
         self.standard.save()
         quotation.reload()
         quotation.save()
-        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), config)
+        self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(config))
+        # Stage 1: a saved line may not adopt a freshly rebuilt live snapshot.
         updated = build_configuration(capability.name, config['conditions'], 'quotation')
         quotation.items[0].custom_reli_configuration = updated
-        quotation.save()
-        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), updated)
-        config = updated
+        with self.assertRaises(frappe.ValidationError):
+            quotation.save()
+        quotation.reload()
+        self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(config))
+        # Downstream documents inherit the frozen line, not a fresh live rebuild.
+        config = frappe.parse_json(quotation.items[0].custom_reli_configuration)
         quotation.submit()
         self.quotation = quotation
         request = self.request()
@@ -298,7 +310,7 @@ class TestTestingRequest(IntegrationTestCase):
         self.submit(request)
         receive_samples(request.name, self.receipts())
         program = frappe.get_doc('Test Program', make_test_program(request.name))
-        self.assertEqual(frappe.parse_json(program.items[0].technical_configuration), config)
+        self.assertEqual(_snapshot_payload(program.items[0].technical_configuration), _snapshot_payload(config))
         self.assertIn('15', program.items[0].test_condition)
         self.assertEqual(program.items[0].source_request_item, request.items[0].name)
         original_label = config['snapshot']['standard_label']
@@ -307,7 +319,7 @@ class TestTestingRequest(IntegrationTestCase):
         refreshed = build_configuration(capability.name, config['conditions'], 'quotation')
         self.assertNotEqual(refreshed['snapshot']['standard_label'], original_label)
         quotation.reload()
-        self.assertEqual(frappe.parse_json(quotation.items[0].custom_reli_configuration), config)
+        self.assertEqual(_snapshot_payload(quotation.items[0].custom_reli_configuration), _snapshot_payload(config))
         program.items[0].technical_configuration = refreshed
         with self.assertRaises(frappe.ValidationError):
             program.save()

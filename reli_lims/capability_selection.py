@@ -18,6 +18,17 @@ FIELDS = ["name", "test_project", "test_object", "laboratory", "test_method", "t
           "limitation", "scope_effective_date", "condition_schema", "status"]
 DEFAULT_CONDITION = [{"key": "original_text", "type": "text", "label": "检测条件原文"}]
 
+# Snapshot members that describe the technical fact sold to the customer.
+# Editing any of them after the line exists would rewrite history, so they are
+# guarded by :func:`snapshot_changes` and may only move together with an
+# explicit, audited confirmation.
+PROTECTED_SNAPSHOT_FIELDS = (
+    "name", "test_project", "test_object", "test_standard", "test_method",
+    "laboratory", "limitation", "capability_scope", "product_scope",
+    "project_label", "standard_label", "laboratory_label",
+    "source", "source_row", "condition_schema",
+)
+
 
 def is_dev_preview():
     return frappe.local.site == "carl" and bool(frappe.conf.developer_mode)
@@ -135,16 +146,16 @@ def configure(name, conditions, mode):
     return build_configuration(name, frappe.parse_json(conditions), mode)
 
 
-def build_configuration(name, conditions, mode):
-    if mode not in {"catalog", "quotation", "sales_order", "request"}:
-        frappe.throw("履约条件须从已确认委托读取。")
-    capability = frappe.get_doc("Laboratory Capability", name)
-    capability.check_permission("read")
-    if mode != "catalog" and not is_dev_preview() and (
-        capability.status != "已发布" or not capability.published
-    ):
-        frappe.throw("能力尚未发布。")
-    schema = effective_schema(capability.as_dict())
+def normalize_conditions(schema, conditions):
+    """Validate operator-entered conditions against a schema and return stored values.
+
+    Shared by :func:`build_configuration` (first selection) and quotation validation
+    (later edits), so a frozen snapshot keeps the same rules without re-reading the
+    live capability.
+    """
+    # An absent schema is NOT a licence for arbitrary keys: legacy capabilities
+    # without a template may only carry the historical free-text condition.
+    schema = schema or DEFAULT_CONDITION
     if not isinstance(conditions, dict) or set(conditions) - {field["key"] for field in schema}:
         frappe.throw("检测条件不符合能力或项目模板。")
     normalized = {}
@@ -164,8 +175,59 @@ def build_configuration(name, conditions, mode):
         elif field["type"] == "text" and (not isinstance(value, str) or len(value) > 2000):
             frappe.throw("检测条件文本须为 2000 字以内。")
         normalized[key] = value
+    return normalized
+
+
+def snapshot_changes(old_config, new_config):
+    """Protected snapshot members that differ between two stored configurations."""
+    old = (old_config or {}).get("snapshot") or {}
+    new = (new_config or {}).get("snapshot") or {}
+    if not old:
+        return []
+    if not new:
+        return ["snapshot"]
+    return [
+        field for field in PROTECTED_SNAPSHOT_FIELDS
+        if (old.get(field) or None) != (new.get(field) or None)
+    ]
+
+
+def assert_snapshot_immutable(old_config, new_config, row=None):
+    """Reject silent edits of a frozen technical snapshot.
+
+    Operators may edit conditions; they may not rewrite the identity, limitation,
+    standard, object or provenance of a line that has already been saved. The only
+    sanctioned write path is :func:`reli_lims.capability_quotation.confirm_legacy_snapshot`,
+    which sets ``row.flags.allow_snapshot_change`` and records who confirmed it.
+    """
+    if row is not None and getattr(row, "flags", None) and row.flags.get("allow_snapshot_change"):
+        return
+    changed = snapshot_changes(old_config, new_config)
+    if changed:
+        frappe.throw(
+            "检测技术快照不可修改：" + "、".join(changed)
+            + "。如需修正历史快照，请走人工确认流程。"
+        )
+
+
+def build_configuration(name, conditions, mode, freeze=False):
+    if mode not in {"catalog", "quotation", "sales_order", "request"}:
+        frappe.throw("履约条件须从已确认委托读取。")
+    capability = frappe.get_doc("Laboratory Capability", name)
+    capability.check_permission("read")
+    if mode != "catalog" and not is_dev_preview() and (
+        capability.status != "已发布" or not capability.published
+    ):
+        frappe.throw("能力尚未发布。")
+    schema = effective_schema(capability.as_dict())
+    normalized = normalize_conditions(schema, conditions)
     snapshot = {field: capability.get(field) for field in FIELDS if field != "condition_schema"}
     snapshot.update(labels(capability.as_dict()))
     snapshot.update(source=capability.source, source_row=capability.source_row, condition_schema=schema)
-    return {"schema_version": 1, "capability_id": name, "conditions": normalized,
-            "snapshot": json.loads(frappe.as_json(snapshot))}
+    config = {"schema_version": 1, "capability_id": name, "conditions": normalized,
+              "snapshot": json.loads(frappe.as_json(snapshot))}
+    if freeze:
+        # Provenance markers only; they never change what the customer sees.
+        config["snapshot_at"] = frappe.utils.now()
+        config["capability_modified"] = str(capability.modified or "")
+    return config

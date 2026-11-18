@@ -6,6 +6,7 @@ import json
 import frappe
 from frappe.utils import today, flt
 
+from reli_lims.capability_selection import assert_snapshot_immutable
 from reli_lims.p4_setup import TECHNICAL
 
 TESTING = "检测服务"
@@ -46,7 +47,10 @@ def validate_lines(doc, method=None):
             if row.get("custom_reli_capability") or row.get("custom_reli_configuration"):
                 frappe.throw("普通服务或实物商品不能带有检测能力快照，请核对商品分类。")
             continue
-        row.item_name = item.item_name
+        snapshot = (frappe.parse_json(row.get("custom_reli_configuration")) or {}).get("snapshot") or {}
+        # A frozen technical snapshot outranks the live Item master for the row's identity.
+        if not snapshot.get("project_label"):
+            row.item_name = item.item_name
         if doc.doctype == "Sales Order" and row.quotation_item:
             source = frappe.db.get_value("Quotation Item", row.quotation_item,
                 ["parent", "item_code", *TECHNICAL], as_dict=True)
@@ -66,13 +70,27 @@ def validate_lines(doc, method=None):
             # 原生 make_sales_order 只复制同名字段；若上游把快照字段漏掉，这里必须报错而不是静默丢技术条件。
             if source.get("custom_reli_configuration") and not row.get("custom_reli_configuration"):
                 frappe.throw("订单行丢失来源报价的技术条件快照，请重新从报价创建订单。")
-        if not row.get("custom_reli_test_project"):
-            row.custom_reli_test_project = item.custom_reli_test_project
-        if row.custom_reli_test_project != item.custom_reli_test_project:
-            frappe.throw("检测服务商品与检测项目不一致。")
+        snapshot = (frappe.parse_json(row.get("custom_reli_configuration")) or {}).get("snapshot") or {}
+        # A frozen snapshot always wins. A brand-new order line may still derive
+        # its project from the service Item (direct order without capability);
+        # an existing line may never be re-classified from the master.
+        expected_project = snapshot.get("test_project")
+        if not expected_project and doc.doctype == "Sales Order" and stored is None:
+            expected_project = item.custom_reli_test_project
+        if expected_project:
+            if not row.get("custom_reli_test_project"):
+                row.custom_reli_test_project = expected_project
+            if row.custom_reli_test_project != expected_project:
+                frappe.throw("检测服务商品与检测项目不一致。")
         config = frappe.parse_json(row.get("custom_reli_configuration"))
-        if config:
-            snapshot = config.get("snapshot") or {}
+        if stored is not None and stored.get("custom_reli_configuration"):
+            # A mapped order line may not silently rewrite the snapshot it inherited.
+            assert_snapshot_immutable(
+                frappe.parse_json(stored.custom_reli_configuration), config, row,
+            )
+        # Legacy rows without a snapshot are repaired by capability_quotation.validate afterwards.
+        if config and (config.get("snapshot") or {}):
+            snapshot = config["snapshot"]
             if config.get("capability_id") != row.get("custom_reli_capability"):
                 frappe.throw("订单检测能力与技术快照不一致。")
             for field, snapshot_field in (("custom_reli_test_project", "test_project"),
@@ -281,7 +299,7 @@ def prepare_lines(selections):
         frappe.throw("请一次选择 1 至 30 条能力。")
     result = []
     for selection in selections:
-        config = build_configuration(selection["capability_id"], selection.get("conditions", {}), "sales_order")
+        config = build_configuration(selection["capability_id"], selection.get("conditions", {}), "sales_order", freeze=True)
         capability = frappe.get_doc("Laboratory Capability", config["capability_id"])
         item = service_item(capability, selection.get("item_code"))
         project = capability.test_project
