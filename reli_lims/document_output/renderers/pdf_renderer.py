@@ -1,4 +1,4 @@
-"""Escaped file HTML through Frappe's native wkhtmltopdf pipeline."""
+"""Escaped file HTML through Frappe v16's native Chromium pipeline."""
 from html import escape
 
 
@@ -9,7 +9,7 @@ def table(columns, rows):
 
 
 def render(spec, context):
-    from frappe.utils.pdf import get_pdf
+    from frappe.utils.pdf import get_chrome_pdf
     values = {key: escape(str(context.get(key) or '')) for key in ('title', 'name', 'notice')}
     values['fields'] = table(['项目', '内容'], context['fields'])
     values['items'] = table(context['columns'], context['rows'])
@@ -20,5 +20,7 @@ def render(spec, context):
     html = (spec.directory / f'{spec.key}.html').read_text()
     for key, value in values.items():
         html = html.replace('{{' + key + '}}', value)
-    return get_pdf(html, options={'page-size': 'A4', 'encoding': 'UTF-8',
-                                 'margin-top': '15mm', 'margin-bottom': '15mm'})
+    return get_chrome_pdf(
+        print_format=None, html=html, output=None, pdf_generator='chrome',
+        options={'page-size': 'A4', 'margin-top': '15mm', 'margin-bottom': '15mm'},
+    )
