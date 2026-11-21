@@ -20,7 +20,14 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from reli_lims.cnas_scope import scope_key  # noqa: E402
+# 由 cnas-workbench PR #7（5826d98）server/testing_bridge.py::scope_key 实际
+# 计算得到，写死在这里作为外部基准：避免用同一实现自证。
+EXPECTED_BY_ROW = {
+    "1": "71f18003dfaebe64983cefe1c522c9702e37506cff3a4865b0dd49c480f2df8f",
+    "2": "76ae1804a35baae2501468c96c11bfada373295a31bb134f4c2bd9b18d909077",
+    "3": "a9d5e1b56fc4b31446b3e189d7ece9890268cb6662362662974ccd7377f2c25a",
+    "4": "6dcc1a6999796cdd542bc8659728ee01f7527deebe7f9dfed171481bc51ca7d3",
+}
 
 
 # ----------------------------------------------------------------- 假 frappe
@@ -152,13 +159,8 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
         self.assertEqual(len(rows), 4)  # 5 行去掉 1 行重复
         for row in rows:
             self.assertRegex(row["cnas_scope_key"], r"^[0-9a-f]{64}$")
-        first = rows[0]
-        identity = dict(
-            item_code="L11464-0001", standard_no="GB/T 2423.1-2008",
-            test_object="电工电子产品", clause="5.1",
-            limit_note="低温 -40 ℃ 保持 16 h", effective_date="2016-01-01",
-        )
-        self.assertEqual(first["cnas_scope_key"], scope_key("LAB-TEST", identity))
+        by_row = {row["source_row"]: row["cnas_scope_key"] for row in rows}
+        self.assertEqual(by_row, EXPECTED_BY_ROW)
 
     def test_null_and_empty_limit_note_share_key(self):
         self.importer._apply(self.batch(), "digest-2")
@@ -191,12 +193,7 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
         self.importer._apply(self.batch(), "digest-5")
         rows = self.store.find("Laboratory Capability", {})
         null_row = next(row for row in rows if row["source_row"] == "2")
-        identity = dict(
-            item_code="L11464-0002", standard_no="GB/T 2423.1-2008",
-            test_object="电工电子产品", clause="5.1",
-            limit_note=None, effective_date="2016-01-01",
-        )
-        self.assertEqual(null_row["cnas_scope_key"], scope_key("LAB-TEST", identity))
+        self.assertEqual(null_row["cnas_scope_key"], EXPECTED_BY_ROW["2"])
         import hashlib
         legacy = hashlib.sha256(json.dumps([
             "LAB-TEST", "L11464-0002", "GB/T 2423.1-2008", "电工电子产品",
