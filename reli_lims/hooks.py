@@ -8,7 +8,8 @@ app_license = "MIT"
 required_apps = ["erpnext"]
 
 fixtures = [
-    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]}
+    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "in", ["Reli Four Centers"]]]},
 ]
 
 app_logo_url = "/assets/reli_lims/images/reli-lims.svg"

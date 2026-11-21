@@ -43,11 +43,6 @@ class TestV2CommandCenter(IntegrationTestCase):
         definition = self._definition()
         shortcuts = {s["label"]: s["url"] for s in definition["shortcuts"]}
         self.assertEqual(list(shortcuts), list(CENTER_SHORTCUTS))
-        self.assertEqual(
-            [block["data"]["shortcut_name"] for block in json.loads(definition["content"])
-             if block["type"] == "shortcut"],
-            list(CENTER_SHORTCUTS),
-        )
         for label, name in CENTER_SHORTCUTS.items():
             with self.subTest(center=label):
                 self.assertTrue(frappe.db.exists("Workspace", name), f"missing workspace: {name}")
@@ -98,6 +93,69 @@ class TestV2CommandCenter(IntegrationTestCase):
         self.assertEqual(definition["charts"], [])
         self.assertEqual(definition["number_cards"], [])
         self.assertEqual(definition["quick_lists"], [])
+
+    def _sidebar_definition(self):
+        path = Path(WORKSPACE_JSON).parent.parent.parent / "sidebar" / "reli_lims" / "reli_lims.json"
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def test_home_content_renders_four_centers_block(self):
+        definition = self._definition()
+        blocks = json.loads(definition["content"])
+        rendered = [b for b in blocks if b["type"] == "custom_block"]
+        self.assertEqual(
+            [b["data"]["custom_block_name"] for b in rendered], ["Reli Four Centers"]
+        )
+        self.assertEqual(
+            [row["custom_block_name"] for row in definition["custom_blocks"]],
+            ["Reli Four Centers"],
+        )
+        self.assertTrue(
+            frappe.db.exists("Custom HTML Block", "Reli Four Centers"),
+            "home page custom block is missing on this site",
+        )
+        html = frappe.get_doc("Custom HTML Block", "Reli Four Centers").html
+        # every center card title links to its real user page, and the fourth center exists
+        for label, name in CENTER_SHORTCUTS.items():
+            with self.subTest(center=label):
+                expected = user_route(name)
+                self.assertIn(f'<a href="{expected}">', html, f"{label} card missing {expected}")
+                self.assertIn(label, html)
+        self.assertIn("4 · 文档中心", html)
+        self.assertIn("常用入口", html)
+
+    def test_sidebar_groups_under_four_centers(self):
+        items = self._sidebar_definition()["items"]
+        sections = [i["label"] for i in items if i["type"] == "Section Break"]
+        self.assertEqual(sections, list(CENTER_SHORTCUTS))
+        for section in sections:
+            with self.subTest(section=section):
+                idx = next(i for i, item in enumerate(items) if item["type"] == "Section Break" and item["label"] == section)
+                nxt = items[idx + 1]
+                self.assertEqual(nxt["type"], "Link")
+                self.assertEqual(nxt["label"], "进入" + section.split("· ", 1)[1])
+                self.assertTrue(nxt.get("link_to") or nxt.get("url"))
+        # each section break owns the links that follow it
+        doc_idx = next(i for i, item in enumerate(items) if item.get("label") == "4 · 文档中心")
+        doc_children = [i for i in items[doc_idx + 1:] if i["type"] == "Link"]
+        self.assertEqual(len(doc_children), 6)
+        self.assertEqual(doc_children[0].get("url"), user_route("Wekona Documents"))
+
+    def test_sidebar_links_point_to_existing_records(self):
+        for item in self._sidebar_definition()["items"]:
+            if item["type"] != "Link":
+                continue
+            with self.subTest(item=item["label"]):
+                lt = item["link_type"]
+                if lt == "URL":
+                    self.assertTrue(item["url"].startswith("/desk/"), item["url"])
+                    self.assertFalse(is_editor_route(item["url"]), item["label"])
+                elif lt == "Workspace":
+                    self.assertTrue(frappe.db.exists("Workspace", item["link_to"]))
+                    self.assertFalse(is_editor_route(user_route(item["link_to"])))
+                elif lt == "Page":
+                    self.assertTrue(frappe.db.exists("Page", item["link_to"]))
+                else:
+                    self.assertTrue(frappe.db.exists("DocType", item["link_to"]))
 
     def test_center_navigation_and_roles(self):
         workspace_root = Path(WORKSPACE_JSON).parent.parent

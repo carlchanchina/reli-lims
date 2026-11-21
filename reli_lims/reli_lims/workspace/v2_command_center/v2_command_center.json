@@ -112,6 +112,10 @@
   "charts": [],
   "number_cards": [],
   "quick_lists": [],
-  "custom_blocks": [],
-  "content": "[{\"id\":\"v2-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">检测工作台</span>\",\"col\":12}},{\"id\":\"v2-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"从商务接单、能力选型到检测履约和文档审核，四个中心从这里进入。\",\"col\":12}},{\"id\":\"v2-center-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"1 · 商务中心\",\"col\":3}},{\"id\":\"v2-center-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"2 · 能力中心\",\"col\":3}},{\"id\":\"v2-center-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"3 · 履约中心\",\"col\":3}},{\"id\":\"v2-center-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"4 · 文档中心\",\"col\":3}}]"
+  "custom_blocks": [
+    {
+      "custom_block_name": "Reli Four Centers"
+    }
+  ],
+  "content": "[{\"id\":\"v2-four-centers\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Reli Four Centers\",\"col\":12}}]"
 }
