@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from reli_lims.cnas_scope import (  # noqa: E402
-    SCOPE_KEY_FIELDS,
+    ROW_IDENTITY_FIELDS,
     normalize_identity,
     scope_key,
 )
@@ -33,7 +33,10 @@ def load_vectors():
 
 
 def legacy_scope_key(laboratory, row):
-    """2026-11-21 之前的实现：字段原值直接序列化。"""
+    """2026-11-21 之前的实现：字段原值直接序列化。
+
+    仅作辅助，**不作为断言基准**——基准是 fixture 里冻结的 legacy_scope_key。
+    """
     identity = [laboratory, row["item_code"], row["standard_no"], row["test_object"],
                 row["clause"], row["limit_note"], row["effective_date"]]
     return hashlib.sha256(json.dumps(identity).encode()).hexdigest()
@@ -47,10 +50,11 @@ class ScopeKeyContractTest(unittest.TestCase):
     # ---------------------------------------------------------------- 契约
     def test_field_order_is_frozen(self):
         self.assertEqual(
-            SCOPE_KEY_FIELDS,
+            ROW_IDENTITY_FIELDS,
             ("item_code", "standard_no", "test_object", "clause",
              "limit_note", "effective_date"),
         )
+        # 完整身份 = laboratory + 6 个行级字段
         self.assertEqual(len(normalize_identity("LAB", {"item_code": "x"})), 7)
 
     def test_identity_matches_cnas_workbench_shape(self):
@@ -151,21 +155,40 @@ class ScopeKeyContractTest(unittest.TestCase):
 
     # --------------------------------------------------- 既有合法键不变
     def test_existing_wellformed_keys_unchanged(self):
+        """基准是 fixture 里冻结的 legacy_scope_key（旧实现实算值），不是本地重写。"""
+        self.assertTrue(self.fixture["legacy_unchanged"])
         for name in self.fixture["legacy_unchanged"]:
             item = self.by_name[name]
             with self.subTest(vector=name):
+                self.assertIsNotNone(item["legacy_scope_key"])
                 self.assertEqual(
                     scope_key(item["laboratory"], item["row"]),
-                    legacy_scope_key(item["laboratory"], item["row"]),
+                    item["legacy_scope_key"],
                 )
 
-    def test_only_malformed_rows_change_key(self):
-        """哈希口径变化只影响旧实现会写出 json null / 非字符串的行。"""
-        self.assertEqual(
-            sorted(self.fixture["legacy_changed"]),
-            ["laboratory_null", "null_clause", "null_limit_note",
-             "numeric_effective_date", "standard_fallback"],
-        )
+    def test_malformed_rows_change_key(self):
+        """null / 非字符串字段的行：新键必须与冻结的旧键不同。"""
+        expected = ["laboratory_null", "null_clause", "null_limit_note",
+                    "numeric_effective_date", "standard_fallback"]
+        self.assertEqual(sorted(self.fixture["legacy_changed"]), expected)
+        for name in expected:
+            item = self.by_name[name]
+            with self.subTest(vector=name):
+                self.assertNotEqual(
+                    scope_key(item["laboratory"], item["row"]),
+                    item["legacy_scope_key"],
+                )
+
+    def test_legacy_helper_agrees_with_frozen_values(self):
+        """辅助 helper 与冻结值一致，防止 helper 写错后断言失去意义。"""
+        for item in self.fixture["vectors"]:
+            if not item["legacy_scope_key"]:
+                continue
+            with self.subTest(vector=item["name"]):
+                self.assertEqual(
+                    legacy_scope_key(item["laboratory"], item["row"]),
+                    item["legacy_scope_key"],
+                )
 
     # ----------------------------------------------------- 向量文件自检
     def test_vector_fixture_provenance(self):

@@ -74,7 +74,10 @@ def _apply(batch, digest):
                     structured_json=json.dumps(batch, ensure_ascii=False), import_status="部分导入")
     for row in batch["items"]:
         # 与 cnas-workbench server/testing_bridge.scope_key 逐字节一致：
-        # 缺字段/None/空串归一为 ""，标准号缺失回退 standard。
+        # None / 空串一律归一为 ""，标准号缺失回退 standard。
+        # 注意：本函数的 batch 由 tools/export_cnas_dev_batch.py 产出，七个字段
+        # 必填（下面 standards[row["standard_no"]] 等仍是硬索引），容错只发生在
+        # 哈希模块本身，供诊断与对端复用。
         key = canonical_scope_key(laboratory, row)
         if frappe.db.exists("Laboratory Capability", {"cnas_scope_key": key}):
             continue

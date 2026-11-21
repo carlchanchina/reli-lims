@@ -31,8 +31,9 @@ pre-2026-11-21 implementation did, so existing keys stay valid.
 import hashlib
 import json
 
-#: Identity fields, in hash order. Exported for tests and diagnostic tooling.
-SCOPE_KEY_FIELDS = (
+#: 行级身份字段（**不含** laboratory），按哈希顺序排列。
+#: 完整身份 = [laboratory] + ROW_IDENTITY_FIELDS，共 7 项。
+ROW_IDENTITY_FIELDS = (
     "item_code",
     "standard_no",
     "test_object",

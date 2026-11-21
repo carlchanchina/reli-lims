@@ -31,6 +31,11 @@ sha256(json.dumps([
 
 ## 2. 唯一实现与对端来源
 
+导入器 `cnas_dev_import._apply` 的批次由 `tools/export_cnas_dev_batch.py` 产出，
+七个字段必填（函数体里 `standards[row["standard_no"]]` 等仍是硬索引）。"缺字段
+容忍"只存在于 `cnas_scope.py` 本身，供诊断脚本与对端复用。
+
+
 - LIMS 侧唯一实现：`reli_lims/cnas_scope.py`（纯函数，不 import frappe）。
 - 对端实现：`carlchanchina/cnas-workbench` `server/testing_bridge.py::scope_key`。
 - 向量文件 `tests/fixtures/cnas_scope_key_vectors.json` 的 `expected_scope_key`
@@ -45,22 +50,41 @@ python3 tests/test_cnas_scope_key_parity.py -v
 # 导入器幂等（内存假 frappe，不连库）
 python3 tests/test_cnas_dev_import_scope_key.py -v
 
+# 只读盘点脚本自测（证明能识别"旧键在库、新键不在"）
+python3 tests/test_cnas_scope_duplicate_report.py -v
+
 # 跨仓库实时平价：git show 取对端实现，不动对端工作树
-python3 tools/check_cnas_scope_key_parity.py
+CNAS_WORKBENCH=/path/to/cnas-workbench \
+    python3 tools/check_cnas_scope_key_parity.py --ref <对端分支或 commit>
+# 退出码：0 一致；1 实现不一致或向量过期；2 环境问题（路径/分支取不到）
 ```
 
 ## 4. 既有键是否会变
 
 只有"旧实现会写出 `json null` 或非字符串"的行会变键：`None` 字段、经
 `standard` 回退的行、整型日期。七个字段都是非空字符串的行，键**逐字节不变**
-（向量文件 `legacy_unchanged` 已逐条断言）。
+（向量文件 `legacy_unchanged` 冻结了旧实现实算值，测试直接断言这些值）。
 
-因此本修复是**预防性**的，不做数据迁移；如需排查历史重复行，用只读脚本：
+为什么既说"会变键"又说"不做迁移"：历史 L11464 批次来自 CSV，空单元格读到的是
+`""` 而不是 `None`，所以那 650 行的旧键与新键逐条相同；会变键的只有来自解析侧
+（Workbench 结构化输出，字段缺失是 `None`）的行。那批数据目前还没进 LIMS，
+因此迁移没有对象。
+
+排查历史/导入前风险用只读脚本（不改数据）：
 
 ```bash
+# 1) 库内统计：键是否唯一、空键、能反算口径的行
 python3 tools/report_cnas_scope_duplicates.py --site carl \
     --scope-module /path/to/cnas_scope.py --out /tmp/report.json
+
+# 2) 导入前核对：批次里哪些行"旧键在库、新键不在" → 重导会插重
+python3 tools/report_cnas_scope_duplicates.py --site carl \
+    --laboratory <Laboratory Profile 文档名> --batch /tmp/batch.json
 ```
+
+注意：库表不存 `item_code`/`standard_no`，**无法**从行记录反算历史键，所以
+"库内直接查重"只能得到"没有同键重复"这种弱结论；判定跨口径重复必须拿原始批次
+重算（`--batch`），脚本会把这类限制随结果一起输出。
 
 ## 5. 已知残余风险
 

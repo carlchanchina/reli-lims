@@ -11,7 +11,6 @@
 """
 from __future__ import annotations
 
-import json
 import os
 import sys
 import types
@@ -27,7 +26,15 @@ EXPECTED_BY_ROW = {
     "2": "76ae1804a35baae2501468c96c11bfada373295a31bb134f4c2bd9b18d909077",
     "3": "a9d5e1b56fc4b31446b3e189d7ece9890268cb6662362662974ccd7377f2c25a",
     "4": "6dcc1a6999796cdd542bc8659728ee01f7527deebe7f9dfed171481bc51ca7d3",
+    # L11464-0005 的 limit_note 分别给 None 与 ""，对端算出同一个键
+    "5a": "8998bb431f61ca06d80e926f6234fed97cbde0e1071f2c2bf38d177ec8759313",
 }
+
+# 旧口径（None 直接进 json）对 L11464-0002 算出的键，用于证明"已不是旧口径"
+LEGACY_NULL_NOTE_KEY = "a3bb503432d0c5507a9023b42a4631261cab9f10a4e7b09f26d0bd3b260780dc"
+# 旧实现把 None 写成 null 后的 identity（仅用于文档性断言，不参与实现）
+LEGACY_NULL_NOTE_IDENTITY = ["LAB-TEST", "L11464-0002", "GB/T 2423.1-2008",
+                             "电工电子产品", "5.1", None, "2016-01-01"]
 
 
 # ----------------------------------------------------------------- 假 frappe
@@ -136,6 +143,8 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
         null_note = dict(base, item_code="L11464-0002", source_row="2", limit_note=None)
         empty_note = dict(base, item_code="L11464-0003", source_row="3", limit_note="")
         other = dict(base, item_code="L11464-0004", standard_no="GB/T 2423.2-2008", source_row="4")
+        same_item_null = dict(base, item_code="L11464-0005", source_row="5a", limit_note=None)
+        same_item_empty = dict(base, item_code="L11464-0005", source_row="5b", limit_note="")
         return dict(
             laboratory=dict(lab_name="测试实验室", reg_no="CNAS-L0001"),
             methods=[
@@ -143,12 +152,15 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
                 dict(item_code="L11464-0002", item_name="低温试验", custom_test_category="气候"),
                 dict(item_code="L11464-0003", item_name="低温试验", custom_test_category="气候"),
                 dict(item_code="L11464-0004", item_name="高温试验", custom_test_category="气候"),
+                dict(item_code="L11464-0005", item_name="低温试验", custom_test_category="气候"),
             ],
             standards=[
                 dict(normalized_number="GB/T 2423.1-2008", std_year="2008", standard_name="低温试验"),
                 dict(normalized_number="GB/T 2423.2-2008", std_year="2008", standard_name="高温试验"),
             ],
-            items=[base, dict(base), null_note, empty_note, other],  # 第 2 行与第 1 行完全重复
+            # 第 2 行与第 1 行完全重复；5a/5b 是同一 item_code 下 null 与 ""
+            items=[base, dict(base), null_note, empty_note, other,
+                   same_item_null, same_item_empty],
             blocked=[],
             duplicates=[],
         )
@@ -156,22 +168,19 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
     def test_keys_use_canonical_scope_key(self):
         self.importer._apply(self.batch(), "digest-1")
         rows = self.store.find("Laboratory Capability", {})
-        self.assertEqual(len(rows), 4)  # 5 行去掉 1 行重复
+        self.assertEqual(len(rows), 5)  # 7 行 - 1 行完全重复 - 1 行 null/"" 同键
         for row in rows:
             self.assertRegex(row["cnas_scope_key"], r"^[0-9a-f]{64}$")
         by_row = {row["source_row"]: row["cnas_scope_key"] for row in rows}
         self.assertEqual(by_row, EXPECTED_BY_ROW)
 
-    def test_null_and_empty_limit_note_share_key(self):
+    def test_null_and_empty_limit_note_collapse_to_one_row(self):
+        """同一 item_code 下 limit_note=None 与 "" 是同一行，只写一条。"""
         self.importer._apply(self.batch(), "digest-2")
         rows = self.store.find("Laboratory Capability", {})
-        by_item = {}
-        for row in rows:
-            by_item.setdefault(row["cnas_scope_key"], []).append(row)
-        # L11464-0002(null) 与 L11464-0003("") 除 item_code 外内容相同，键应不同；
-        # 但同一条内容重复导入时必须同键 —— 用来源行验证去重生效。
-        self.assertEqual(len(rows), 4)
-        self.assertEqual(len({row["cnas_scope_key"] for row in rows}), 4)
+        same_item = [row for row in rows if row["source_row"] in ("5a", "5b")]
+        self.assertEqual(len(same_item), 1)
+        self.assertEqual(same_item[0]["cnas_scope_key"], EXPECTED_BY_ROW["5a"])
 
     def test_repeat_import_does_not_duplicate(self):
         self.importer._apply(self.batch(), "digest-3")
@@ -188,17 +197,29 @@ class CNASDevImportScopeKeyTest(unittest.TestCase):
         self.importer._apply(self.batch(), "digest-4b")
         self.assertEqual(len(self.store.find("Laboratory Capability", {})), before)
 
+    def test_skips_row_already_written_by_workbench(self):
+        """对端按 canonical 键先写过一行时，本侧导入必须跳过而不是再插一条。"""
+        base = dict(item_code="L11464-0001", standard_no="GB/T 2423.1-2008",
+                    test_object="电工电子产品", clause="5.1",
+                    limit_note="低温 -40 ℃ 保持 16 h", effective_date="2016-01-01")
+        self.store.insert("Laboratory Capability", dict(
+            name="CAP-WORKBENCH", laboratory="LAB-TEST",
+            cnas_scope_key=EXPECTED_BY_ROW["1"], source_row="1",
+            product_scope=base["test_object"], clause=base["clause"],
+            limitation=base["limit_note"],
+        ))
+        self.importer._apply(self.batch(), "digest-cross")
+        rows = self.store.find("Laboratory Capability", {})
+        self.assertEqual(len([r for r in rows if r["cnas_scope_key"] == EXPECTED_BY_ROW["1"]]), 1)
+        self.assertNotIn("1", [r["source_row"] for r in rows if r["name"] != "CAP-WORKBENCH"])
+
     def test_no_legacy_null_payload(self):
         """旧口径会把 None 写进 json（null），新口径必须写空串。"""
         self.importer._apply(self.batch(), "digest-5")
         rows = self.store.find("Laboratory Capability", {})
         null_row = next(row for row in rows if row["source_row"] == "2")
         self.assertEqual(null_row["cnas_scope_key"], EXPECTED_BY_ROW["2"])
-        import hashlib
-        legacy = hashlib.sha256(json.dumps([
-            "LAB-TEST", "L11464-0002", "GB/T 2423.1-2008", "电工电子产品",
-            "5.1", None, "2016-01-01"]).encode()).hexdigest()
-        self.assertNotEqual(null_row["cnas_scope_key"], legacy)
+        self.assertNotEqual(null_row["cnas_scope_key"], LEGACY_NULL_NOTE_KEY)
 
 
 if __name__ == "__main__":
