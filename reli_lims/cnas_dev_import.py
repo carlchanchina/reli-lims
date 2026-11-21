@@ -4,6 +4,8 @@ import json
 
 import frappe
 
+from reli_lims.cnas_scope import scope_key as canonical_scope_key
+
 
 def insert(doctype, **values):
     return frappe.get_doc(dict(doctype=doctype, **values)).insert(ignore_permissions=True).name
@@ -71,9 +73,9 @@ def _apply(batch, digest):
                     documents_version="7b274ef", documents_review_status="Historical Preview",
                     structured_json=json.dumps(batch, ensure_ascii=False), import_status="部分导入")
     for row in batch["items"]:
-        identity = [laboratory, row["item_code"], row["standard_no"], row["test_object"],
-                    row["clause"], row["limit_note"], row["effective_date"]]
-        key = hashlib.sha256(json.dumps(identity).encode()).hexdigest()
+        # 与 cnas-workbench server/testing_bridge.scope_key 逐字节一致：
+        # 缺字段/None/空串归一为 ""，标准号缺失回退 standard。
+        key = canonical_scope_key(laboratory, row)
         if frappe.db.exists("Laboratory Capability", {"cnas_scope_key": key}):
             continue
         insert("Laboratory Capability", laboratory=laboratory, source=source, source_row=row["source_row"],

@@ -1,0 +1,255 @@
+{
+  "contract": "laboratory_capability.cnas_scope_key",
+  "source": {
+    "repo": "carlchanchina/cnas-workbench",
+    "ref": "feat/p0-hardening-20261114",
+    "commit": "5826d98b85a5ded8a63f69370396633239ac5ffe",
+    "file": "server/testing_bridge.py",
+    "file_sha256": "8dbefe1f5d84e86f744597c1d145713b748b6c20d556def818a9760d5e2ac8bd",
+    "function": "scope_key"
+  },
+  "generated_by": "tools/check_cnas_scope_key_parity.py --write-vectors",
+  "notes": "expected_scope_key 由 cnas-workbench PR #7 的 scope_key() 实际计算，不是手写常量；reli-lims 侧必须逐条一致。legacy_scope_key 为旧实现（raw 值直接 json.dumps）的结果，仅用于确认既有合法键不变。",
+  "legacy_unchanged": [
+    "baseline_full_row",
+    "empty_clause",
+    "empty_limit_note",
+    "chinese_limit_note",
+    "unicode_mixed",
+    "unicode_fullwidth",
+    "standard_a",
+    "standard_b",
+    "whitespace_clause"
+  ],
+  "legacy_changed": [
+    "null_clause",
+    "null_limit_note",
+    "standard_fallback",
+    "numeric_effective_date",
+    "laboratory_null"
+  ],
+  "vectors": [
+    {
+      "name": "baseline_full_row",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "全部字段为非空 ASCII/中文串：新旧算法键必须相同",
+      "expected_scope_key": "0ee6226d51bb73f0d8d2e7cff65259bd1e182460dcda589987f4e4557bf206be",
+      "legacy_scope_key": "0ee6226d51bb73f0d8d2e7cff65259bd1e182460dcda589987f4e4557bf206be"
+    },
+    {
+      "name": "null_clause",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": null,
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "clause 为 null：应与空串等价（旧实现会写成 json null）",
+      "expected_scope_key": "8ae6ab42be02dbe8382446c5c39f9a295cc4a6e0fb232c1ed5ad94624fdca548",
+      "legacy_scope_key": "92a3a28170782ecb165aa2cadf059695e01d4156e4b542aebd9c72ce50ef5ab7"
+    },
+    {
+      "name": "empty_clause",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "clause 为空串：与 null_clause 必须得到同一键",
+      "expected_scope_key": "8ae6ab42be02dbe8382446c5c39f9a295cc4a6e0fb232c1ed5ad94624fdca548",
+      "legacy_scope_key": "8ae6ab42be02dbe8382446c5c39f9a295cc4a6e0fb232c1ed5ad94624fdca548"
+    },
+    {
+      "name": "null_limit_note",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": null,
+        "effective_date": "2016-01-01"
+      },
+      "note": "limit_note 为 null",
+      "expected_scope_key": "2d8f6c3d199ea4f9337897b0eaaabfa15f94be652f4664baaee97cabca62c8eb",
+      "legacy_scope_key": "2b5b47cbce5038fdcf371afbba2e1356529d6d26ea8c9ae811b56478887be9b0"
+    },
+    {
+      "name": "empty_limit_note",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "",
+        "effective_date": "2016-01-01"
+      },
+      "note": "limit_note 为空串：与 null_limit_note 必须同键",
+      "expected_scope_key": "2d8f6c3d199ea4f9337897b0eaaabfa15f94be652f4664baaee97cabca62c8eb",
+      "legacy_scope_key": "2d8f6c3d199ea4f9337897b0eaaabfa15f94be652f4664baaee97cabca62c8eb"
+    },
+    {
+      "name": "chinese_limit_note",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "仅限尺寸不大于 500 mm 的试件，且仅限常温送样",
+        "effective_date": "2016-01-01"
+      },
+      "note": "中文限制说明：JSON 必须按 ensure_ascii=True 转义，两端逐字节一致",
+      "expected_scope_key": "75477c840faf4ecf1acf9e1b7970cec2bd0b43752c5f7ec507c20eac00108b90",
+      "legacy_scope_key": "75477c840faf4ecf1acf9e1b7970cec2bd0b43752c5f7ec507c20eac00108b90"
+    },
+    {
+      "name": "unicode_mixed",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "Ø25×300 mm 试件 ✓",
+        "clause": "5.1",
+        "limit_note": "温度 −40 °C ~ +85 °C，±0.5 °C；«naïve» 日本語",
+        "effective_date": "2016-01-01"
+      },
+      "note": "混合 Unicode（符号/带音字符/日文）",
+      "expected_scope_key": "2e6b4a24c40d6c95d6d8a669833d1568b1fe76e1c765e236df25c50dd3152b4b",
+      "legacy_scope_key": "2e6b4a24c40d6c95d6d8a669833d1568b1fe76e1c765e236df25c50dd3152b4b"
+    },
+    {
+      "name": "unicode_fullwidth",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "ＧＢ／Ｔ 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "５.１",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "全角字符不做 NFKC 归一：与半角是不同键",
+      "expected_scope_key": "b4ff7209a90831504fc6b231d74d9360ab4d7c418497aa879b9513cb82ca4b61",
+      "legacy_scope_key": "b4ff7209a90831504fc6b231d74d9360ab4d7c418497aa879b9513cb82ca4b61"
+    },
+    {
+      "name": "standard_a",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "标准编号 A",
+      "expected_scope_key": "0ee6226d51bb73f0d8d2e7cff65259bd1e182460dcda589987f4e4557bf206be",
+      "legacy_scope_key": "0ee6226d51bb73f0d8d2e7cff65259bd1e182460dcda589987f4e4557bf206be"
+    },
+    {
+      "name": "standard_b",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.2-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "标准编号 B：仅标准号不同，键必须不同",
+      "expected_scope_key": "8131973ec1c8f914f8ed60f0e0151d98b6848c051ad126d6b77deb61bbbbc342",
+      "legacy_scope_key": "8131973ec1c8f914f8ed60f0e0151d98b6848c051ad126d6b77deb61bbbbc342"
+    },
+    {
+      "name": "standard_fallback",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": null,
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01",
+        "standard": "GB/T 2423.9-2008"
+      },
+      "note": "standard_no 缺失时回退 standard 字段",
+      "expected_scope_key": "74afc2fb57e6b053cda306ea4c4e62e15e6956a9f5abf6a77be877d7fc501575",
+      "legacy_scope_key": "4f0cb4444d13706ac8321d686f4c9502800786a0f3ba36aca450df0c7900f914"
+    },
+    {
+      "name": "missing_optional_fields",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-9001",
+        "standard_no": "GB/T 2423.10-2019"
+      },
+      "note": "只给必填两项：其余字段归一为 \"\"，不得抛 KeyError",
+      "expected_scope_key": "a4338d26e980cbf37d20fcd37e98cd4920b4e7dfe7b63c43bc3b5640a72e7a0a",
+      "legacy_scope_key": null
+    },
+    {
+      "name": "numeric_effective_date",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": 20160101
+      },
+      "note": "整型日期按 str() 归一，保持与 cnas-workbench 一致",
+      "expected_scope_key": "1cfabf4dd6692a32ffbafdf58786b55555d24d6acee7cb91cfd6fedae0d186e3",
+      "legacy_scope_key": "0feb484a28f198f2acf57c14e6020fc3206bc56255b2ce132c1be28cf680d97d"
+    },
+    {
+      "name": "laboratory_null",
+      "laboratory": null,
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": "5.1",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "laboratory 为 null 时归一为 \"\"",
+      "expected_scope_key": "12e4f9d1a1c1a99650f751293a7c82199a66769b9e06a457ab0321ed78d3cced",
+      "legacy_scope_key": "776bf5691d60dd048a52cea3bffa2f653c265b6edadcc3fd7c65b49168d76e2e"
+    },
+    {
+      "name": "whitespace_clause",
+      "laboratory": "LAB-L11464",
+      "row": {
+        "item_code": "L11464-0001",
+        "standard_no": "GB/T 2423.1-2008",
+        "test_object": "电工电子产品",
+        "clause": " 5.1 ",
+        "limit_note": "低温 -40 ℃ 保持 16 h",
+        "effective_date": "2016-01-01"
+      },
+      "note": "不做 strip：前后空格是内容的一部分（与 cnas-workbench 一致）",
+      "expected_scope_key": "48fe932960e24de7ced9c0a4ad2e3f9dfaca8ac799bc863f39aa801d8c9e3c14",
+      "legacy_scope_key": "48fe932960e24de7ced9c0a4ad2e3f9dfaca8ac799bc863f39aa801d8c9e3c14"
+    }
+  ]
+}
