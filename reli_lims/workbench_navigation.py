@@ -2,10 +2,12 @@
 from pathlib import Path
 import frappe
 
+from reli_lims.v2_setup import COMMAND_CENTER, install_v2_command_center
+
 # 三中心 + 首页是唯一的公开入口。label 决定侧边栏文案，name 决定路由，
 # 因此 name 保持不变，只统一 label/title/顺序/可见性。
 CENTER_WORKSPACES = (
-    ("Testing Center", "工作台首页", 1.0),
+    (COMMAND_CENTER, COMMAND_CENTER, 1.0),
     ("Commercial Intake Center", "商业接单中心", 2.0),
     ("Testing Fulfillment Center", "检测履约中心", 3.0),
     ("Laboratory Capability Center", "实验室能力中心", 4.0),
@@ -63,5 +65,6 @@ def after_migrate():
         if custom:
             frappe.db.set_value("Custom Field", custom, {"hidden": 1, "read_only": 1}, update_modified=False)
     # Workspace.save() 会用 name 回写 label，因此中文标签必须在保存之后收敛。
+    install_v2_command_center()
     enforce_workspaces()
     frappe.clear_cache()

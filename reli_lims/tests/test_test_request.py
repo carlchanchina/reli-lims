@@ -353,12 +353,13 @@ class TestTestingRequest(IntegrationTestCase):
     def test_workbench_navigation_targets_exist_and_are_unique(self):
         sidebar = frappe.get_doc('Sidebar', 'Reli LIMS')
         workspaces = [row.link_to for row in sidebar.items if row.link_type == 'Workspace']
-        self.assertEqual(workspaces, ['Testing Center', 'Commercial Intake Center',
+        self.assertEqual(workspaces, ['RELI LIMS V2', 'Commercial Intake Center',
                                     'Testing Fulfillment Center', 'Laboratory Capability Center'])
         self.assertNotIn('Test Method', [row.link_to for row in sidebar.items])
         for row in sidebar.items:
             if row.link_to:
                 self.assertTrue(frappe.db.exists(row.link_type, row.link_to))
         home = frappe.get_doc('Workspace', 'Testing Center')
+        self.assertEqual(home.is_hidden, 1)
         self.assertEqual(home.custom_blocks[0].custom_block_name, 'Reli Three Centers')
         self.assertEqual(frappe.get_meta('Item').get_field('custom_reli_test_method').hidden, 1)

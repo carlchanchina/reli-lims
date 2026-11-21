@@ -1,10 +1,12 @@
 """V2 Unified Workspace command center: links must point to real pages only."""
 import json
 import os
+from pathlib import Path
 
 import frappe
 from frappe.tests import IntegrationTestCase
 
+from reli_lims.hooks import app_home
 from reli_lims.v2_setup import COMMAND_CENTER, WORKSPACE_JSON, install_v2_command_center, verify_targets
 
 
@@ -58,3 +60,18 @@ class TestV2CommandCenter(IntegrationTestCase):
         self.assertEqual(definition["charts"], [])
         self.assertEqual(definition["number_cards"], [])
         self.assertEqual(definition["quick_lists"], [])
+
+    def test_center_navigation_and_roles(self):
+        workspace_root = Path(WORKSPACE_JSON).parent.parent
+        for center in ("commercial_intake_center", "laboratory_capability_center", "testing_fulfillment_center"):
+            with self.subTest(center=center):
+                definition = json.loads((workspace_root / center / f"{center}.json").read_text(encoding="utf-8"))
+                shortcuts = {row["label"]: row for row in definition["shortcuts"]}
+                self.assertEqual(shortcuts["返回 RELI LIMS V2"]["url"], app_home)
+                for block in json.loads(definition["content"]):
+                    if block["type"] == "shortcut":
+                        self.assertIn(block["data"]["shortcut_name"], shortcuts)
+                if center == "commercial_intake_center":
+                    self.assertEqual([row["label"] for row in shortcuts.values() if row.get("link_to") == "Sales Order"], ["销售订单"])
+                if center == "laboratory_capability_center":
+                    self.assertIn("Lab Engineer", {row["role"] for row in definition["roles"]})

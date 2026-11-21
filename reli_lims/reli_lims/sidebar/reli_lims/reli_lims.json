@@ -11,7 +11,7 @@
       "type": "Link",
       "label": "工作台首页",
       "link_type": "Workspace",
-      "link_to": "Testing Center",
+      "link_to": "RELI LIMS V2",
       "icon": "home",
       "is_default_module": 1
     },
