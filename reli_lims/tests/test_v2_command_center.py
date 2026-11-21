@@ -34,12 +34,17 @@ class TestV2CommandCenter(IntegrationTestCase):
         definition = self._definition()
         shortcuts = {s["label"]: s["url"] for s in definition["shortcuts"]}
         workspace_names = {
-            "商务中心": "Commercial Intake Center",
-            "能力中心": "Laboratory Capability Center",
-            "履约中心": "Testing Fulfillment Center",
-            "文档中心": "Wekona Documents",
+            "1 · 商务中心": "Commercial Intake Center",
+            "2 · 能力中心": "Laboratory Capability Center",
+            "3 · 履约中心": "Testing Fulfillment Center",
+            "4 · 文档中心": "Wekona Documents",
         }
-        self.assertEqual(set(shortcuts), set(workspace_names))
+        self.assertEqual(list(shortcuts), list(workspace_names))
+        self.assertEqual(
+            [block["data"]["shortcut_name"] for block in json.loads(definition["content"])
+             if block["type"] == "shortcut"],
+            list(workspace_names),
+        )
         # Each URL must equal the real get_url() of an existing Workspace, so a
         # route-format change can never silently ship a dead link.
         for label, name in workspace_names.items():

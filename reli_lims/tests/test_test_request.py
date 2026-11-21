@@ -354,7 +354,7 @@ class TestTestingRequest(IntegrationTestCase):
         sidebar = frappe.get_doc('Sidebar', 'Reli LIMS')
         workspaces = [row.link_to for row in sidebar.items if row.link_type == 'Workspace']
         self.assertEqual(workspaces, ['RELI LIMS V2', 'Commercial Intake Center',
-                                    'Testing Fulfillment Center', 'Laboratory Capability Center'])
+                                    'Laboratory Capability Center', 'Testing Fulfillment Center'])
         self.assertNotIn('Test Method', [row.link_to for row in sidebar.items])
         for row in sidebar.items:
             if row.link_to:

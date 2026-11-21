@@ -9,7 +9,7 @@
   "items": [
     {
       "type": "Link",
-      "label": "工作台首页",
+      "label": "检测工作台",
       "link_type": "Workspace",
       "link_to": "RELI LIMS V2",
       "icon": "home",
@@ -17,7 +17,7 @@
     },
     {
       "type": "Link",
-      "label": "商业接单中心",
+      "label": "1 · 商务中心",
       "link_type": "Workspace",
       "link_to": "Commercial Intake Center",
       "icon": "briefcase",
@@ -25,18 +25,18 @@
     },
     {
       "type": "Link",
-      "label": "检测履约中心",
+      "label": "2 · 能力中心",
       "link_type": "Workspace",
-      "link_to": "Testing Fulfillment Center",
-      "icon": "flask-conical",
+      "link_to": "Laboratory Capability Center",
+      "icon": "layers",
       "is_default_module": 1
     },
     {
       "type": "Link",
-      "label": "实验室能力中心",
+      "label": "3 · 履约中心",
       "link_type": "Workspace",
-      "link_to": "Laboratory Capability Center",
-      "icon": "layers",
+      "link_to": "Testing Fulfillment Center",
+      "icon": "flask-conical",
       "is_default_module": 1
     },
     {

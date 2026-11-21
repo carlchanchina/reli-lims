@@ -8,9 +8,9 @@ from reli_lims.v2_setup import COMMAND_CENTER, install_v2_command_center
 # 因此 name 保持不变，只统一 label/title/顺序/可见性。
 CENTER_WORKSPACES = (
     (COMMAND_CENTER, COMMAND_CENTER, 1.0),
-    ("Commercial Intake Center", "商业接单中心", 2.0),
-    ("Testing Fulfillment Center", "检测履约中心", 3.0),
-    ("Laboratory Capability Center", "实验室能力中心", 4.0),
+    ("Commercial Intake Center", "1 · 商务中心", 2.0),
+    ("Laboratory Capability Center", "2 · 能力中心", 3.0),
+    ("Testing Fulfillment Center", "3 · 履约中心", 4.0),
 )
 
 

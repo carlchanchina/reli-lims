@@ -81,28 +81,28 @@
   ],
   "shortcuts": [
     {
-      "label": "商务中心",
+      "label": "1 · 商务中心",
       "type": "URL",
       "url": "/desk/workspace/Commercial%20Intake%20Center",
       "icon": "sales",
       "color": "Blue"
     },
     {
-      "label": "能力中心",
+      "label": "2 · 能力中心",
       "type": "URL",
       "url": "/desk/workspace/Laboratory%20Capability%20Center",
       "icon": "branch",
       "color": "Green"
     },
     {
-      "label": "履约中心",
+      "label": "3 · 履约中心",
       "type": "URL",
       "url": "/desk/workspace/Testing%20Fulfillment%20Center",
       "icon": "lab",
       "color": "Orange"
     },
     {
-      "label": "文档中心",
+      "label": "4 · 文档中心",
       "type": "URL",
       "url": "/desk/workspace/Wekona%20Documents",
       "icon": "file",
@@ -113,5 +113,5 @@
   "number_cards": [],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"v2-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h3\\\">RELI LIMS V2 · 统一工作台</span>\", \"col\": 12}}, {\"id\": \"v2-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"一个入口，四个业务中心。四个中心入口与下方链接均指向系统内已存在的真实页面，不复制任何业务数据，不含模拟数据。\", \"col\": 12}}, {\"id\": \"v2-shortcuts\", \"type\": \"shortcut\", \"data\": {\"col\": 12}}, {\"id\": \"v2-centers\", \"type\": \"card\", \"data\": {\"card_name\": \"四大业务中心 · 点击进入真实页面\", \"col\": 12}}]"
+  "content": "[{\"id\":\"v2-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">检测工作台</span>\",\"col\":12}},{\"id\":\"v2-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"从商务接单、能力选型到检测履约和文档审核，四个中心从这里进入。\",\"col\":12}},{\"id\":\"v2-center-1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"1 · 商务中心\",\"col\":3}},{\"id\":\"v2-center-2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"2 · 能力中心\",\"col\":3}},{\"id\":\"v2-center-3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"3 · 履约中心\",\"col\":3}},{\"id\":\"v2-center-4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"4 · 文档中心\",\"col\":3}}]"
 }
