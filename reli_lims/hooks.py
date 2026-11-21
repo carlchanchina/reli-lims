@@ -8,11 +8,12 @@ app_license = "MIT"
 required_apps = ["erpnext"]
 
 fixtures = [
-    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]}
+    {"dt": "Role", "filters": [["name", "in", ["Lab Manager", "Lab Engineer", "Lab Reviewer", "Mercur Integration", "Laboratory Directory Reader"]]]},
+    {"dt": "Custom HTML Block", "filters": [["name", "in", ["Reli Four Centers"]]]},
 ]
 
 app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
-app_home = "/desk/reli-lims/testing-center"
+app_home = "/desk/reli-lims/reli-lims-v2"
 
 app_include_js = ["business_relations.bundle.js"]
 app_include_css = ["workbench.bundle.css"]
@@ -130,6 +131,3 @@ permission_query_conditions["Item"] = "reli_lims.integration_access.config_query
 
 has_permission["Document Approved Version"] = "reli_lims.integration_access.approved_version_permission"
 permission_query_conditions["Document Approved Version"] = "reli_lims.integration_access.approved_version_query"
-
-# V2 Unified Workspace: idempotent install of the four-center command center.
-after_migrate.append("reli_lims.v2_setup.install_v2_command_center")

@@ -81,30 +81,30 @@
   ],
   "shortcuts": [
     {
-      "label": "商务中心",
+      "label": "1 · 商务中心",
       "type": "URL",
-      "url": "/desk/workspace/Commercial%20Intake%20Center",
+      "url": "/desk/reli-lims/commercial-intake-center",
       "icon": "sales",
       "color": "Blue"
     },
     {
-      "label": "能力中心",
+      "label": "2 · 能力中心",
       "type": "URL",
-      "url": "/desk/workspace/Laboratory%20Capability%20Center",
+      "url": "/desk/reli-lims/laboratory-capability-center",
       "icon": "branch",
       "color": "Green"
     },
     {
-      "label": "履约中心",
+      "label": "3 · 履约中心",
       "type": "URL",
-      "url": "/desk/workspace/Testing%20Fulfillment%20Center",
+      "url": "/desk/reli-lims/testing-fulfillment-center",
       "icon": "lab",
       "color": "Orange"
     },
     {
-      "label": "文档中心",
+      "label": "4 · 文档中心",
       "type": "URL",
-      "url": "/desk/workspace/Wekona%20Documents",
+      "url": "/desk/wekona-documents/wekona-documents",
       "icon": "file",
       "color": "Purple"
     }
@@ -112,6 +112,10 @@
   "charts": [],
   "number_cards": [],
   "quick_lists": [],
-  "custom_blocks": [],
-  "content": "[{\"id\": \"v2-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h3\\\">RELI LIMS V2 · 统一工作台</span>\", \"col\": 12}}, {\"id\": \"v2-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"一个入口，四个业务中心。四个中心入口与下方链接均指向系统内已存在的真实页面，不复制任何业务数据，不含模拟数据。\", \"col\": 12}}, {\"id\": \"v2-shortcuts\", \"type\": \"shortcut\", \"data\": {\"col\": 12}}, {\"id\": \"v2-centers\", \"type\": \"card\", \"data\": {\"card_name\": \"四大业务中心 · 点击进入真实页面\", \"col\": 12}}]"
+  "custom_blocks": [
+    {
+      "custom_block_name": "Reli Four Centers"
+    }
+  ],
+  "content": "[{\"id\":\"v2-four-centers\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Reli Four Centers\",\"col\":12}}]"
 }

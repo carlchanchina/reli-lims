@@ -66,6 +66,11 @@
   ],
   "shortcuts": [
     {
+      "label": "返回 RELI LIMS V2",
+      "type": "URL",
+      "url": "/desk/reli-lims/reli-lims-v2"
+    },
+    {
       "label": "检测委托单",
       "type": "DocType",
       "link_to": "Test Request",
@@ -129,5 +134,5 @@
   ],
   "quick_lists": [],
   "custom_blocks": [],
-  "content": "[{\"id\": \"fulfill-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">检测履约中心</span>\", \"col\": 12}}, {\"id\": \"fulfill-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"检测委托单 → 样品 → 试验方案 → 试验记录 → 检测报告\", \"col\": 12}}, {\"id\": \"fulfill-s0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测委托单\", \"col\": 4}}, {\"id\": \"fulfill-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"样品\", \"col\": 4}}, {\"id\": \"fulfill-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验方案\", \"col\": 4}}, {\"id\": \"fulfill-s3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"试验记录\", \"col\": 4}}, {\"id\": \"fulfill-s4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测报告\", \"col\": 4}}, {\"id\": \"fulfill-n0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待确认委托\", \"col\": 4}}, {\"id\": \"fulfill-n1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待收样\", \"col\": 4}}, {\"id\": \"fulfill-n2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"试验中\", \"col\": 4}}, {\"id\": \"fulfill-n3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待报告\", \"col\": 4}}, {\"id\": \"fulfill-n4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"报告待审核\", \"col\": 4}}, {\"id\": \"fulfill-n5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超期\", \"col\": 4}}, {\"id\": \"fulfill-kanban\", \"type\": \"paragraph\", \"data\": {\"text\": \"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a>\", \"col\": 12}}]"
+  "content": "[{\"id\":\"fulfill-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">检测履约中心</span>\",\"col\":12}},{\"id\":\"reli-v2-home\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"返回 RELI LIMS V2\",\"col\":12}},{\"id\":\"fulfill-intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"检测委托单 → 样品 → 试验方案 → 试验记录 → 检测报告\",\"col\":12}},{\"id\":\"fulfill-s0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"检测委托单\",\"col\":4}},{\"id\":\"fulfill-s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"样品\",\"col\":4}},{\"id\":\"fulfill-s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"试验方案\",\"col\":4}},{\"id\":\"fulfill-s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"试验记录\",\"col\":4}},{\"id\":\"fulfill-s4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"检测报告\",\"col\":4}},{\"id\":\"fulfill-n0\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待确认委托\",\"col\":4}},{\"id\":\"fulfill-n1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待收样\",\"col\":4}},{\"id\":\"fulfill-n2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"试验中\",\"col\":4}},{\"id\":\"fulfill-n3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"待报告\",\"col\":4}},{\"id\":\"fulfill-n4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"报告待审核\",\"col\":4}},{\"id\":\"fulfill-n5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"超期\",\"col\":4}},{\"id\":\"fulfill-kanban\",\"type\":\"paragraph\",\"data\":{\"text\":\"<a href=\\\"/desk/test-request/view/kanban/检测主流程\\\">打开检测主流程看板</a>\",\"col\":12}}]"
 }
