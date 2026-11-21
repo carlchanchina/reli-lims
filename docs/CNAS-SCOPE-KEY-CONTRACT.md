@@ -67,5 +67,12 @@ python3 tools/report_cnas_scope_duplicates.py --site carl \
 - 对端 `build_capability_rows` 在调用 `scope_key` 前对 `laboratory` 做过
   `.strip()`，本侧直接使用文档名。Frappe 文档名不允许首尾空格，实际输入一致；
   若将来放开该限制，需同时收敛。
-- `cnas_scope_key` 在库里不是唯一索引，去重依赖写入方先查后写；并发双写仍可能
-  插重（与本次哈希修复无关）。
+- `cnas_scope_key` 字段是 **unique**（`laboratory_capability.json` `unique: 1`，
+  DB 侧 `information_schema.statistics.NON_UNIQUE = 0`）。因此：
+  - 同键写入不会静默插重，而是抛 `DuplicateEntry`；
+  - 空键以 `NULL` 落库（MariaDB 允许多个 NULL），所以"没有键"的行可以并存——
+    这解释了 DEV 里 10 行空键能同时存在；
+  - 批量 `insert_many` 遇到批内同键会整块失败，对端 `build_capability_rows`
+    里的 `seen_keys` 合并必须保留，不能当作冗余优化删掉；
+  - `frappe.db.exists` 先查后写仍有价值（避免异常、避免计数噪声、同事务内可见
+    刚插入的行），但它不是唯一性保障——唯一索引才是。
