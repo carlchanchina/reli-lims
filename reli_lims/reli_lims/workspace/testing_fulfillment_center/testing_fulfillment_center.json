@@ -68,7 +68,7 @@
     {
       "label": "返回 RELI LIMS V2",
       "type": "URL",
-      "url": "/desk/workspace/RELI%20LIMS%20V2"
+      "url": "/desk/reli-lims/reli-lims-v2"
     },
     {
       "label": "检测委托单",

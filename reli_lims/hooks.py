@@ -12,7 +12,7 @@ fixtures = [
 ]
 
 app_logo_url = "/assets/reli_lims/images/reli-lims.svg"
-app_home = "/desk/workspace/RELI%20LIMS%20V2"
+app_home = "/desk/reli-lims/reli-lims-v2"
 
 app_include_js = ["business_relations.bundle.js"]
 app_include_css = ["workbench.bundle.css"]
