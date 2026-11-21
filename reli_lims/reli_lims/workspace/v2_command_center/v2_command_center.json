@@ -1,0 +1,117 @@
+{
+  "doctype": "Workspace",
+  "name": "RELI LIMS V2",
+  "type": "Workspace",
+  "label": "RELI LIMS V2",
+  "title": "RELI LIMS V2 · 统一工作台",
+  "module": "Reli LIMS",
+  "icon": "lab",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 0,
+  "for_user": "",
+  "parent_page": "",
+  "roles": [
+    {
+      "role": "Lab Manager"
+    },
+    {
+      "role": "Lab Engineer"
+    },
+    {
+      "role": "Lab Reviewer"
+    },
+    {
+      "role": "Sales User"
+    },
+    {
+      "role": "Sales Manager"
+    },
+    {
+      "role": "System Manager"
+    }
+  ],
+  "links": [
+    {
+      "type": "Card Break",
+      "label": "四大业务中心 · 点击进入真实页面"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Customer",
+      "label": "商务中心 · 客户"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Quotation",
+      "label": "商务中心 · 报价"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Project",
+      "label": "能力中心 · 检测项目"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Laboratory Capability",
+      "label": "能力中心 · 能力明细"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Request",
+      "label": "履约中心 · 检测委托"
+    },
+    {
+      "type": "Link",
+      "link_type": "DocType",
+      "link_to": "Test Report",
+      "label": "履约中心 · 检测报告"
+    },
+    {
+      "type": "Link",
+      "link_type": "Page",
+      "link_to": "document-workbench",
+      "label": "文档中心 · 文档审核工作台"
+    }
+  ],
+  "shortcuts": [
+    {
+      "label": "商务中心",
+      "type": "URL",
+      "url": "/desk/workspace/Commercial%20Intake%20Center",
+      "icon": "sales",
+      "color": "Blue"
+    },
+    {
+      "label": "能力中心",
+      "type": "URL",
+      "url": "/desk/workspace/Laboratory%20Capability%20Center",
+      "icon": "branch",
+      "color": "Green"
+    },
+    {
+      "label": "履约中心",
+      "type": "URL",
+      "url": "/desk/workspace/Testing%20Fulfillment%20Center",
+      "icon": "lab",
+      "color": "Orange"
+    },
+    {
+      "label": "文档中心",
+      "type": "URL",
+      "url": "/desk/workspace/Wekona%20Documents",
+      "icon": "file",
+      "color": "Purple"
+    }
+  ],
+  "charts": [],
+  "number_cards": [],
+  "quick_lists": [],
+  "custom_blocks": [],
+  "content": "[{\"id\": \"v2-title\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h3\\\">RELI LIMS V2 · 统一工作台</span>\", \"col\": 12}}, {\"id\": \"v2-intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"一个入口，四个业务中心。四个中心入口与下方链接均指向系统内已存在的真实页面，不复制任何业务数据，不含模拟数据。\", \"col\": 12}}, {\"id\": \"v2-shortcuts\", \"type\": \"shortcut\", \"data\": {\"col\": 12}}, {\"id\": \"v2-centers\", \"type\": \"card\", \"data\": {\"card_name\": \"四大业务中心 · 点击进入真实页面\", \"col\": 12}}]"
+}

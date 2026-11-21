@@ -130,3 +130,6 @@ permission_query_conditions["Item"] = "reli_lims.integration_access.config_query
 
 has_permission["Document Approved Version"] = "reli_lims.integration_access.approved_version_permission"
 permission_query_conditions["Document Approved Version"] = "reli_lims.integration_access.approved_version_query"
+
+# V2 Unified Workspace: idempotent install of the four-center command center.
+after_migrate.append("reli_lims.v2_setup.install_v2_command_center")
