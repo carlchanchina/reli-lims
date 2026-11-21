@@ -83,28 +83,28 @@
     {
       "label": "商务中心",
       "type": "URL",
-      "url": "/desk/reli-lims/commercial-intake-center",
+      "url": "/desk/workspace/Commercial%20Intake%20Center",
       "icon": "sales",
       "color": "Blue"
     },
     {
       "label": "能力中心",
       "type": "URL",
-      "url": "/desk/reli-lims/laboratory-capability-center",
+      "url": "/desk/workspace/Laboratory%20Capability%20Center",
       "icon": "branch",
       "color": "Green"
     },
     {
       "label": "履约中心",
       "type": "URL",
-      "url": "/desk/reli-lims/testing-fulfillment-center",
+      "url": "/desk/workspace/Testing%20Fulfillment%20Center",
       "icon": "lab",
       "color": "Orange"
     },
     {
       "label": "文档中心",
       "type": "URL",
-      "url": "/desk/wekona-documents/wekona-documents",
+      "url": "/desk/workspace/Wekona%20Documents",
       "icon": "file",
       "color": "Purple"
     }

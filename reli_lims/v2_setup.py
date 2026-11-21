@@ -45,6 +45,41 @@ def get_route():
     return doc.get_url() if hasattr(doc, "get_url") else f"/desk/reli-lims/{COMMAND_CENTER}"
 
 
+def route_report():
+    """Return real get_url() routes for the command center and its four targets."""
+    targets = [
+        COMMAND_CENTER,
+        "Commercial Intake Center",
+        "Laboratory Capability Center",
+        "Testing Fulfillment Center",
+        "Wekona Documents",
+    ]
+    lines = []
+    for name in targets:
+        if frappe.db.exists("Workspace", name):
+            lines.append(f"{name} => {frappe.get_doc('Workspace', name).get_url()}")
+        else:
+            lines.append(f"{name} => MISSING")
+    return "\n".join(lines)
+
+
+def workspace_name_from_url(url):
+    """Resolve a Desk shortcut URL back to the Workspace record name it points at.
+
+    Frappe links Workspaces as ``/desk/workspace/<url-encoded name>`` on this
+    version; anything else is treated as unresolvable so it can never pass as a
+    valid target.
+    """
+    if not url:
+        return None
+    prefix = "/desk/workspace/"
+    if not url.startswith(prefix):
+        return None
+    from urllib.parse import unquote
+
+    return unquote(url[len(prefix):].split("?")[0].split("#")[0]) or None
+
+
 def verify_targets():
     """Return a report confirming every shortcut/link target really exists.
 
@@ -66,10 +101,13 @@ def verify_targets():
 
     for shortcut in definition.get("shortcuts", []):
         label, url = shortcut.get("label"), shortcut.get("url")
-        exists = bool(url)  # URL targets are resolved below by route check
-        report["shortcuts"].append({"label": label, "url": url, "exists": exists})
+        workspace_name = workspace_name_from_url(url)
+        exists = bool(workspace_name) and bool(frappe.db.exists("Workspace", workspace_name))
+        report["shortcuts"].append(
+            {"label": label, "url": url, "workspace": workspace_name, "exists": exists}
+        )
         if not exists:
-            report["missing"].append(f"shortcut:{label}")
+            report["missing"].append(f"shortcut:{label}->{url}")
 
     if report["missing"]:
         raise ValueError("V2 command center has broken targets: " + ", ".join(report["missing"]))

@@ -28,25 +28,23 @@ class TestV2CommandCenter(IntegrationTestCase):
                 self.assertTrue(link["exists"], f"broken link: {link}")
 
     def test_four_center_shortcuts_point_to_real_workspace_routes(self):
+        install_v2_command_center()
         definition = self._definition()
         shortcuts = {s["label"]: s["url"] for s in definition["shortcuts"]}
-        expected = {
-            "商务中心": "/desk/reli-lims/commercial-intake-center",
-            "能力中心": "/desk/reli-lims/laboratory-capability-center",
-            "履约中心": "/desk/reli-lims/testing-fulfillment-center",
-            "文档中心": "/desk/wekona-documents/wekona-documents",
-        }
-        self.assertEqual(shortcuts, expected)
-        # Each URL must map back to a Workspace that actually exists on this site.
         workspace_names = {
             "商务中心": "Commercial Intake Center",
             "能力中心": "Laboratory Capability Center",
             "履约中心": "Testing Fulfillment Center",
             "文档中心": "Wekona Documents",
         }
+        self.assertEqual(set(shortcuts), set(workspace_names))
+        # Each URL must equal the real get_url() of an existing Workspace, so a
+        # route-format change can never silently ship a dead link.
         for label, name in workspace_names.items():
             with self.subTest(center=label):
                 self.assertTrue(frappe.db.exists("Workspace", name), f"missing workspace: {name}")
+                real_url = frappe.get_doc("Workspace", name).get_url()
+                self.assertEqual(shortcuts[label], real_url, f"{label} shortcut is stale")
 
     def test_role_gate_matches_existing_workspaces(self):
         definition = self._definition()
